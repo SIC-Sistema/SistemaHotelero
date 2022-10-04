@@ -4,7 +4,7 @@
     <link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
     <!--Let browser know website is optimized for mobile-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <link rel="icon" href="../img/logo.jpg" type="image/x-icon" />
+    <link rel="icon" href="../img/logo.png" type="image/x-icon" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css" />
 <?php
 include('../php/conexion.php');
@@ -29,7 +29,7 @@ if ($login->isUserLoggedIn() == true){
 <html lang="es">
 <head>
   <!-- FONDO DE PANTALLA DE LOGIN -->  
-  <img id="video_background"  src="../img/banner2PV.jpg"><br><br><br><br>
+  <img id="video_background"  src="../img/bannerSR2.jpg"><br><br><br><br>
 
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>
@@ -42,7 +42,7 @@ if ($login->isUserLoggedIn() == true){
 <body>
  <div class="container">
         <div class="card card-container row">
-            <img id="profile-img" class="profile-img-card" src="../img/logo.jpg"/>
+            <img id="profile-img" class="profile-img-card" src="../img/logo.png"/>
             <p id="profile-name" class="profile-name-card"></p>
             <form method="post" accept-charset="utf-8" action="login.php" name="loginform" autocomplete="off" role="form" class="form-signin">
 			<?php
@@ -81,8 +81,8 @@ if ($login->isUserLoggedIn() == true){
                 <input class="form-control" placeholder="Contraseña" name="user_password" id="user_password" type="password" value="" autocomplete="off" required>
           		<i class="bi bi-eye-slash prefix right" id="togglePassword"></i>
                 <br><br>
-                <button type="submit" class="btn waves-effect waves-light pink" name="login" id="submit">Iniciar Sesión</button>
-                <a href = "form_usuario.php" class="btn waves-effect waves-light pink col s12">Registrarse</a>
+                <button type="submit" class="btn waves-effect waves-light  grey darken-4" name="login" id="submit">Iniciar Sesión</button>
+                <a href = "form_usuario.php" class="btn waves-effect waves-light  grey darken-4 col s12">Registrarse</a>
             </form>            
         </div><!-- /card-contenerdor -->
     </div><!-- /contenedor -->

@@ -2,8 +2,8 @@
 	/* Declaración de variables*/
 	$servername = "localhost";
 	$username = "root";
-	$password = "root";
-	$bd = "servintcomp";
+	$password = "";
+	$bd = "sistema_hotel_sr";
 
 	/* Realización de la conexión, en caso de existir un error lo muestra en pantalla*/
 	$conn = mysqli_connect($servername, $username, $password, $bd) or die ('Se econtró un error en la conexión a la BD');

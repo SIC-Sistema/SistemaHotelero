@@ -4,7 +4,7 @@
 <?php
   include('fredyNav.php');
 ?>
-<title>SIC | Inicio Punto de Venta</title>
+<title>SIC | Inicio</title>
 </head>
 <main>
 <script>
@@ -15,21 +15,14 @@
 </script>
 <body>
 	<div class="row ">
-		 <img class="materialboxed" width="100%" src="../img/banner1PV.jpg">
+		 <img class="materialboxed" width="100%" src="../img/bannerSR1.jpg">
 	</div>
- 	<div class="row container">
- 		<h4 class="center-align">Servicios Integrales de Computación</h4>
- 	</div>
  	<!--Modal cortes BIENVENIDA-->
 	<div id="bienvenida" class="modal">
 	  <div class="modal-content">
-			<?php
-	    	$Usuario = $_SESSION['user_name'];
-	    	$MSJ = 'Servicios Integrales de Computación: realiza tus ventas de la mejor manera, sonrie! :)';
-	  	?>
-	    <h3 class="red-text center">¡ Bienvenid@ !</h3><br>
-	    <h4 class="blue-text center"><b><?php echo $Usuario ?></b></h4><br>
-	    <h5><b><?php echo $MSJ ?></b></h5>	     
+	    <h3 class="red-text center">¡ Hola !</h3><br>
+	    <h4 class="grey-text center"><b><?php echo $_SESSION['user_name'] ?></b></h4><br>
+	    <h5 class="center">¡Hotel San Roman, Te da la bienvenida!</h5>	     
 	  </div>
 	  <div class="modal-footer">
 	      <a href="#" class="modal-action modal-close waves-effect waves-red btn-flat">Cerrar<i class="material-icons right">close</i></a>
