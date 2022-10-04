@@ -8,10 +8,21 @@
   }
   //INCLUIMOS EL ARCHIVO QUE CONTIENE LA BARRA DE NAVEGACION TAMBIEN TIENE (scripts, conexion, is_logged, modals)
   include('fredyNav.php');
-  //ARCHIVO QUE RESTRINGE A QUE SOLO ALGUNOS USUARIOS PUEDAN ACCEDER
-  include('../php/cobrador.php');
+  #TOMAMOS EL ID DEL USUARIO CON LA SESSION INICIADA
+  $id = $_SESSION['user_id'];
+  #TOMAMOS LA INFORMACION DEL USUARIO (PARA SABER A QUE AREA PERTENECE)
+  $user = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM users WHERE user_id=$id"));
+  if($user['area'] != "Administrador"){
+    #SI NO ES DIFERENTE A UN ADMINISTRADOR LE MUESTRA MENSAJE DE NEGACION Y REDIRECCIONA A LA PAGINA PRINCIPAL
+    echo '<script>M.toast({html:"Permiso denegado. Direccionando a la página principal.", classes: "rounded"})</script>';
+      #LLAMAR LA FUNCION admin() DEFINIDA EN EL ARCHIVO MODALS PARA REDIRECCIONAR
+      echo '<script>home();</script>';
+      #CERRAR LA CONEXION A LA BASE DE DATOS
+    mysqli_close($conn);
+    exit;
+  }
   ?>
-  <title>SIC | Usuarios</title>
+  <title>San Roman | Usuarios</title>
   <script>
     //FUNCION QUE ENVIA LA INFORMACION PARA ELIMINAR UN USUARIO(SE ACTIVA CON BOTON DE BORRAR)
     function eliminar(id){
@@ -60,7 +71,7 @@
                 <th>E-mail</th>
                 <th>Rol</th>
                 <th>Estatus</th>
-                <?php echo ($_SESSION['user_id'] == 10 OR $_SESSION['user_id'] == 49 OR $_SESSION['user_id'] == 103)? '<th>Cambiar</th><th>Eliminar</th><th>Permisos</th>': ''; ?>  
+                <?php echo ($user['area'] == 'Administrador' AND $user['usuarios'] == 1)? '<th>Cambiar</th><th>Eliminar</th><th>Permisos</th>': ''; ?>  
               </tr>
             </thead>
             <tbody>
@@ -89,7 +100,7 @@
                     //CREAMOS EL BOTON DE CAMBIAR YA SEA ACTIVAR O DESACTIVAR
                      $BTN =($tmp['Estatus'] == 1)?'<a onclick="cambiar(0,'.$tmp['user_id'].');" class="btn-small waves-effect waves-light indigo">Desactivar</a>':'<a onclick="cambiar(1,'.$tmp['user_id'].');" class="btn-small waves-effect waves-light green">Activar</a';
                      // SI LOS USUARIOS SON ALFREDO Y GABRIEL MOSTRAR BONTONES DE CAMBIAR Y ELIMINAR
-                     echo ($_SESSION['user_id'] == 10 OR $_SESSION['user_id'] == 49 OR $_SESSION['user_id'] == 103)? '<td>'.$BTN.'</td><td><a onclick="eliminar('.$tmp['user_id'].');" class="btn-floating btn-tiny waves-effect waves-light red darken-1"><i class="material-icons">delete</i></a></td><td><form method="post" action="../views/permisos.php"><input id="id" name="id" type="hidden" value="'.$tmp['user_id'].'"><button class="btn-floating btn-tiny waves-effect waves-light pink"><i class="material-icons">edit</i></button></form></td>': ''; 
+                     echo ($user['area'] == 'Administrador' AND $user['usuarios'] == 1)? '<td>'.$BTN.'</td><td><a onclick="eliminar('.$tmp['user_id'].');" class="btn-floating btn-tiny waves-effect waves-light red darken-1"><i class="material-icons">delete</i></a></td><td><form method="post" action="../views/permisos.php"><input id="id" name="id" type="hidden" value="'.$tmp['user_id'].'"><button class="btn-floating btn-tiny waves-effect waves-light pink"><i class="material-icons">edit</i></button></form></td>': ''; 
                      ?>                    
                   </tr>
                 <?php

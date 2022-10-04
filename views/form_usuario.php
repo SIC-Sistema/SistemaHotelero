@@ -7,7 +7,7 @@
   <link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
   <!--Let browser know website is optimized for mobile-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <link rel="shortcut icon" href="../img/logo.jpg" type="image/jpg" />
+  <link rel="shortcut icon" href="../img/logo.png" type="image/png" />
   <style rel="stylesheet">
     .dropdown-content{  overflow: visible;  }
   </style>
@@ -56,7 +56,7 @@
             valorEmail: textoEmail,
             valorUsuario: textoUsuario,
             valorContra: textoContra,
-            valorRol: textoRol
+            valorRol: textoRol,
           }, function(mensaje) {
               $("#resultado_usuarios").html(mensaje);
           }); 
@@ -69,7 +69,7 @@
   <div class="container">
     <div id="resultado_usuarios"></div>
     <div class="row"><br><br><br>
-      <a href = "login.php" class="btn waves-effect waves-light pink right">Iniciar Sesión</a>
+      <a href = "login.php" class="btn waves-effect waves-light grey darken-4 right">Iniciar Sesión</a>
       <h3>Nuevo Usuario:</h3>
       <div class="row col s12">
 
@@ -89,11 +89,9 @@
           <div class="input-field">
             <select id="rol" class="browser-default">
               <option value="0" selected>Seleccione un rol</option>
-              <option value="Taller">Taller</option>
-              <option value="Redes">Redes</option>
+              <option value="Recepcionista">Recepcionista</option>
               <option value="Oficina">Oficina</option>
               <option value="Administrador">Administrador</option>
-              <option value="Cobrador">Cobrador</option>
             </select>
           </div>
         </div> 
@@ -111,7 +109,7 @@
             <label for="repite_contra">Repite Contraseña</label>
           </div>
           <div class="input-field">
-            <a onclick="insert_usuario();" class="waves-effect waves-light btn pink right">GUARDAR<i class="material-icons right">save</i></a>
+            <a onclick="insert_usuario();" class="waves-effect waves-light btn grey darken-4 right">GUARDAR<i class="material-icons right">save</i></a>
           </div>
         </div>        
       </div>
@@ -122,7 +120,6 @@
 </html>
 <?php 
   include('../views/modals.php');
-  include('../php/scripts.php');
   ?>
   <script src="js/jquery-3.1.1.js"></script>
   <!--JavaScript at end of body for optimized loading-->

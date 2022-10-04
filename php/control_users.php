@@ -49,13 +49,9 @@ switch ($Accion) {
 		    $sql = "INSERT INTO users (firstname, lastname, user_name, user_password_hash, user_email, date_added, area)
 		            VALUES ('$valorFirstName','$valorLastName','$valorUserName', '$valorUserPassword_hash', '$valorUserEmail','$date_added','$valorUserRol')";
 		    // Si el usuario fue añadido con éxito
-		    if (mysqli_query($conn,$sql)) {
-		        ?>
-		        <script>
-		          M.toast({html:"Usuario añadido correctamente.", classes: "rounded"});
-		          setTimeout("location.href='login.php'", 800);
-		        </script>
-		        <?php
+		    if (mysqli_query($conn, $sql)) {
+		        echo '<script>M.toast({html:"Usuario añadido correctamente., intentelo mas tarde.", classes: "rounded"})</script>';
+		        echo '<script>recargar_usuarios()</script>';// REDIRECCIONAMOS (FUNCION ESTA EN ARCHIVO modals.php)
 		    } else {
 		        echo '<script>M.toast({html:"Hubo un error, intentelo mas tarde.", classes: "rounded"})</script>';
 		    }

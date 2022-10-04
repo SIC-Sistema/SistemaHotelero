@@ -4,7 +4,7 @@
 <?php
   include('fredyNav.php');
 ?>
-<title>SIC | Inicio</title>
+<title>San Roman | Inicio</title>
 </head>
 <main>
 <script>

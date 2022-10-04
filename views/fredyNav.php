@@ -4,10 +4,6 @@ include('../php/is_logged.php');
 #INCLUIMOS EL ARCHIVO CON LOS DATOS Y CONEXXION A LA BASE DE DATOS
 include('../php/conexion.php');
 #GENERAMOS UNA FECHA DEL DIA EN CURSO REFERENTE A LA ZONA HORARIA
-#TOMAMOS EL ID DEL USUARIO CON LA SESSION INICIADA
-$id = $_SESSION['user_id'];
-#TOMAMOS LA INFORMACION DEL USUARIO (PARA SABER A QUE AREA PERTENECE)
-$area = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM users WHERE user_id=$id"));
 $Hoy = date('Y-m-d');
 ?>
 	<meta charset="utf-8">
@@ -33,11 +29,11 @@ $Hoy = date('Y-m-d');
 			<ul class="right hide-on-med-and-down">
 				<li><a class='dropdown-button' data-target='dropdown1'><i class="material-icons left">input</i><b>Rescepción</b> <i class="material-icons right">arrow_drop_down</i></a></li>
 				<ul id='dropdown1' class='dropdown-content'>
-					<li><a href = "proveedores_punto_venta.php" class="black-text"><i class="material-icons">person_pin</i>Proveedores </a></li>
-				    <li><a href = "clientes_punto_venta.php" class="black-text"><i class="material-icons">people</i>Clientes </a></li>
-					<li><a href = "usuarios.php" class="black-text"><i class="material-icons">perm_identity</i>Usuarios </a></li>
-				    <li><a href = "articulos_punto_venta.php" class="black-text"><i class="material-icons">dashboard</i>Articulos </a></li>
-					<li><a href = "categorias_punto_venta.php" class="black-text"><i class="material-icons">view_list</i>Categorias </a></li>   			 
+					<li><a href = "#" class="black-text"><i class="material-icons">date_range</i>Reservar </a></li>
+				    <li><a href = "#" class="black-text"><i class="material-icons">people</i>Clientes </a></li>
+					<li><a href = "#" class="black-text"><i class="material-icons">hotel</i>Habitaciones </a></li>
+				    <li><a href = "#" class="black-text"><i class="material-icons">assignment_turned_in</i>Check In </a></li>
+					<li><a href = "#" class="black-text"><i class="material-icons">assignment_return</i>Check Out</a></li>   			 
  				 </ul>
 				<li><a class='dropdown-button' data-target='dropdown2'><i class="material-icons left">hotel</i><b>Hotel</b><span class=" new badge pink" data-badge-caption="">4</span><i class="material-icons right">arrow_drop_down</i></a></li>
 				<ul id='dropdown2' class='dropdown-content'>
@@ -55,31 +51,24 @@ $Hoy = date('Y-m-d');
  				</ul>
  				<li><a class='dropdown-button' data-target='dropdown5'><i class="material-icons left">person_pin</i><b>Admin</b> <i class="material-icons right">arrow_drop_down</i></a></li>
 				<ul id='dropdown5' class='dropdown-content'>
-					<li><a href class="black-text"><i class="material-icons">settings_input_antenna</i>Item 1 </a></li>   
-				    <li><a href class="black-text"><i class="material-icons">import_export</i>Item 2 </a></li>   
-				    <li><a href class="black-text"><i class="material-icons">business</i>Item 4 </a></li>
-				    <li><a href class="black-text"><i class="material-icons">router</i>Item 4 </a></li>
-				    <li><a href class="black-text"><i class="material-icons">satellite</i>Item 5 </a></li>
+					<li><a href = "usuarios.php" class="black-text"><i class="material-icons">people</i>Usuarios </a></li> 
 				</ul>
  				<li><a class='dropdown-button' data-target='dropdown4'><b><?php echo $_SESSION['user_name'];?> </b><i class="material-icons right">arrow_drop_down</i></a></li>
-				<ul id='dropdown4' class='dropdown-content'>
-				    <li><a href="../../SIC5.0" class="black-text"><i class="material-icons">laptop_mac</i>Sistema SIC5.0 </a></li>
+				<ul id='dropdown4' class='dropdown-content'>				    
 				    <li><a href="perfil_user.php" class="black-text"><i class="material-icons">account_circle</i>Perfil </a></li>
 				    <li><a href="../php/cerrar_sesion.php" class="black-text"><i class="material-icons">exit_to_app</i>Cerrar Sesión</a></li>
  				 </ul>
 			</ul>
 			<ul class="right hide-on-large-only hide-on-small-only">
 				<li><a class='dropdown-button' data-target='dropdown10'><b><?php echo $_SESSION['user_name'];?> </b><i class="material-icons right">arrow_drop_down</i></a></li>
-				<ul id='dropdown10' class='dropdown-content'>
-					<li><a href="../../SIC5.0" class="black-text"><i class="material-icons">laptop_mac</i>Sistema SIC5.0 </a></li>
+				<ul id='dropdown10' class='dropdown-content'>					
 				    <li><a href="perfil_user.php" class="black-text"><i class="material-icons">account_circle</i>Perfil </a></li>
 				    <li><a href="../php/cerrar_sesion.php" class="black-text"><i class="material-icons">exit_to_app</i>Cerrar Sesión</a></li>
  				 </ul>
 			</ul>
 			<ul class="right hide-on-med-and-up">
 		        <li><a class='dropdown-button' data-target='dropdown8'><i class="material-icons left">account_circle</i><b>></b></a></li>
-				<ul id='dropdown8' class='dropdown-content'>
-					<li><a href="../../SIC5.0" class="black-text"><i class="material-icons">laptop_mac</i>Sistema SIC5.0 </a></li>
+				<ul id='dropdown8' class='dropdown-content'>					
 				    <li><a href="perfil_user.php" class="black-text"><i class="material-icons">account_circle</i>Perfil </a></li>
 				   <li><a href="../php/cerrar_sesion.php" class="black-text"><i class="material-icons">exit_to_app</i>Cerrar Sesión</a></li>
  				</ul>
@@ -98,11 +87,11 @@ $Hoy = date('Y-m-d');
 		      		<div class="collapsible-body indigo lighten-5">
 		      		    <span>
 		      			  <ul>
-							<li><a href = "proveedores_punto_venta.php"><i class="material-icons">person_pin</i>Proveedores </a></li>
-						    <li><a href = "clientes_punto_venta.php"><i class="material-icons">people</i>Clientes </a></li>
-							<li><a href = "usuarios.php"><i class="material-icons">perm_identity</i>Usuarios </a></li>
-						    <li><a href = "articulos_punto_venta.php"><i class="material-icons">dashboard</i>Articulos </a></li>
-							<li><a href = "categorias_punto_venta.php"><i class="material-icons">view_list</i>Categorias </a></li>  			 
+							<li><a href = "#"><i class="material-icons">date_range</i>Reservar </a></li>
+						    <li><a href = "#"><i class="material-icons">people</i>Clientes </a></li>
+							<li><a href = "#"><i class="material-icons">hotel</i>Habitaciones </a></li>
+						    <li><a href = "#"><i class="material-icons">assignment_turned_in</i>Check In </a></li>
+							<li><a href = "#"><i class="material-icons">assignment_return</i>Check Out</a></li>  			 
 					      </ul>
 					    </span>
 		      		</div>    			
@@ -118,9 +107,7 @@ $Hoy = date('Y-m-d');
 		      			  <ul>
 							<li><a href = "almacenes_punto_venta.php"><i class="material-icons">assignment_turned_in</i>Almacenes</a></li>
 							<li><a href = "almacen_punto_venta.php"><i class="material-icons">list</i>Mi Almacen</a></li>
-							<li><a href = "compras_punto_venta.php"><i class="material-icons">add_shopping_cart</i>Compras</a></li>
-
-			      			<li><a href="dispositivos.php"><i class="material-icons">phonelink</i>Item 2</a></li>			 
+							<li><a href = "compras_punto_venta.php"><i class="material-icons">add_shopping_cart</i>Compras</a></li>			 
 					      </ul>
 					    </span>
 		      		</div>    			
@@ -134,10 +121,7 @@ $Hoy = date('Y-m-d');
 		      		<div class="collapsible-body  indigo lighten-5">
 		      			<span>
 		      			  <ul>
-		      				<li><a href="../views/form_instalacion.php"><i class="material-icons">add</i>Item 1</a></li>
-					 		<li><a href="form_mantenimiento.php"><i class="material-icons">add_circle_outline</i>Item 2</a></li>
-							<li><a href="form_orden.php"><i class="material-icons">add_circle</i>Item 3</a></li>
-					 		<li><a href="clientes.php"><i class="material-icons">people</i>Clientes </a></li>
+		      				<li><a href="usuarios.php"><i class="material-icons">people</i>Usuarios</a></li>
 					      </ul>
 					    </span>
 		      		</div>    			
