@@ -68,47 +68,48 @@ if ($_SESSION['user_id'] == false) {
           <h2 class="hide-on-med-and-down">Perfil:</h2>
           <h4 class="hide-on-large-only">Perfil:</h4>
         </div>
+        <hr>
         <div class="row">
-          <ul class="collection">
-            <li class="collection-item avatar">
-              <div class="row">
-                  <img src="../img/cliente.png" alt="" class="circle">
-                  <span class="title"><b>Id. Usuario: </b><?php echo $datos['user_id'];?></span><br>
-                  <div class="col s12"><br>
-                    <b class="col s4 m2 l2">Nombre(s): </b>
-                    <div class="col s12 m9 l9">
-                      <input type="text" id="nombres" name="nombres" value="<?php echo $datos['firstname']; ?>">
-                    </div>
-                  </div>
-                  <div class="col s12">
-                    <b class="col s4 m2 l2">Apellidos: </b>
-                    <div class="col s12 m9 l9">
-                      <input type="text" id="apellidos" name="apellidos" value="<?php echo $datos['lastname'];?>">
-                    </div>
-                  </div>
-                  <div class="col s12">
-                    <b class="col s4 m2 l2">Usuario: </b>
-                    <div class="col s12 m9 l9">
-                      <input type="text" id="usuario" name="usuario" value="<?php echo $datos['user_name'];?>">
-                    </div>
-                  </div>
-                  <div class="col s12">
-                    <b class="col s4 m2 l2">E-mail: </b>
-                    <div class="col s12 m9 l9">
-                      <input type="text" id="email" name="email" value="<?php echo $datos['user_email'];?>">
-                    </div>
-                  </div>
-                  <div class="col s12"><br>
-                    <b class="col s4 m2 l2">Area: </b><?php echo $datos['area'];?>
-                  </div>
-              </div>
-              <br><hr>
-              <b>Accion: </b>
-              <a onclick="editar_pass(<?php echo $datos['user_id'];?>);" class="waves-effect waves-light btn pink right"><i class="material-icons right">security</i>Editar contraseña</a>
-              <a onclick="editar_perfil(<?php echo $datos['user_id'];?>);" class="waves-effect waves-light btn pink lighten-1 right"><i class="material-icons right">edit</i>Editar perfil</a><br><br>
-            </li><br>
-          </ul>   
+          <b class="col s4 m2 l2">N° Usuario: </b>
+          <div class="col s8 m4 l4"><?php echo $datos['user_id'];?></div>
+          <b class="col s4 m2 l2">Usuario: </b>
+          <div class="col s8 m4 l4">
+            <div class="input-field">
+              <i class="material-icons prefix">person_pin</i>
+              <input type="text" id="usuario" name="usuario" value="<?php echo $datos['user_name'];?>">
+              <label for="usuario">Nombre de usuario</label>
+            </div>            
+          </div>
+          <b class="col s4 m2 l2">Nombre(s): </b>
+          <div class="col s8 m4 l4">
+            <div class="input-field">
+              <i class="material-icons prefix">people</i>
+              <input type="text" id="nombres" name="nombres" value="<?php echo $datos['firstname']; ?>">
+              <label for="nombre">Nombre</label>
+            </div>            
+          </div>
+          <b class="col s4 m2 l2">Apellidos: </b>
+          <div class="col s8 m4 l4">
+            <div class="input-field">
+              <i class="material-icons prefix">people</i>
+              <input type="text" id="apellidos" name="apellidos" value="<?php echo $datos['lastname'];?>">
+              <label for="apellidos">Apellidos</label>
+            </div>
+          </div>
+          <b class="col s4 m2 l2">E-mail: </b>
+          <div class="col s8 m4 l4">
+            <div class="input-field">
+              <i class="material-icons prefix">mail</i>
+              <input type="text" id="email" name="email" value="<?php echo $datos['user_email'];?>">
+              <label for="email">E-mail</label>
+            </div>            
+          </div>
+          <b class="col s4 m2 l2"><br>Area: </b>
+          <div class="col s8 m4 l4"><br><?php echo $datos['area'];?></div>
         </div>
+        <hr>
+        <a onclick="editar_pass(<?php echo $datos['user_id'];?>);" class="waves-effect waves-light btn grey darken-3 right"><i class="material-icons right">security</i>Editar contraseña</a>
+        <a onclick="editar_perfil(<?php echo $datos['user_id'];?>);" class="waves-effect waves-light btn grey darken-4 right"><i class="material-icons right">edit</i>Editar perfil</a><br><br>
       </div>
     </body>
   </html>

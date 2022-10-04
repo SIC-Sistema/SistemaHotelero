@@ -15,9 +15,9 @@
   if($user['area'] != "Administrador"){
     #SI NO ES DIFERENTE A UN ADMINISTRADOR LE MUESTRA MENSAJE DE NEGACION Y REDIRECCIONA A LA PAGINA PRINCIPAL
     echo '<script>M.toast({html:"Permiso denegado. Direccionando a la página principal.", classes: "rounded"})</script>';
-      #LLAMAR LA FUNCION admin() DEFINIDA EN EL ARCHIVO MODALS PARA REDIRECCIONAR
-      echo '<script>home();</script>';
-      #CERRAR LA CONEXION A LA BASE DE DATOS
+    #LLAMAR LA FUNCION admin() DEFINIDA EN EL ARCHIVO MODALS PARA REDIRECCIONAR
+    echo '<script>home();</script>';
+    #CERRAR LA CONEXION A LA BASE DE DATOS
     mysqli_close($conn);
     exit;
   }
@@ -58,7 +58,7 @@
     <div id="resultado_usuarios">
       <div class="row"><br>
         <h3>Usuarios</h3> 
-        <a href="form_usuario.php" class="waves-effect waves-light btn pink right">Agregar Usuario<i class="material-icons right">send</i></a><br><br>
+        <a href="form_usuario.php" class="waves-effect waves-light btn grey darken-4 right">Agregar Usuario<i class="material-icons left">add</i></a><br><br>
       </div>
       <div class="row">
         <table class="bordered highlight responsive-table">
@@ -100,7 +100,7 @@
                     //CREAMOS EL BOTON DE CAMBIAR YA SEA ACTIVAR O DESACTIVAR
                      $BTN =($tmp['Estatus'] == 1)?'<a onclick="cambiar(0,'.$tmp['user_id'].');" class="btn-small waves-effect waves-light indigo">Desactivar</a>':'<a onclick="cambiar(1,'.$tmp['user_id'].');" class="btn-small waves-effect waves-light green">Activar</a';
                      // SI LOS USUARIOS SON ALFREDO Y GABRIEL MOSTRAR BONTONES DE CAMBIAR Y ELIMINAR
-                     echo ($user['area'] == 'Administrador' AND $user['usuarios'] == 1)? '<td>'.$BTN.'</td><td><a onclick="eliminar('.$tmp['user_id'].');" class="btn-floating btn-tiny waves-effect waves-light red darken-1"><i class="material-icons">delete</i></a></td><td><form method="post" action="../views/permisos.php"><input id="id" name="id" type="hidden" value="'.$tmp['user_id'].'"><button class="btn-floating btn-tiny waves-effect waves-light pink"><i class="material-icons">edit</i></button></form></td>': ''; 
+                     echo ($user['area'] == 'Administrador' AND $user['usuarios'] == 1)? '<td>'.$BTN.'</td><td><a onclick="eliminar('.$tmp['user_id'].');" class="btn-floating btn-tiny waves-effect waves-light red darken-1"><i class="material-icons">delete</i></a></td><td><form method="post" action="../views/permisos.php"><input id="id" name="id" type="hidden" value="'.$tmp['user_id'].'"><button class="btn-floating btn-tiny waves-effect waves-light grey darken-4"><i class="material-icons">edit</i></button></form></td>': ''; 
                      ?>                    
                   </tr>
                 <?php

@@ -75,14 +75,17 @@
 
         <div class="col s12 m6 l6">
           <div class="input-field">
+            <i class="material-icons prefix">people</i>
             <input type="text" class="validate" required id="nombre">
             <label for="nombre">Nombre</label>
           </div>
           <div class="input-field">
+            <i class="material-icons prefix">mail</i>
             <input type="email" class="validate" required id="email">
             <label for="email">E-mail</label>
           </div>
           <div class="input-field">
+            <i class="material-icons prefix">security</i>
             <input type="password" class="validate" required id="contra">
             <label for="contra">Contraseña</label>
           </div>
@@ -97,14 +100,17 @@
         </div> 
         <div class="col s12 m6 l6">
           <div class="input-field">
+            <i class="material-icons prefix">people</i>
             <input type="text" class="validate" required id="apellidos">
             <label for="apellidos">Apellidos</label>
           </div>
           <div class="input-field">
+            <i class="material-icons prefix">person_pin</i>
             <input type="text" class="validate" required id="usuario">
             <label for="usuario">Nombre de usuario</label>
           </div>
           <div class="input-field">
+            <i class="material-icons prefix">security</i>
             <input type="password" class="validate" required id="repite_contra">
             <label for="repite_contra">Repite Contraseña</label>
           </div>
