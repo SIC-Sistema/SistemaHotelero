@@ -58,7 +58,7 @@
             valorContra: textoContra,
             valorRol: textoRol,
           }, function(mensaje) {
-              $("#resultado_usuarios").html(mensaje);
+              $("#resultado_user_insert").html(mensaje);
           }); 
       }
   };
@@ -67,7 +67,7 @@
 <main>
 <body>
   <div class="container">
-    <div id="resultado_usuarios"></div>
+    <div id="resultado_user_insert"></div>
     <div class="row"><br><br><br>
       <a href = "login.php" class="btn waves-effect waves-light grey darken-4 right">Iniciar Sesión</a>
       <h3>Nuevo Usuario:</h3>
