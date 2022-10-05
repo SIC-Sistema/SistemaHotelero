@@ -29,6 +29,21 @@ if (isset($_POST['id']) == false) {
           if(document.getElementById('usuarios').checked==true){
             Usuario = 1;
           }else { Usuario = 0; }
+          if(document.getElementById('clientes').checked==true){
+            Clientes = 1;
+          }else { Clientes = 0; }
+          if(document.getElementById('habitaciones').checked==true){
+            Habitaciones = 1;
+          }else { Habitaciones = 0; }
+          if(document.getElementById('borrar').checked==true){
+            Borrar = 1;
+          }else { Borrar = 0; }
+          if(document.getElementById('facturar').checked==true){
+            Facturar = 1;
+          }else { Facturar = 0; }
+          if(document.getElementById('reportes').checked==true){
+            Reportes = 1;
+          }else { Reportes = 0; }
 
             //MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO NE LA DIRECCION "../php/control_users.php"
             $.post("../php/control_users.php", { 
@@ -36,6 +51,11 @@ if (isset($_POST['id']) == false) {
                 accion: 4,
                 id: id,
                 Usuario: Usuario,               
+                Clientes: Clientes,               
+                Habitaciones: Habitaciones,               
+                Borrar: Borrar,               
+                Facturar: Facturar,               
+                Reportes: Reportes,               
                 Area: textoArea,               
             }, function(mensaje) {
               //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "control_users.php"

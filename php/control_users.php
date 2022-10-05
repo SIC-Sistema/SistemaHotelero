@@ -125,9 +125,14 @@ switch ($Accion) {
     	//CON POST RECIBIMOS TODAS LAS VARIABLES DEL FORMULARIO POR EL SCRIPT "permisos.php" QUE NESECITAMOS PARA CAMBIARLOS
     	$id = $conn->real_escape_string($_POST["id"]);
     	$Usuario = $conn->real_escape_string($_POST["Usuario"]);
+    	$Clientes = $conn->real_escape_string($_POST["Clientes"]);
+    	$Habitaciones = $conn->real_escape_string($_POST["Habitaciones"]);
+    	$Borrar = $conn->real_escape_string($_POST["Borrar"]);
+    	$Facturar = $conn->real_escape_string($_POST["Facturar"]);
+    	$Reportes = $conn->real_escape_string($_POST["Reportes"]);
     	$Area = $conn->real_escape_string($_POST["Area"]);
     	//CREAMOS LA SENTENCIA SQL PARA HACER LA ACTUALIZACION DE LOS PERMISOS DEL USUARIO Y LA GUARDAMOS EN UNA VARIABLE
-		$sql = "UPDATE users SET area='$Area', usuarios='$Usuario' WHERE user_id='$id'";
+		$sql = "UPDATE users SET area='$Area', usuarios='$Usuario', clientes='$Clientes', habitaciones='$Habitaciones', reportes='$Reportes', borrar='$Borrar', facturar='$Facturar' WHERE user_id='$id'";
 		//VERIFICAMOS QUE SE EJECUTE LA SENTENCIA EN MYSQL 
 		if(mysqli_query($conn, $sql)){
 			echo '<script>M.toast({html:"Permisos actualizados correctamente.", classes: "rounded"})</script>';
@@ -145,7 +150,6 @@ switch ($Accion) {
 		$Password_old = $conn->real_escape_string($_POST["valorContraAnterior"]);
 
 		$user=mysqli_fetch_array(mysqli_query($conn,"SELECT * FROM users WHERE user_id = '$id_user'"));
-
 
 		if (password_verify($Password_old, $user['user_password_hash'])) {
 			$Password_new_hash = password_hash($Password_new, PASSWORD_DEFAULT);
