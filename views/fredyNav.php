@@ -31,7 +31,7 @@ $Hoy = date('Y-m-d');
 				<ul id='dropdown1' class='dropdown-content'>
 					<li><a href = "#" class="black-text"><i class="material-icons">date_range</i>Reservar </a></li>
 				    <li><a href = "#" class="black-text"><i class="material-icons">people</i>Clientes </a></li>
-					<li><a href = "#" class="black-text"><i class="material-icons">hotel</i>Habitaciones </a></li>
+					<li><a href = "habitaciones.php" class="black-text"><i class="material-icons">hotel</i>Habitaciones </a></li>
 				    <li><a href = "#" class="black-text"><i class="material-icons">assignment_turned_in</i>Check In </a></li>
 					<li><a href = "#" class="black-text"><i class="material-icons">assignment_return</i>Check Out</a></li>   			 
  				 </ul>
@@ -89,7 +89,7 @@ $Hoy = date('Y-m-d');
 		      			  <ul>
 							<li><a href = "#"><i class="material-icons">date_range</i>Reservar </a></li>
 						    <li><a href = "#"><i class="material-icons">people</i>Clientes </a></li>
-							<li><a href = "#"><i class="material-icons">hotel</i>Habitaciones </a></li>
+							<li><a href = "habitaciones.php"><i class="material-icons">hotel</i>Habitaciones </a></li>
 						    <li><a href = "#"><i class="material-icons">assignment_turned_in</i>Check In </a></li>
 							<li><a href = "#"><i class="material-icons">assignment_return</i>Check Out</a></li>  			 
 					      </ul>

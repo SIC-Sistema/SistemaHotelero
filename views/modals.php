@@ -2,6 +2,9 @@
   function recargar_clientes() {
     setTimeout("location.href='clientes_punto_venta.php'", 800);
   }
+  function recargar_habitaciones() {
+    setTimeout("location.href='habitaciones.php'", 800);
+  }
   function cerrar_sesion() {
     setTimeout("location.href='../php/cerrar_sesion.php'", 1200);
   }
