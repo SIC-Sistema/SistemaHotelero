@@ -14,7 +14,7 @@ if ($_SESSION['user_id'] == false) {
   <!DOCTYPE html>
   <html>
     <head>
-    	<title>SIC | Perfil Usuario</title>
+    	<title>San Roman | Perfil Usuario</title>
       <?php
       //REALIZAMOS LA CONSULTA PARA SACAR LA INFORMACION DEL USUARIO Y ASIGNAMOS EL ARRAY A UNA VARIABLE $datos
       $user_id = $_SESSION['user_id'];

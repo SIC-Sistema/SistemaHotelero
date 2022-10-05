@@ -15,7 +15,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>SIC | Usuarios</title>
+<title>San Roman | Usuarios</title>
 <script>
   function validar_email( email )   {
       var regex = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;

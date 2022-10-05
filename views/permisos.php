@@ -12,7 +12,7 @@ if (isset($_POST['id']) == false) {
   <!DOCTYPE html>
   <html>
     <head>
-    	<title>SIC | Permisos Usuarios</title>
+    	<title>San Roman | Permisos Usuarios</title>
       <?php
       //INCLUIMOS EL ARCHIVO QUE CONTIENE LA BARRA DE NAVEGACION TAMBIEN TIENE (scripts, conexion, is_logged, modals)
       include('fredyNav.php');
