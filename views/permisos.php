@@ -101,8 +101,8 @@ if (isset($_POST['id']) == false) {
               <p>
                 <br>
                 <label>
-                  <input type="checkbox" <?php echo (2  == 1)?"checked":"";?> id="credito"/>
-                  <span for="credito">Credito</span>
+                  <input type="checkbox" <?php echo ($datos['clientes']  == 1)?"checked":"";?> id="clientes"/>
+                  <span for="clientes">Clientes</span>
                 </label>
               </p>
             </div>
@@ -110,8 +110,8 @@ if (isset($_POST['id']) == false) {
               <p>
                 <br>
                 <label>
-                  <input type="checkbox" <?php echo (2  == 1)?"checked":"";?> id="b_pagos"/>
-                  <span for="b_pagos">Borrar Pagos</span>
+                  <input type="checkbox" <?php echo ($datos['habitaciones']  == 1)?"checked":"";?> id="habitaciones"/>
+                  <span for="habitaciones">Habitaciones</span>
                 </label>
               </p>
             </div>
@@ -119,8 +119,8 @@ if (isset($_POST['id']) == false) {
               <p>
                 <br>
                 <label>
-                  <input type="checkbox" <?php echo (1  == 1)?"checked":"";?> id="b_clientes"/>
-                  <span for="b_clientes">Borrar Clientes</span>
+                  <input type="checkbox" <?php echo ($datos['borrar']  == 1)?"checked":"";?> id="borrar"/>
+                  <span for="borrar">Borrar Ingreso/Egreso</span>
                 </label>
               </p>
             </div>
@@ -128,8 +128,8 @@ if (isset($_POST['id']) == false) {
               <p>
                 <br>
                 <label>
-                  <input  type="checkbox" <?php echo (4  == 1)?"checked":"";?> id="b_ventas"/>
-                  <span for="b_ventas">Borrar Ventas</span>
+                  <input  type="checkbox" <?php echo ($datos['facturar']  == 1)?"checked":"";?> id="facturar"/>
+                  <span for="facturar">Facturar</span>
                 </label>
               </p>
             </div>
@@ -137,20 +137,11 @@ if (isset($_POST['id']) == false) {
               <p>
                 <br>
                 <label>
-                  <input  type="checkbox" <?php echo (2  == 1)?"checked":"";?> id="b_almacenes"/>
-                  <span for="b_almacenes">Borrar Almacenes</span>
+                  <input  type="checkbox" <?php echo ($datos['reportes']  == 1)?"checked":"";?> id="reportes"/>
+                  <span for="reportes">Reportes</span>
                 </label>
               </p>
-            </div>
-            <div class="col s6 m3 l3">
-              <p>
-                <br>
-                <label>
-                  <input type="checkbox" <?php echo (4  == 1)?"checked":"";?> id="ventas"/>
-                  <span for="ventas">Ventas</span>
-                </label>
-              </p>
-            </div>   
+            </div>  
         </div>
           
         <!--BOTON DE GURARDAR PERMISOS-->
