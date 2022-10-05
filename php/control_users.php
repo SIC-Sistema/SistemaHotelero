@@ -8,7 +8,7 @@ include('../php/conexion.php');
 date_default_timezone_set('America/Mexico_City');
 $Fecha_hoy = date('Y-m-d');// FECHA ACTUAL
 
-//CON POST TOMAMOS UN VALOR DEL 0 AL 4 PARA VER QUE ACCION HACER (Insertar = 0, Actualizar Info = 1, Actualizar Est = 2, Borrar = 3, Permisos = 4)
+//CON POST TOMAMOS UN VALOR DEL 0 AL 4 PARA VER QUE ACCION HACER (Insertar = 0, Actualizar Info = 1, Actualizar Est = 2, Borrar = 3, Permisos = 4, Contraseña = 5)
 $Accion = $conn->real_escape_string($_POST['accion']);
 if ($Accion != 0) {
 	//ARCHIVO QUE CONDICIONA QUE TENGAMOS ACCESO A ESTE ARCHIVO SOLO SI HAY SESSION INICIADA Y NOS PREMITE TIMAR LA INFORMACION DE ESTA
@@ -124,18 +124,10 @@ switch ($Accion) {
 
     	//CON POST RECIBIMOS TODAS LAS VARIABLES DEL FORMULARIO POR EL SCRIPT "permisos.php" QUE NESECITAMOS PARA CAMBIARLOS
     	$id = $conn->real_escape_string($_POST["id"]);
-    	$Banco = $conn->real_escape_string($_POST["Banco"]);
-    	$Credito = $conn->real_escape_string($_POST["Credito"]);
-    	$BorrarPagos = $conn->real_escape_string($_POST["BorrarPagos"]);
-    	$BorrarClientes = $conn->real_escape_string($_POST["BorrarClientes"]);
-    	$BorrarVentas = $conn->real_escape_string($_POST["BorrarVentas"]);
-		$BorrarAlmacenes = $conn->real_escape_string($_POST["BorrarAlmacenes"]);
-    	$Ventas = $conn->real_escape_string($_POST["Ventas"]);
-    	$Compras = $conn->real_escape_string($_POST["Compras"]);
-    	$Articulos = $conn->real_escape_string($_POST["Articulos"]);
-		$Almacen = $conn->real_escape_string($_POST["valorAlmacen"]);
+    	$Usuario = $conn->real_escape_string($_POST["Usuario"]);
+    	$Area = $conn->real_escape_string($_POST["Area"]);
     	//CREAMOS LA SENTENCIA SQL PARA HACER LA ACTUALIZACION DE LOS PERMISOS DEL USUARIO Y LA GUARDAMOS EN UNA VARIABLE
-		$sql = "UPDATE users SET banco='$Banco', credito='$Credito', b_pagos='$BorrarPagos', b_clientes = '$BorrarClientes', b_ventas = '$BorrarVentas', ventas = '$Ventas', compras = '$Compras',  b_articulos = '$Articulos', b_almacenes = '$BorrarAlmacenes', almacen = '$Almacen' WHERE user_id='$id'";
+		$sql = "UPDATE users SET area='$Area', usuarios='$Usuario' WHERE user_id='$id'";
 		//VERIFICAMOS QUE SE EJECUTE LA SENTENCIA EN MYSQL 
 		if(mysqli_query($conn, $sql)){
 			echo '<script>M.toast({html:"Permisos actualizados correctamente.", classes: "rounded"})</script>';
@@ -143,6 +135,34 @@ switch ($Accion) {
 		}else{
 			echo '<script>M.toast({html:"Ha ocurrido un error.", classes: "rounded"})</script>';	
 		}
+    	break;
+    case 5:///////////////           IMPORTANTE               ///////////////
+    	// $Accion es igual a 5 realiza:
+
+    	//CON POST RECIBIMOS TODAS LAS VARIABLES DEL FORMULARIO POR EL SCRIPT "perfil_user.php" QUE NESECITAMOS PARA ACTUALIZAR
+    	$id_user = $conn->real_escape_string($_POST["valorId"]);
+		$Password_new = $conn->real_escape_string($_POST["valorContra"]);
+		$Password_old = $conn->real_escape_string($_POST["valorContraAnterior"]);
+
+		$user=mysqli_fetch_array(mysqli_query($conn,"SELECT * FROM users WHERE user_id = '$id_user'"));
+
+
+		if (password_verify($Password_old, $user['user_password_hash'])) {
+			$Password_new_hash = password_hash($Password_new, PASSWORD_DEFAULT);
+			//CREAMOS LA SENTENCIA SQL PARA ACTUALIZAR
+			$sql= "UPDATE users SET user_password_hash = '$Password_new_hash' WHERE user_id = '$id_user'";
+			//VERIIFCAMOS QUE SE HAYA REALIZADO LA SENTENCIA EN LA BASE DE DATOS
+			if(mysqli_query($conn, $sql)){
+			    echo '<script>M.toast({html:"Usuario actualizado (Contraseña)..", classes: "rounded"})</script>';
+				echo '<script>cerrar_sesion()</script>';// REDIRECCIONAMOS (FUNCION ESTA EN ARCHIVO modals.php)
+			}else{
+			    echo '<script>M.toast({html:"Hubo un error, intentelo mas tarde.", classes: "rounded"})</script>';
+			}
+		}else{
+			#SI LAS CONTRASEÑA ANTERIOR NO ES IGUAL MANDA UN MSJ CON ALERTA
+		    echo '<script>M.toast({html:"La contraseña anterior no coincide.", classes: "rounded"})</script>';
+		}
+
     	break;
 }// FIN switch
 mysqli_close($conn);
