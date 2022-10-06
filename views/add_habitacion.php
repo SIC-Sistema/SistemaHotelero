@@ -11,8 +11,10 @@
 
       //PRIMERO VAMOS Y BUSCAMOS EN ESTE MISMO ARCHIVO LA INFORMCION REQUERIDA Y LA ASIGNAMOS A UNA VARIABLE
       var textoNo = $("input#numero").val();//ej:LA VARIABLE "textoNombre" GUARDAREMOS LA INFORMACION QUE ESTE EN EL INPUT QUE TENGA EL id = "nombre"
-      var textoDescripcion = $("input#descripcion").val();// ej: TRAE LE INFORMACION DEL INPUT FILA 95 (id="telefono")
+      var textoDescripcion = $("input#descripcion").val();// ej: TRAE LE INFORMACION DEL INPUT FILA 95 (id="descripcion")
+      var textoPrecio = $("input#precio").val();// 
       var textoPiso = $("select#piso").val();
+      var textoTipo = $("select#tipo").val();
 
       // CREAMOS CONDICIONES QUE SI SE CUMPLEN MANDARA MENSAJES DE ALERTA EN FORMA DE TOAST
       //SI SE CUMPLEN LOS IF QUIERE DECIR QUE NO PASA LOS REQUISITOS MINIMOS DE LLENADO...
@@ -20,8 +22,12 @@
         M.toast({html: 'Por favor ingrese un numero de habitación.', classes: 'rounded'});
       }else if(textoDescripcion == ""){
         M.toast({html:"Por favor ingrese una Descripción.", classes: "rounded"});
+      }else if(textoPrecio < 0 || textoPrecio == ''){
+        M.toast({html:"Por favor ingrese un precio.", classes: "rounded"});
       }else if (textoPiso == 0) {
         M.toast({html:"Por favor seleccione un Piso.", classes: "rounded"});
+      }else if(textoTipo == 0){
+        M.toast({html:"Por favor seleccione un Tipo Habitación.", classes: "rounded"});
       }else{
         //SI LOS IF NO SE CUMPLEN QUIERE DECIR QUE LA INFORMACION CUENTA CON TODO LO REQUERIDO
         //MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO NE LA DIRECCION "../php/control_habitaciones.php"
@@ -30,7 +36,9 @@
             accion: 0,
             valorNo: textoNo,
             valorDescripcion: textoDescripcion,
+            valorPrecio: textoPrecio,
             valorPiso: textoPiso,
+            valorTipo: textoTipo,
           }, function(mensaje) {
               //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "control_habitaciones.php"
               $("#resultado_insert").html(mensaje);
@@ -58,7 +66,7 @@
         <div class="col s12 m6 l6">
           <br>
           <div class="input-field">
-            <i class="material-icons prefix">key</i>
+            <i class="material-icons prefix">local_offer</i>
             <input id="numero" type="number" class="validate"  required>
             <label for="numero">N° Habitación:</label>
           </div>      
@@ -66,6 +74,11 @@
             <i class="material-icons prefix">edit</i>
             <input id="descripcion" type="text" class="validate" data-length="100" required>
             <label for="descripcion">Descripción:</label>
+          </div>
+          <div class="input-field">
+            <i class="material-icons prefix">monetization_on</i>
+            <input id="precio" type="number" class="validate"  required>
+            <label for="precio">Precio:</label>
           </div>         
         </div>
         <!-- DIV DOBLE COLUMNA EN ESCRITORIO PARTE DERECHA -->
@@ -75,11 +88,24 @@
             <i class="material-icons prefix">location_city</i>
             <select id="piso" name="piso" class="validate">              
               <!--OPTION PARA QUE LA SELECCION QUEDE POR DEFECTO-->
-              <option value="0" select>Seleccione un piso</option>
+              <option value="0" select>Nievel / Piso</option>
               <option value="Primer">Primer</option>
               <option value="Segundo">Segundo</option>
               <option value="Tercer">Tercer</option>
               <option value="Cuarto">Cuarto</option>
+            </select>
+          </div>
+        </div>
+        <div class="col s12 m6 l6">
+          <br>
+          <div class="input-field">
+            <i class="material-icons prefix">hotel</i>
+            <select id="tipo" name="tipo" class="validate">              
+              <!--OPTION PARA QUE LA SELECCION QUEDE POR DEFECTO-->
+              <option value="0" select>Tipo Habitación</option>              
+              <option value="Individual">Individual</option>
+              <option value="Doble">Doble</option>
+              <option value="King Size">King Size</option>
             </select>
           </div>
         </div>

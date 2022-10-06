@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 05-10-2022 a las 15:58:14
+-- Tiempo de generación: 06-10-2022 a las 15:35:39
 -- Versión del servidor: 10.4.11-MariaDB
 -- Versión de PHP: 7.4.4
 
@@ -31,6 +31,8 @@ CREATE TABLE `habitaciones` (
   `id` int(11) NOT NULL,
   `piso` varchar(15) NOT NULL,
   `descripcion` varchar(100) NOT NULL,
+  `precio` float NOT NULL,
+  `tipo` varchar(15) NOT NULL,
   `estatus` int(11) NOT NULL,
   `usuario` int(11) NOT NULL,
   `fecha` date NOT NULL
