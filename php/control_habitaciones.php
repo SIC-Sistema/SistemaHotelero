@@ -20,16 +20,16 @@ switch ($Accion) {
         //CON POST RECIBIMOS TODAS LAS VARIABLES DEL FORMULARIO QUE NESECITAMOS PARA INSERTAR
         $No = $conn->real_escape_string($_POST['valorNo']);     
         $Descripcion = $conn->real_escape_string($_POST['valorDescripcion']);     
-        $Piso = $conn->real_escape_string($_POST['valorPiso']);     
+        $Piso = $conn->real_escape_string($_POST['valorPiso']); 
         //VERIFICAMOS QUE NO HALLA UN ARTICULO CON LOS MISMOS DATOS
 		if(mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `habitaciones` WHERE id='$No' "))>0){
             echo '<script >M.toast({html:"Ya se encuentra una habitacion con el mismo numero.", classes: "rounded"})</script>';
         }else{
             // SI NO HAY NUNGUNO IGUAL CREAMOS LA SENTECIA SQL  CON LA INFORMACION REQUERIDA Y LA ASIGNAMOS A UNA VARIABLE
-            $sql = "INSERT INTO `habitaciones` (id, descripcion, piso, usuario, fecha) 
-               VALUES('$No','$Descripcion','$Piso', $id_user, '$Fecha_hoy')";
+            $sql_h = "INSERT INTO `habitaciones` (id, piso, descripcion, estatus, usuario, fecha) 
+               VALUES($No, '$Piso', '$Descripcion', 0, $id_user, '$Fecha_hoy')";
             //VERIFICAMOS QUE LA SENTECIA FUE EJECUTADA CON EXITO!
-			if(mysqli_query($conn, $sql)){
+			if(mysqli_query($conn, $sql_h)){
 				echo '<script >M.toast({html:"La habitació se registró exitosamente.", classes: "rounded"})</script>';	
                 echo '<script>recargar_habitaciones()</script>';// REDIRECCIONAMOS (FUNCION ESTA EN ARCHIVO modals.php)
 			}else{
