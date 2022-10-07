@@ -88,14 +88,14 @@ if ($_SESSION['user_id'] == false) {
           }// FIN else
         }//FIN function 
 
-        //FUNCION QUE SUBE LA IMAGEN DEL ARTICULO (ACTUALIZA TABLA Y SUBE IMAGEN A CARPETA)
+        //FUNCION QUE MUESTRA EL MODAL PARA CAMBIAR LA CONTRASEÑA
         function editar_pass(id){
-          //MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO EN LA DIRECCION "modal_imagen.php" PARA MOSTRAR EL MODAL
+          //MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO EN LA DIRECCION "modal_contrasena.php" PARA MOSTRAR EL MODAL
           $.post("modal_contrasena.php", {
             //Cada valor se separa por una ,
               id:id,
             }, function(mensaje){
-                //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "modal_imagen.php"
+                //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "modal_contrasena.php"
                 $("#modal").html(mensaje);
           });//FIN post
         }//FIN function

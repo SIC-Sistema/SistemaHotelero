@@ -10,7 +10,7 @@
     function insert_habitacion() {
 
       //PRIMERO VAMOS Y BUSCAMOS EN ESTE MISMO ARCHIVO LA INFORMCION REQUERIDA Y LA ASIGNAMOS A UNA VARIABLE
-      var textoNo = $("input#numero").val();//ej:LA VARIABLE "textoNombre" GUARDAREMOS LA INFORMACION QUE ESTE EN EL INPUT QUE TENGA EL id = "nombre"
+      var textoNo = $("input#numero").val();//ej:LA VARIABLE "textoNo" GUARDAREMOS LA INFORMACION QUE ESTE EN EL INPUT QUE TENGA EL id = "numero"
       var textoDescripcion = $("input#descripcion").val();// ej: TRAE LE INFORMACION DEL INPUT FILA 95 (id="descripcion")
       var textoPrecio = $("input#precio").val();// 
       var textoPiso = $("select#piso").val();

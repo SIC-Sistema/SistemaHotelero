@@ -8,7 +8,7 @@ date_default_timezone_set('America/Mexico_City');
 $id_user = $_SESSION['user_id'];// ID DEL USUARIO LOGEADO
 $Fecha_hoy = date('Y-m-d');// FECHA ACTUAL
 
-//CON METODO POST TOMAMOS UN VALOR DEL 0 AL 3 PARA VER QUE ACCION HACER (Para Insertar = 0, Consultar = 1, Actualizar = 2, Borar = 3, Buscar Mi Almacen = 4)
+//CON METODO POST TOMAMOS UN VALOR DEL 0 AL 3 PARA VER QUE ACCION HACER (Para Insertar = 0, Actualizar = 1, Actualizar = 2, Borar = 3, Buscar Mi Almacen = 4)
 $Accion = $conn->real_escape_string($_POST['accion']);
 
 //UN SWITCH EL CUAL DECIDIRA QUE ACCION REALIZA DEL CRUD (Para Insertar = 0, Consultar = 1, Actualizar = 2, Borar = 3)
@@ -44,44 +44,27 @@ switch ($Accion) {
     case 1:  ///////////////           IMPORTANTE               ///////////////
         // $Accion es igual a 1 realiza:
 
-        //CON POST RECIBIMOS UN TEXTO DEL BUSCADOR VACIO O NO de "almacenes_punto_venta.php"
-        $Texto = $conn->real_escape_string($_POST['texto']);
-        //VERIFICAMOS SI CONTIENE ALGO DE TEXTO LA VARIABLE
-		if ($Texto != "") {
-			//MOSTRARA LOS ALMACENES QUE SE ESTAN BUSCANDO Y GUARDAMOS LA CONSULTA SQL EN UNA VARIABLE $sql......
-			$sql = "SELECT * FROM `punto_venta_almacenes` WHERE  nombre LIKE '%$Texto%' ORDER BY id";	
-		}else{//ESTA CONSULTA SE HARA SIEMPRE QUE NO ALLA NADA EN EL BUSCADOR Y GUARDAMOS LA CONSULTA SQL EN UNA VARIABLE $sql...
-			$sql = "SELECT * FROM `punto_venta_almacenes`";
-		}//FIN else $Texto VACIO O NO
+        //CON POST RECIBIMOS TODAS LAS VARIABLES DEL FORMULARIO QUE NESECITAMOS PARA ACTUALIZAR
+        $id = $conn->real_escape_string($_POST['id']);     
+        $No = $conn->real_escape_string($_POST['valorNo']);     
+        $Descripcion = $conn->real_escape_string($_POST['valorDescripcion']);     
+        $Precio = $conn->real_escape_string($_POST['valorPrecio']);     
+        $Piso = $conn->real_escape_string($_POST['valorPiso']); 
+        $Tipo = $conn->real_escape_string($_POST['valorTipo']);
 
-        // REALIZAMOS LA CONSULTA A LA BASE DE DATOS MYSQL Y GUARDAMOS EN FORMARTO ARRAY EN UNA VARIABLE $consulta
-		$consulta = mysqli_query($conn, $sql);		
-		$contenido = '';//CREAMOS UNA VARIABLE VACIA PARA IR LLENANDO CON LA INFORMACION EN FORMATO
+        $sql = "UPDATE habitaciones SET id = $No, descripcion = '$Descripcion', precio = '$Precio', piso = '$Piso', tipo = '$Tipo' WHERE id = $id";
+        if (mysqli_query($conn, $sql)) {
+            ?>
+            <script>
+                id = <?php echo $No; ?>;
+                M.toast({html:"Habitacion se actualizó correctamente", classes: "rounded"});
+                setTimeout("location.href='detalles_habitacion.php?id='+id", 800);
+            </script>
+            <?php
+        }else{
+            echo '<script >M.toast({html:"Ha ocurrido un error...", classes: "rounded"})</script>'; 
+        }
 
-		//VERIFICAMOS QUE LA VARIABLE SI CONTENGA INFORMACION
-		if (mysqli_num_rows($consulta) == 0) {
-				echo '<script>M.toast({html:"No se encontraron almacenes.", classes: "rounded"})</script>';
-        } else {
-            //SI NO ESTA EN == 0 SI TIENE INFORMACION
-            //La variable $contenido contiene el array que se genera en la consulta, así que obtenemos los datos y los mostramos en un bucle
-            //RECORREMOS UNO A UNO LOS ALMACENES CON EL WHILE
-            while($almacen = mysqli_fetch_array($consulta)) {
-                $id_user = $almacen['usuario'];
-				$user = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `users` WHERE user_id=$id_user"));
-				//Output
-                $contenido .= '			
-		          <tr>
-		            <td>'.$almacen['id'].'</td>
-                    <td>'.$almacen['nombre'].'</td>
-		            <td>'.$user['firstname'].'</td>
-		            <td>'.$almacen['fecha'].'</td>
-		            <td><form method="post" action="../views/editar_almacen_pv.php"><input id="id" name="id" type="hidden" value="'.$almacen['id'].'"><button class="btn-floating btn-tiny waves-effect waves-light pink"><i class="material-icons">edit</i></button></form></td>
-		            <td><a onclick="borrar_almacen('.$almacen['id'].')" class="btn btn-floating red darken-1 waves-effect waves-light"><i class="material-icons">delete</i></a></td>
-		          </tr>';
-
-			}//FIN while
-        }//FIN else
-        echo $contenido;// MOSTRAMOS LA INFORMACION HTML
         break;
     case 2:///////////////           IMPORTANTE               ///////////////
         // $Accion es igual a 2 realiza:
