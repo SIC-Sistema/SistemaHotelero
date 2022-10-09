@@ -25,7 +25,21 @@
 	}
 	?>
 	<script>
-	
+	  //FUNCION QUE BORRA HABITACIONES (SE ACTIVA AL INICIAR EL BOTON BORRAR)
+      function borrar_habitacion(id){
+        var answer = confirm("Deseas eliminar la habitacion N°"+id+"?");
+        if (answer) {
+          //MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO EN LA DIRECCION "../php/control_habitaciones.php"
+          $.post("../php/control_habitaciones.php", {
+            //Cada valor se separa por una ,
+            id: id,
+            accion: 2,
+          }, function(mensaje) {
+            //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "control_habitaciones.php"
+            $("#borrarHabitacion").html(mensaje);
+          }); //FIN post
+        }//FIN IF
+      };//FIN function
 	</script>
 </head>
 <body>
@@ -53,7 +67,8 @@
             </li>
           </ul>
         </div>
-        <div id="modal"></div>
+	    <!-- CREAMOS UN DIV EL CUAL TENGA id = "borrarHabitacion"  PARA QUE EN ESTA PARTE NOS MUESTRE LOS RESULTADOS EN TEXTO HTML DEL SCRIPT EN FUNCION  -->
+      	<div id="borrarHabitacion"></div>
         <h5 class="center"><b>Acciones:</b></h5>
         <hr>
         <div class="row col s12">
@@ -71,11 +86,11 @@
 	        	</thead>
 	        	<tbody>
 	        		<tr>
-	        			<td><a onclick="" class="btn-small green waves-effect waves-light"><i class="material-icons">event</i></td>
+	        			<td><form method="post" action="../views/reservacion.php"><input id="habitacion" name="habitacion" type="hidden" value="<?php echo $id;?>"><button class="btn-small green waves-effect waves-light"><i class="material-icons">event</i></button></form></td>
 	        			<td><a onclick="" class="btn-small amber waves-effect waves-light"><i class="material-icons">note_add</i></a></td>
 	        			<td><a onclick="" class="btn-small indigo waves-effect waves-light"><i class="material-icons">settings</i></a></td>
 	        			<td><a href="edit_habitacion.php?id=<?php echo $id;?>" class="btn-small grey darken-3 waves-effect waves-light"><i class="material-icons">edit</i></a></td>
-	        			<td><a onclick="" class="btn-small red darken-1 waves-effect waves-light"><i class="material-icons">delete</i></a></td>
+	        			<td><a onclick="borrar_habitacion(<?php echo $id;?>);" class="btn-small red darken-1 waves-effect waves-light"><i class="material-icons">delete</i></a></td>
 	        		</tr>
 	        	</tbody>
 	        </table>

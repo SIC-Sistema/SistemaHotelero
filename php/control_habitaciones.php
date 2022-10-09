@@ -8,7 +8,7 @@ date_default_timezone_set('America/Mexico_City');
 $id_user = $_SESSION['user_id'];// ID DEL USUARIO LOGEADO
 $Fecha_hoy = date('Y-m-d');// FECHA ACTUAL
 
-//CON METODO POST TOMAMOS UN VALOR DEL 0 AL 3 PARA VER QUE ACCION HACER (Para Insertar = 0, Actualizar = 1, Actualizar = 2, Borar = 3, Buscar Mi Almacen = 4)
+//CON METODO POST TOMAMOS UN VALOR DEL 0 AL 3 PARA VER QUE ACCION HACER (Para Insertar = 0, Actualizar = 1, Borrar = 2)
 $Accion = $conn->real_escape_string($_POST['accion']);
 
 //UN SWITCH EL CUAL DECIDIRA QUE ACCION REALIZA DEL CRUD (Para Insertar = 0, Consultar = 1, Actualizar = 2, Borar = 3)
@@ -44,48 +44,60 @@ switch ($Accion) {
     case 1:  ///////////////           IMPORTANTE               ///////////////
         // $Accion es igual a 1 realiza:
 
-        //CON POST RECIBIMOS TODAS LAS VARIABLES DEL FORMULARIO QUE NESECITAMOS PARA ACTUALIZAR
-        $id = $conn->real_escape_string($_POST['id']);     
-        $No = $conn->real_escape_string($_POST['valorNo']);     
-        $Descripcion = $conn->real_escape_string($_POST['valorDescripcion']);     
-        $Precio = $conn->real_escape_string($_POST['valorPrecio']);     
-        $Piso = $conn->real_escape_string($_POST['valorPiso']); 
-        $Tipo = $conn->real_escape_string($_POST['valorTipo']);
+        //Obtenemos la informacion del Usuario
+        $User = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `users` WHERE user_id = $id_user"));
+        //SE VERIFICA SI EL USUARIO LOGEADO TIENE PERMISO DE BORRAR HABITACIONES
+        if ($User['habitaciones'] == 1) {
 
-        $sql = "UPDATE habitaciones SET id = $No, descripcion = '$Descripcion', precio = '$Precio', piso = '$Piso', tipo = '$Tipo' WHERE id = $id";
-        if (mysqli_query($conn, $sql)) {
-            ?>
-            <script>
-                id = <?php echo $No; ?>;
-                M.toast({html:"Habitacion se actualizó correctamente", classes: "rounded"});
-                setTimeout("location.href='detalles_habitacion.php?id='+id", 800);
-            </script>
-            <?php
+            //CON POST RECIBIMOS TODAS LAS VARIABLES DEL FORMULARIO QUE NESECITAMOS PARA ACTUALIZAR
+            $id = $conn->real_escape_string($_POST['id']);     
+            $No = $conn->real_escape_string($_POST['valorNo']);     
+            $Descripcion = $conn->real_escape_string($_POST['valorDescripcion']);     
+            $Precio = $conn->real_escape_string($_POST['valorPrecio']);     
+            $Piso = $conn->real_escape_string($_POST['valorPiso']); 
+            $Tipo = $conn->real_escape_string($_POST['valorTipo']);
+
+            $sql = "UPDATE habitaciones SET id = $No, descripcion = '$Descripcion', precio = '$Precio', piso = '$Piso', tipo = '$Tipo' WHERE id = $id";
+            if (mysqli_query($conn, $sql)) {
+                ?>
+                <script>
+                    id = <?php echo $No; ?>;
+                    M.toast({html:"Habitacion se actualizó correctamente", classes: "rounded"});
+                    setTimeout("location.href='detalles_habitacion.php?id='+id", 800);
+                </script>
+                <?php
+            }else{
+                echo '<script >M.toast({html:"Ha ocurrido un error...", classes: "rounded"})</script>'; 
+            }
         }else{
-            echo '<script >M.toast({html:"Ha ocurrido un error...", classes: "rounded"})</script>'; 
-        }
-
+            echo '<script >M.toast({html:"Permiso denegado.", classes: "rounded"});
+            M.toast({html:"Comunicate con un administrador.", classes: "rounded"});</script>';
+        } 
         break;
     case 2:///////////////           IMPORTANTE               ///////////////
         // $Accion es igual a 2 realiza:
 
-        //CON POST RECIBIMOS TODAS LAS VARIABLES DEL FORMULARIO POR EL SCRIPT "editar_almacen.php" QUE NESECITAMOS PARA ACTUALIZAR
-    	$id = $conn->real_escape_string($_POST['id']);
-        $Nombre = $conn->real_escape_string($_POST['valorNombre']);    
-        //VERIFICAMOS QUE NO HALLA UN ARTICULO CON LOS MISMOS DATOS
-        if(mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `punto_venta_almacenes` WHERE (nombre='$Nombre') AND id != $id"))>0){
-            echo '<script >M.toast({html:"Ya se encuentra una almacen con el mismo nombre.", classes: "rounded"})</script>';
+        //Obtenemos la informacion del Usuario
+        $User = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `users` WHERE user_id = $id_user"));
+        //SE VERIFICA SI EL USUARIO LOGEADO TIENE PERMISO DE BORRAR HABITACIONES
+        if ($User['habitaciones'] == 1) {
+            //CON POST RECIBIMOS LA VARIABLE DEL BOTON POR EL SCRIPT DE "detalles_habitacion.php" QUE NESECITAMOS PARA BORRAR
+            $id = $conn->real_escape_string($_POST['id']);
+
+            //SI DE CREA LA INSERCION PROCEDEMOS A BORRRAR DE LA TABLA `habitaciones`
+            #VERIFICAMOS QUE SE BORRE CORRECTAMENTE EL ALMACEN DE `habitaciones`
+            if(mysqli_query($conn, "DELETE FROM `habitaciones` WHERE `habitaciones`.`id` = $id")){
+                #SI ES ELIMINADO MANDAR MSJ CON ALERTA
+                echo '<script >M.toast({html:"Habitacion borrada con exito.", classes: "rounded"})</script>';
+                echo '<script>recargar_habitaciones()</script>';// REDIRECCIONAMOS (FUNCION ESTA EN ARCHIVO modals.php)
+            }else{
+                #SI NO ES BORRADO MANDAR UN MSJ CON ALERTA
+                echo "<script >M.toast({html: 'Ha ocurrido un error.', classes: 'rounded'});/script>";
+            }
         }else{
-            //CREAMOS LA SENTENCIA SQL PARA HACER LA ACTUALIZACION DE LA INFORMACION DEL ALMACEN Y LA GUARDAMOS EN UNA VARIABLE
-    		$sql = "UPDATE `punto_venta_almacenes` SET nombre = '$Nombre', usuario = '$id_user', fecha= '$Fecha_hoy' WHERE id = '$id'";
-            //VERIFICAMOS QUE LA SENTECIA FUE EJECUTADA CON EXITO!
-    		if(mysqli_query($conn, $sql)){
-    			echo '<script >M.toast({html:"El almacen se actualizó con exito.", classes: "rounded"})</script>';	
-                echo '<script>recargar_almacen_lista()</script>';// REDIRECCIONAMOS (FUNCION ESTA EN ARCHIVO modals.php)
-    		}else{
-    			echo '<script >M.toast({html:"Ocurrio un error...", classes: "rounded"})</script>';	
-    		}//FIN else DE ERROR
-    	}// fin else verificacion	
+            echo '<script >M.toast({html:"Permiso denegado.", classes: "rounded"});
+            M.toast({html:"Comunicate con un administrador.", classes: "rounded"});</script>';
+        }  
         break;
     case 3:
         // $Accion es igual a 3 realiza:
