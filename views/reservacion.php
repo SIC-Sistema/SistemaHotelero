@@ -11,6 +11,21 @@
     $User = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `users` WHERE user_id = $id_user"));
     ?>
     <script>
+    	//FUNCION QUE BUCARA EN LA BASE DE DATOS CLIENTES CON EL MISMO NOMBRE MOSTRARA Y DARA A ELEGIR
+    	function buscarClientes() {
+      		var texto = $("input#nombre").val();
+      		//MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO EN LA DIRECCION "../php/control_reservaciones.php"
+		      $.post("../php/control_reservaciones.php", {
+		        //Cada valor se separa por una ,
+		          texto: texto,
+		          accion: 2,
+		        }, function(mensaje){
+		            //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "control_reservaciones.php"
+		            $("#clienteBusqueda").html(mensaje);
+		      });//FIN post
+   		
+    	}//FIN function
+
     	//FUNICION QUE MUESTRA LA INFORMACION DEL CLIENTE SI SELECCIONAMOS ALGUNO O VACIO PARA NUEVO
     	function mostrarCliente(id_cliente) {
     		//MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO NE LA DIRECCION "../php/control_reservaciones.php"
@@ -44,7 +59,7 @@
     	}
     </script>
 </head>
-<body>
+<body onload="mostrarHabitacion();">
 	<div class="container">
 		<div class="row col s12">
 			<div class="col s12 m6">
@@ -57,6 +72,7 @@
 						if (isset($_POST['cliente'])) {
 							// SACAMOS LA INFORMACION DEL CLIENTE Y LA MOSTRAMOS
 							$IdCliente = $_POST['cliente'];
+							echo '<script>mostrarCliente('.$IdCliente.')</script>';
 						}else{
 							$NOMBRE = ''; $DIRECCION = ''; $COLONIA = ''; $LOCALIDAD = ''; $CP = '';
 							$EMAIL = ''; $TELEFONO = ''; $LIMPIEZA = ''; $IdCliente = 0;
