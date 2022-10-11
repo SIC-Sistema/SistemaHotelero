@@ -13,12 +13,34 @@
     <script>
     	//FUNICION QUE MUESTRA LA INFORMACION DEL CLIENTE SI SELECCIONAMOS ALGUNO O VACIO PARA NUEVO
     	function mostrarCliente(id_cliente) {
-    		// body...
+    		//MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO NE LA DIRECCION "../php/control_reservaciones.php"
+	      	$.post("../php/control_reservaciones.php", {
+		        //Cada valor se separa por una ,
+		            accion: 1,
+		            id_cliente: id_cliente,
+		        }, function(mensaje) {
+		            //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "control_reservaciones.php"
+		            $("#infoCliente").html(mensaje);
+		        }); 
     	}//FIN function 
 
     	//FUNCION QUE MUESTRA LA INFORMACION DEL A HABITACION SI SE SELECCIONA UNA
     	function mostrarHabitacion() {
-    		// body...
+      		var habitacion = $("select#habitacion").val();
+      		if(habitacion == 0){
+		        M.toast({html:"Por favor seleccione una Habitación.", classes: "rounded"});
+		    }else{
+		        //SI LOS IF NO SE CUMPLEN QUIERE DECIR QUE LA INFORMACION CUENTA CON TODO LO REQUERIDO
+		        //MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO NE LA DIRECCION "../php/control_reservaciones.php"
+	      		$.post("../php/control_reservaciones.php", {
+		          //Cada valor se separa por una ,
+		            accion: 0,
+		            habitacion: habitacion,
+		          }, function(mensaje) {
+		              //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "control_reservaciones.php"
+		              $("#infoHabitacion").html(mensaje);
+		          }); 
+    		}//FIN else
     	}
     </script>
 </head>
