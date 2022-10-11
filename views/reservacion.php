@@ -140,11 +140,10 @@
 		            <li class="collection-item avatar"><br>
 		              <img src="../img/hotel.png" alt="" class="circle">
 		              <span class="title"><b>DETALLES DE HABITACION</b></span><br><br>
-		              <p class="row col s12" id="infoHabitacion"><b>
-		              	<div class="col s12"><br>
+		              <div class="col s12"><br>
 		              		<b class="indigo-text col s12 m5"><br>HABITACION: </b>
 		              		<div class="col s12 m6">
-					            <select id="habitacion" name="habitacion" class="validate">              
+					            <select id="habitacion" name="habitacion" class="validate" onchange="mostrarHabitacion();">              
 					              <!--OPTION PARA QUE LA SELECCION QUEDE POR DEFECTO-->
 					              <?php
 			              			if (isset($_POST['habitacion'])){
@@ -168,34 +167,39 @@
 					                ?>
 					            </select>
 					        </div>
-		              	</div>
+		              </div>
+		              <div class="row col s12" id="infoHabitacion"><b>
+		              	
 		              	<div class="col s12"><br>
+		              		<br>
 		              		<b class="indigo-text col s12 m5">ESTADO: </b>
-		              		<span class="new badge <?php echo (0 == 0)?'green':'red';?> prefix" data-badge-caption=""><?php echo (0 == 0)?'Disponible':'Ocupada';?></span>
+		              		
 		              	</div>      
 		              	<div class="col s12"><br>
+		              		<br>
 		              		<b class="indigo-text col s12 m5">NIVEL / PISO: </b>
-		              		<?php echo 'Primer piso';?>
+		              		
 		              	</div> 
 		              	<div class="col s12"><br>
 		              		<b class="indigo-text col s12 m5">HASTA: </b>
-		              		<?php echo 'Por Definir';?>
+		              		
 		              	</div>           		
 		              	<div class="col s12"><br>
 		              		<b class="indigo-text col s12 m5">DESCRIPCION: </b>
-		              		<?php echo 'ESTA HABITACION TIENE UNA GRAN COSA';?>
+		              		<br>
+		              		
 		              	</div>
 		              	<div class="col s12"><br>
 		              		<b class="indigo-text col s12 m5">TIPO DE HABITACION: </b>
-		              		<br><?php echo '$habitacion[]';?>
+		              		<br>
 		              	</div> 
 		              	<div class="col s12"><br><br>
 		              		<b class="indigo-text col s12 m5">PRECIO POR DIA: </b>
-		              		<div class="col s10 m6">
-				              <input id="precioXDia" type="text" class="validate" data-length="100" value="<?php echo '$'.sprintf('%.2f', 10);?>" required>	
-				            </div>   		
+		              		<br>
+		              		<br>
+		              				
 		              	</div>
-		              </b></p>
+		              </b></div>
 		            </li>
 		          </ul>
 		        </div>        
@@ -204,12 +208,27 @@
 		<div class="row">
 		    <h4>Reservar</h4>
 			<hr>
-		    <div class="col s12 m3">Nombre</div>
-		    <div class="col s12 m3">De</div>
-		    <div class="col s12 m3">Hasta</div>
-		    <div class="col s12 m3">Total</div>
+		    <div class="col s12 m3">
+		    	<div class="input-field">
+		            <i class="material-icons prefix">people</i>
+		            <input id="nombreReservacion" type="text" class="validate" data-length="50" required>
+		            <label for="nombreReservacion">Nombre Completo:</label>
+		        </div>
+		    </div>
+		    <div class="col s12 m3">
+		    	<label for="fecha_llegada">Fecha Llegada:</label>
+                <input id="fecha_llegada" type="date" >
+		    </div>
+		    <div class="col s12 m3">
+		    	<label for="fecha_salida">Fecha Salida:</label>
+                <input id="fecha_salida" type="date" >
+		    </div>
+		    <div class="col s12 m3"><br>
+		    <h5><b>TOTAL</b></h5>	
+		    </div>
 		</div>
-		<div class="right">BOTON</div><br><br><br>
+		<!-- BOTON QUE MANDA LLAMAR EL SCRIPT PARA QUE EL SCRIPT HAGA LO QUE LA FUNCION CONTENGA -->
+      <a onclick="insert_reservacion();" class="waves-effect waves-light btn pink right"><i class="material-icons right">add</i>Registrar</a><br><br><br><br>
 	   
 	</div>
 
