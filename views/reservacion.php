@@ -22,7 +22,8 @@
 		              <span class="title"><b>DETALLES DEL CLIENTE</b></span><br><br>
 		              <?php
 						if (isset($_POST['cliente'])) {
-							echo "Mostrar informacion del cliente";
+							// SACAMOS LA INFORMACION DEL CLIENTE Y LA MOSTRAMOS
+							$IdCliente = $_POST['cliente'];
 						}else{
 							$NOMBRE = ''; $DIRECCION = ''; $COLONIA = ''; $LOCALIDAD = ''; $CP = '';
 							$EMAIL = ''; $TELEFONO = ''; $LIMPIEZA = ''; $IdCliente = 0;
