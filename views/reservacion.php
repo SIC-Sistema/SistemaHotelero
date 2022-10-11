@@ -10,6 +10,17 @@
     //Obtenemos la informacion del Usuario
     $User = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `users` WHERE user_id = $id_user"));
     ?>
+    <script>
+    	//FUNICION QUE MUESTRA LA INFORMACION DEL CLIENTE SI SELECCIONAMOS ALGUNO O VACIO PARA NUEVO
+    	function mostrarCliente(id_cliente) {
+    		// body...
+    	}//FIN function 
+
+    	//FUNCION QUE MUESTRA LA INFORMACION DEL A HABITACION SI SE SELECCIONA UNA
+    	function mostrarHabitacion() {
+    		// body...
+    	}
+    </script>
 </head>
 <body>
 	<div class="container">
@@ -29,7 +40,7 @@
 							$EMAIL = ''; $TELEFONO = ''; $LIMPIEZA = ''; $IdCliente = 0;
 						}
 					  ?>
-		              <p class="row col s12"><b>
+		              <p class="row col s12" id="infoCliente"><b>
 		              	<input type="hidden" id="id_cliente" value="<?php echo $IdCliente;?>">
 		              	<div class="col s12">
 		              		<b class="indigo-text col s12 m4"><br>NOMBRE: </b>
@@ -91,7 +102,7 @@
 		            <li class="collection-item avatar"><br>
 		              <img src="../img/hotel.png" alt="" class="circle">
 		              <span class="title"><b>DETALLES DE HABITACION</b></span><br><br>
-		              <p class="row col s12"><b>
+		              <p class="row col s12" id="infoHabitacion"><b>
 		              	<div class="col s12"><br>
 		              		<b class="indigo-text col s12 m5"><br>HABITACION: </b>
 		              		<div class="col s12 m6">
