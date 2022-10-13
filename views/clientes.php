@@ -21,6 +21,22 @@
               $("#clientesALL").html(mensaje);
         });//FIN post
       };//FIN function
+
+      //FUNCION QUE BORRA EL CLIENTES (SE ACTIVA AL INICIAR EL BOTON BORRAR)
+      function borrar_cliente(id){
+        var answer = confirm("Deseas eliminar el cliente N°"+id+"?");
+        if (answer) {
+          //MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO EN LA DIRECCION "../php/control_clientes.php"
+          $.post("../php/control_clientes.php", { 
+            //Cada valor se separa por una ,
+              id: id,
+              accion: 3,
+          }, function(mensaje) {
+            //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "control_clientes.php"
+            $("#borrarCliente").html(mensaje);
+          }); //FIN post
+        }//FIN IF
+      };//FIN function
     </script>
   </head>
   <main>
@@ -61,6 +77,7 @@
               <th>C.P.</th>
               <th>Registro</th>
               <th>Fecha</th>
+              <th>Reserv.</th>
               <th>Editar</th>
               <th>Borrar</th>
             </tr>

@@ -87,8 +87,9 @@ switch ($Accion) {
 		            <td>'.$cliente['cp'].'</td>
 		            <td>'.$user['firstname'].'</td>
 		            <td>'.$cliente['fecha'].'</td>
-		            <td><form method="post" action="../views/editar_cliente.php"><input id="id" name="id" type="hidden" value="'.$cliente['id'].'"><button class="btn-floating btn-tiny waves-effect waves-light pink"><i class="material-icons">edit</i></button></form></td>
-		            <td><a onclick="borrar_cliente('.$cliente['id'].')" class="btn btn-floating red darken-1 waves-effect waves-light"><i class="material-icons">delete</i></a></td>
+		            <td><form method="post" action="../views/reservacion.php"><input id="cliente" name="cliente" type="hidden" value="'.$cliente['id'].'"><button class="btn-small green waves-effect waves-light"><i class="material-icons">event</i></button></form></td>
+		            <td><form method="post" action="../views/editar_cliente.php"><input id="id" name="id" type="hidden" value="'.$cliente['id'].'"><button class="btn-small waves-effect waves-light grey darken-3"><i class="material-icons">edit</i></button></form></td>
+		            <td><a onclick="borrar_cliente('.$cliente['id'].')" class="btn-small red waves-effect waves-light"><i class="material-icons">delete</i></a></td>
 		          </tr>';
 			}//FIN while
 		}//FIN else
@@ -131,22 +132,22 @@ switch ($Accion) {
         break;
     case 3:
         // $Accion es igual a 3 realiza:
-    	//CON POST RECIBIMOS LA VARIABLE DEL BOTON POR EL SCRIPT DE "clientes_punto_venta.php" QUE NESECITAMOS PARA BORRAR
+    	//CON POST RECIBIMOS LA VARIABLE DEL BOTON POR EL SCRIPT DE "clientes.php" QUE NESECITAMOS PARA BORRAR
     	$id = $conn->real_escape_string($_POST['id']);
     	//Obtenemos la informacion del Usuario
     	$User = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `users` WHERE user_id = $id_user"));
     	//SE VERIFICA SI EL USUARIO LOGEADO TIENE PERMISO DE BORRAR CLIENTES
-    	if ($User['b_clientes'] == 1) {
+    	if ($User['clientes'] == 1) {
     		#SELECCIONAMOS LA INFORMACION A BORRAR
-    		$cliente = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `punto-venta_clientes` WHERE id = $id"));
+    		$cliente = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `clientes` WHERE id = $id"));
     		#CREAMOS EL SQL DE LA INSERCION A LA TABLA  `pv_borrar_cliente` PARA NO PERDER INFORMACION
 			$sql = "INSERT INTO `pv_borrar_cliente` (id_cliente, nombre, telefono, direccion, colonia, cp, rfc, email, localidad, registro, borro, fecha_borro) 
 				VALUES($id, '".$cliente['nombre']."', '".$cliente['telefono']."', '".$cliente['direccion']."', '".$cliente['colonia']."', '".$cliente['cp']."', '".$cliente['rfc']."', '".$cliente['email']."', '".$cliente['localidad']."', '".$cliente['usuario']."', '$id_user','$Fecha_hoy')";
 			//VERIFICAMOS QUE LA SENTECIA FUE EJECUTADA CON EXITO!
 			if(mysqli_query($conn, $sql)){
-				//SI DE CREA LA INSERCION PROCEDEMOS A BORRRAR DE LA TABLA `punto-venta_clientes`
-	    		#VERIFICAMOS QUE SE BORRE CORRECTAMENTE EL CLIENTE DE `punto-venta_clientes`
-				if(mysqli_query($conn, "DELETE FROM `punto-venta_clientes` WHERE `punto-venta_clientes`.`id` = $id")){
+				//SI DE CREA LA INSERCION PROCEDEMOS A BORRRAR DE LA TABLA `clientes`
+	    		#VERIFICAMOS QUE SE BORRE CORRECTAMENTE EL CLIENTE DE `clientes`
+				if(mysqli_query($conn, "DELETE FROM `clientes` WHERE `clientes`.`id` = $id")){
 				  #SI ES ELIMINADO MANDAR MSJ CON ALERTA
 				  echo '<script >M.toast({html:"Cliente borrado con exito.", classes: "rounded"})</script>';
 				}else{
