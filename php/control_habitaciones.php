@@ -46,7 +46,7 @@ switch ($Accion) {
 
         //Obtenemos la informacion del Usuario
         $User = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `users` WHERE user_id = $id_user"));
-        //SE VERIFICA SI EL USUARIO LOGEADO TIENE PERMISO DE BORRAR HABITACIONES
+        //SE VERIFICA SI EL USUARIO LOGEADO TIENE PERMISO DE EDITAR HABITACIONES
         if ($User['habitaciones'] == 1) {
 
             //CON POST RECIBIMOS TODAS LAS VARIABLES DEL FORMULARIO QUE NESECITAMOS PARA ACTUALIZAR
@@ -99,8 +99,9 @@ switch ($Accion) {
             M.toast({html:"Comunicate con un administrador.", classes: "rounded"});</script>';
         }  
         break;
-    case 3:
+    case 3:///////////////           IMPORTANTE               ///////////////
         // $Accion es igual a 3 realiza:
+    
         //CON POST RECIBIMOS LA VARIABLE DEL BOTON POR EL SCRIPT DE "almacenes_punto_venta.php" QUE NESECITAMOS PARA BORRAR
         $id = $conn->real_escape_string($_POST['id']);
     	//Obtenemos la informacion del Usuario
@@ -130,51 +131,7 @@ switch ($Accion) {
             M.toast({html:"Comunicate con un administrador.", classes: "rounded"});</script>';
         }   
         break;
-    case 4:
-        // $Accion es igual a 4 realiza:
-
-        //CON POST RECIBIMOS UN TEXTO DEL BUSCADOR VACIO O NO de "almacen_punto_venta.php"
-        $Texto = $conn->real_escape_string($_POST['texto']);
-        $id = $conn->real_escape_string($_POST['id']);
-        //VERIFICAMOS SI CONTIENE ALGO DE TEXTO LA VARIABLE
-        if ($Texto != "") {
-            //MOSTRARA LOS ARTICULOS QUE SE ESTAN BUSCANDO Y GUARDAMOS LA CONSULTA SQL EN UNA VARIABLE $sql...... Codigo, Nombre, Descripcion
-            $sql = "SELECT id_articulo, cantidad FROM `punto_venta_almacen_general` INNER JOIN `punto_venta_articulos` ON `punto_venta_almacen_general`.id_articulo = `punto_venta_articulos`.id WHERE id_almacen = $id AND (codigo LIKE '%$Texto%' OR nombre LIKE '%$Texto%' OR descripcion LIKE '%$Texto%' OR modelo LIKE '%$Texto%')";   
-        }else{//ESTA CONSULTA SE HARA SIEMPRE QUE NO ALLA NADA EN EL BUSCADOR Y GUARDAMOS LA CONSULTA SQL EN UNA VARIABLE $sql...
-            $sql = "SELECT id_articulo, cantidad FROM `punto_venta_almacen_general` WHERE id_almacen = $id LIMIT 50";
-        }//FIN else $Texto VACIO O NO
-
-        // REALIZAMOS LA CONSULTA A LA BASE DE DATOS MYSQL Y GUARDAMOS EN FORMARTO ARRAY EN UNA VARIABLE $consulta
-        $consulta = mysqli_query($conn, $sql);      
-        $contenido = '';//CREAMOS UNA VARIABLE VACIA PARA IR LLENANDO CON LA INFORMACION EN FORMATO
-
-        //VERIFICAMOS QUE LA VARIABLE SI CONTENGA INFORMACION
-        if (mysqli_num_rows($consulta) == 0) {
-                echo '<script>M.toast({html:"No se encontraron articulos en el almacen N°'.$id.'.", classes: "rounded"})</script>';
-        } else {
-            //SI NO ESTA EN == 0 SI TIENE INFORMACION
-            //La variable $contenido contiene el array que se genera en la consulta, así que obtenemos los datos y los mostramos en un bucle
-            //RECORREMOS UNO A UNO LOS ARTICULOS CON EL WHILE
-            while($almacen = mysqli_fetch_array($consulta)) {
-                $id_articulo = $almacen['id_articulo'];
-                $articulo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `punto_venta_articulos` WHERE id=$id_articulo"));
-                //Output
-                $contenido .= '         
-                  <tr>
-                    <td>'.$articulo['codigo'].'</td>
-                    <td>'.$articulo['nombre'].'</td>
-                    <td>'.$articulo['descripcion'].'</td>
-                    <td>$'.sprintf('%.2f', $articulo['precio']).'</td>
-                    <td>'.$almacen['cantidad'].' '.$articulo['unidad'].'</td>
-                    <td><form method="post" action="../views/editar_almacen_pv.php"><input id="id" name="id" type="hidden" value="'.$id.'"><button class="btn-floating btn-tiny waves-effect waves-light pink"><i class="material-icons">edit</i></button></form></td>
-                  </tr>';
-
-            }//FIN while
-        }//FIN else
-
-        echo $contenido;// MOSTRAMOS LA INFORMACION HTML
-        // code...
-        break;
+   
 }// FIN switch
 mysqli_close($conn);
     

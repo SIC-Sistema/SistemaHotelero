@@ -1,6 +1,6 @@
 <html>
 <head>
-	<title>SIC | Agregar Clientes</title>
+	<title>San Roman | Agregar Clientes</title>
   <?php 
   //INCLUIMOS EL ARCHIVO QUE CONTIENE LA BARRA DE NAVEGACION TAMBIEN TIENE (scripts, conexion, is_logged, modals)
   include('fredyNav.php');

@@ -87,8 +87,8 @@ switch ($Accion) {
 		            <td>'.$cliente['cp'].'</td>
 		            <td>'.$user['firstname'].'</td>
 		            <td>'.$cliente['fecha'].'</td>
-		            <td><form method="post" action="../views/editar_cliente_pv.php"><input id="id" name="id" type="hidden" value="'.$cliente['id'].'"><button class="btn-floating btn-tiny waves-effect waves-light pink"><i class="material-icons">edit</i></button></form></td>
-		            <td><a onclick="borrar_cliente_pv('.$cliente['id'].')" class="btn btn-floating red darken-1 waves-effect waves-light"><i class="material-icons">delete</i></a></td>
+		            <td><form method="post" action="../views/editar_cliente.php"><input id="id" name="id" type="hidden" value="'.$cliente['id'].'"><button class="btn-floating btn-tiny waves-effect waves-light pink"><i class="material-icons">edit</i></button></form></td>
+		            <td><a onclick="borrar_cliente('.$cliente['id'].')" class="btn btn-floating red darken-1 waves-effect waves-light"><i class="material-icons">delete</i></a></td>
 		          </tr>';
 			}//FIN while
 		}//FIN else
@@ -97,31 +97,37 @@ switch ($Accion) {
     case 2:///////////////           IMPORTANTE               ///////////////
         // $Accion es igual a 2 realiza:
 
-    	//CON POST RECIBIMOS TODAS LAS VARIABLES DEL FORMULARIO POR EL SCRIPT "editar_cliente_pv.php" QUE NESECITAMOS PARA ACTUALIZAR
-    	$id = $conn->real_escape_string($_POST['id']);
-    	$Nombre = $conn->real_escape_string($_POST['valorNombre']);
-		$Telefono = $conn->real_escape_string($_POST['valorTelefono']);
-		$Email = $conn->real_escape_string($_POST['valorEmail']);
-		$RFC = $conn->real_escape_string($_POST['valorRFC']);
-		$Direccion = $conn->real_escape_string($_POST['valorDireccion']);
-		$Colonia = $conn->real_escape_string($_POST['valorColonia']);
-		$Localidad = $conn->real_escape_string($_POST['valorLocalidad']);
-		$CP = $conn->real_escape_string($_POST['valorCP']);
+    	//Obtenemos la informacion del Usuario
+    	$User = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `users` WHERE user_id = $id_user"));
+    	//SE VERIFICA SI EL USUARIO LOGEADO TIENE PERMISO DE EDITAR CLIENTES
+    	if ($User['clientes'] == 1) {
 
-		//VERIFICAMOS QUE NO HALLA UN CLIENTE CON LOS MISMOS DATOS
-		if(mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `punto-venta_clientes` WHERE (telefono = '$Telefono' OR rfc='$RFC' OR email='$Email') AND id != $id"))>0){
-	 		echo '<script >M.toast({html:"El RFC, Telefono o Email ya se encuentra registrados en la BD.", classes: "rounded"})</script>';
-	 	}else{
-			//CREAMO LA SENTENCIA SQL PARA HACER LA ACTUALIZACION DE LA INFORMACION DEL CLIENTE Y LA GUARDAMOS EN UNA VARIABLE
-			$sql = "UPDATE `punto-venta_clientes` SET nombre = '$Nombre', telefono = '$Telefono', email = '$Email', rfc = '$RFC', direccion = '$Direccion', colonia = '$Colonia', localidad = '$Localidad', cp = '$CP' WHERE id = '$id'";
-			//VERIFICAMOS QUE LA SENTECIA FUE EJECUTADA CON EXITO!
-			if(mysqli_query($conn, $sql)){
-				echo '<script >M.toast({html:"El cliente se actualizo con exito.", classes: "rounded"})</script>';	
-				echo '<script>recargar_clientes()</script>';// REDIRECCIONAMOS (FUNCION ESTA EN ARCHIVO modals.php)
-			}else{
-				echo '<script >M.toast({html:"Ocurrio un error...", classes: "rounded"})</script>';	
-			}//FIN else DE ERROR
-		}// FIn else Validacion
+	    	//CON POST RECIBIMOS TODAS LAS VARIABLES DEL FORMULARIO POR EL SCRIPT "editar_cliente.php" QUE NESECITAMOS PARA ACTUALIZAR
+	    	$id = $conn->real_escape_string($_POST['id']);
+	    	$Nombre = $conn->real_escape_string($_POST['valorNombre']);
+			$Telefono = $conn->real_escape_string($_POST['valorTelefono']);
+			$Email = $conn->real_escape_string($_POST['valorEmail']);
+			$RFC = $conn->real_escape_string($_POST['valorRFC']);
+			$Direccion = $conn->real_escape_string($_POST['valorDireccion']);
+			$Colonia = $conn->real_escape_string($_POST['valorColonia']);
+			$Localidad = $conn->real_escape_string($_POST['valorLocalidad']);
+			$CP = $conn->real_escape_string($_POST['valorCP']);
+
+			//VERIFICAMOS QUE NO HALLA UN CLIENTE CON LOS MISMOS DATOS
+			if(mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `clientes` WHERE (telefono = '$Telefono' OR rfc='$RFC' OR email='$Email') AND id != $id"))>0){
+		 		echo '<script >M.toast({html:"El RFC, Telefono o Email ya se encuentra registrados en la BD.", classes: "rounded"})</script>';
+		 	}else{
+				//CREAMO LA SENTENCIA SQL PARA HACER LA ACTUALIZACION DE LA INFORMACION DEL CLIENTE Y LA GUARDAMOS EN UNA VARIABLE
+				$sql = "UPDATE `clientes` SET nombre = '$Nombre', telefono = '$Telefono', email = '$Email', rfc = '$RFC', direccion = '$Direccion', colonia = '$Colonia', localidad = '$Localidad', cp = '$CP' WHERE id = '$id'";
+				//VERIFICAMOS QUE LA SENTECIA FUE EJECUTADA CON EXITO!
+				if(mysqli_query($conn, $sql)){
+					echo '<script >M.toast({html:"El cliente se actualizo con exito.", classes: "rounded"})</script>';	
+					echo '<script>recargar_clientes()</script>';// REDIRECCIONAMOS (FUNCION ESTA EN ARCHIVO modals.php)
+				}else{
+					echo '<script >M.toast({html:"Ocurrio un error...", classes: "rounded"})</script>';	
+				}//FIN else DE ERROR
+			}// FIN else Validacion
+		}//FIN IF permiso
         break;
     case 3:
         // $Accion es igual a 3 realiza:
