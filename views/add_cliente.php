@@ -132,7 +132,7 @@
         </div>
       </form>
       <!-- BOTON QUE MANDA LLAMAR EL SCRIPT PARA QUE EL SCRIPR HAGA LO QUE LA FUNCION CONTENGA -->
-      <a onclick="insert_cliente();" class="waves-effect waves-light btn pink right"><i class="material-icons right">add</i>Agregar</a>
+      <a onclick="insert_cliente();" class="waves-effect waves-light btn grey darken-4 right"><i class="material-icons right">save</i>Guardar</a>
     </div> 
   </div><br>
 </body>
