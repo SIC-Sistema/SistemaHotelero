@@ -82,13 +82,10 @@ switch ($Accion) {
 		            <td>'.$cliente['telefono'].'</td>
 		            <td>'.$cliente['rfc'].'</td>
 		            <td>'.$cliente['email'].'</td>
-		            <td>'.$cliente['direccion'].'</td>
-		            <td>'.$cliente['colonia'].'</td>
-		            <td>'.$cliente['localidad'].'</td>
-		            <td>'.$cliente['cp'].'</td>
 		            <td>'.$user['firstname'].'</td>
 		            <td>'.$cliente['fecha'].'</td>
-		            <td><form method="post" action="../views/reservacion.php"><input id="cliente" name="cliente" type="hidden" value="'.$cliente['id'].'"><button class="btn-small green waves-effect waves-light"><i class="material-icons">event</i></button></form></td>
+		            <td><form method="post" action="../views/reservacion.php"><input id="cliente" name="cliente" type="hidden" value="'.$cliente['id'].'"><button class="btn-small green waves-effect waves-light"><i class="material-icons">event</i></button></form> </td>
+		            <td><form method="post" action="../views/detalles_cliente.php"><input id="id" name="id" type="hidden" value="'.$cliente['id'].'"><button class="btn-small waves-effect waves-light blue"><i class="material-icons">list</i></button></form></td>
 		            <td><form method="post" action="../views/editar_cliente.php"><input id="id" name="id" type="hidden" value="'.$cliente['id'].'"><button class="btn-small waves-effect waves-light grey darken-3"><i class="material-icons">edit</i></button></form></td>
 		            <td><a onclick="borrar_cliente('.$cliente['id'].')" class="btn-small red waves-effect waves-light"><i class="material-icons">delete</i></a></td>
 		          </tr>';

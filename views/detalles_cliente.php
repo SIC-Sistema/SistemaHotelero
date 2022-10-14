@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>San Roman | Habitacion</title>
+    <title>San Roman | Cliente</title>
     <?php
     //INCLUIMOS EL ARCHIVO QUE CONTIENE LA BARRA DE NAVEGACION TAMBIEN TIENE (scripts, conexion, is_logged, modals)
     include('fredyNav.php');
@@ -11,17 +11,17 @@
     $User = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `users` WHERE user_id = $id_user"));
 
 	//VERIFICAMOS QUE SI NOS ENVIE POR POST EL ID DEL ARTICULO
-	if (isset($_GET['id']) == false OR $User['habitaciones'] == 0) {
+	if (isset($_GET['id']) == false OR $User['clientes'] == 0) {
 	  ?>
 	  <script>    
-	    M.toast({html:"Regresando a habitaciones.", classes: "rounded"});
-	    setTimeout("location.href='habitaciones.php'", 500);
+	    M.toast({html:"Regresando a clientes.", classes: "rounded"});
+	    setTimeout("location.href='clientes.php'", 500);
 	  </script>
 	  <?php
 	}else{
 		$id = $_GET['id'];// POR EL METODO POST RECIBIMOS EL ID DEL HABITACION
 	    //CONSULTA PARA SACAR LA INFORMACION DE LA HABITACION Y ASIGNAMOS EL ARRAY A UNA VARIABLE $habitacion
-	    $habitacion = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `habitaciones` WHERE id=$id"));
+	    $habitacion = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `clientes` WHERE id=$id"));
 	}
 	?>
 	<script>

@@ -71,13 +71,10 @@
               <th>Telefono</th>
               <th>RFC</th>
               <th>E-mail</th>
-              <th>Direccion</th>
-              <th>Colonia</th>
-              <th>Localidad</th>
-              <th>C.P.</th>
               <th>Registro</th>
               <th>Fecha</th>
               <th>Reserv.</th>
+              <th>Detalles</th>
               <th>Editar</th>
               <th>Borrar</th>
             </tr>
