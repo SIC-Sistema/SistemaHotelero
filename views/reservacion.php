@@ -57,9 +57,30 @@
 		          }); 
     		}//FIN else
     	}
+
+    	function total(){
+    		var habitacion = $("select#habitacion").val();
+      		if(habitacion != 0){
+      			var textoDe = $("input#fecha_llegada").val();
+        		var textoA = $("input#fecha_salida").val();
+        		var precioDia_Aux = $("input#precioXDia").val();
+        		var precioDia = parseFloat(precioDia_Aux);
+
+        		if (textoDe == "" || textoA == ""){
+		            document.getElementById("total").value = (precioDia).toFixed(2);
+		        }else{
+		        	var fechaInicio = new Date(textoDe).getTime();
+					var fechaFin    = new Date(textoA).getTime();
+					var diff = (fechaFin - fechaInicio)/86400000;
+		        	document.getElementById("total").value = (precioDia*diff).toFixed(2);
+		    	}		       
+		    }else{
+		    	document.getElementById("total").value = (0).toFixed(2);
+		    }
+    	}
     </script>
 </head>
-<body onload="mostrarHabitacion();">
+<body>
 	<div class="container">
 		<div class="row col s12">
 			<div class="col s12 m6">
@@ -150,6 +171,7 @@
 					              <?php
 			              			if (isset($_POST['habitacion'])){
 										echo '<option value="'.$_POST['habitacion'].'" select>N° '.$_POST['habitacion'].'</option>';
+										echo '<script>mostrarHabitacion();</script>';
 									}else{
 										echo '<option value="0" select>Habitaciones:</option>';
 									}
@@ -207,14 +229,14 @@
 		    </div>
 		    <div class="col s12 m3">
 		    	<label for="fecha_llegada">Fecha Llegada:</label>
-                <input id="fecha_llegada" type="date" >
+                <input id="fecha_llegada" type="date" onchange="total();">
 		    </div>
 		    <div class="col s12 m3">
 		    	<label for="fecha_salida">Fecha Salida:</label>
-                <input id="fecha_salida" type="date" >
+                <input id="fecha_salida" type="date" onchange="total();">
 		    </div>
 		    <div class="col s12 m3"><br>
-		    	<h5><b>TOTAL</b></h5>	
+		    	<h5><b><div class="col s6">TOTAL $</div><input class="col s6" type="" id="total" value="0.00"></b></h5>		    		
 		    </div>
 		</div>
 		<!-- BOTON QUE MANDA LLAMAR EL SCRIPT PARA QUE EL SCRIPT HAGA LO QUE LA FUNCION CONTENGA -->

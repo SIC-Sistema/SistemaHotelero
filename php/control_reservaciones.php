@@ -46,13 +46,15 @@ switch ($Accion) {
 		              		<br><?php echo $habitacion['tipo'];?>
 		              	</div> 
 		              	<div class="col s12"><br>
-		              		<b class="indigo-text col s12 m5">PRECIO POR DIA: </b>
+		              		<b class="indigo-text col s12 m5">PRECIO POR DIA: $</b>
 		              		<div class="col s10 m5">
-				              <input id="precioXDia" type="text" class="validate" data-length="100" value="<?php echo '$'.sprintf('%.2f', $habitacion['precio']);?>" required>	
+				              <input id="precioXDia" type="text" class="validate" data-length="100" value="<?php echo sprintf('%.2f', $habitacion['precio']);?>" required onchange="total();">	
 				            </div>   		
 		              	</div>
+
 		        </b></div>
             <?php
+            echo '<script>total();</script>';
         }
         break;
     case 1:///////////////           IMPORTANTE               ///////////////
