@@ -13,7 +13,7 @@
     <script>
     	//FUNCION QUE BUCARA EN LA BASE DE DATOS CLIENTES CON EL MISMO NOMBRE MOSTRARA Y DARA A ELEGIR
     	function buscarClientes() {
-      		var texto = $("input#nombre").val();
+      		var texto = $("input#nombreCliente").val();
       		//MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO EN LA DIRECCION "../php/control_reservaciones.php"
 		      $.post("../php/control_reservaciones.php", {
 		        //Cada valor se separa por una ,
@@ -24,7 +24,7 @@
 		            $("#clienteBusqueda").html(mensaje);
 		      });//FIN post
    		
-    	}//FIN function
+    	}//FIN function    	
 
     	//FUNICION QUE MUESTRA LA INFORMACION DEL CLIENTE SI SELECCIONAMOS ALGUNO O VACIO PARA NUEVO
     	function mostrarCliente(id_cliente) {
@@ -67,69 +67,71 @@
 		   		  <ul class="collection">
 		            <li class="collection-item avatar">
 		              <img src="../img/cliente.png" alt="" class="circle">
-		              <span class="title"><b>DETALLES DEL CLIENTE</b></span><br><br>
+		              <span class="title"><b>DETALLES DEL CLIENTE</b></span><br>
 		              <?php
 						if (isset($_POST['cliente'])) {
 							// SACAMOS LA INFORMACION DEL CLIENTE Y LA MOSTRAMOS
 							$IdCliente = $_POST['cliente'];
 							echo '<script>mostrarCliente('.$IdCliente.')</script>';
-						}else{
-							$NOMBRE = ''; $DIRECCION = ''; $COLONIA = ''; $LOCALIDAD = ''; $CP = '';
-							$EMAIL = ''; $TELEFONO = ''; $LIMPIEZA = ''; $IdCliente = 0;
 						}
-					  ?>
-		              <p class="row col s12" id="infoCliente"><b>
-		              	<input type="hidden" id="id_cliente" value="<?php echo $IdCliente;?>">
-		              	<div class="col s12">
-		              		<b class="indigo-text col s12 m4"><br>NOMBRE: </b>
-		              		<div class="col s12 m8">
-				              <input id="nombreCliente" type="text" class="validate" data-length="100" value="<?php echo $NOMBRE;?>" required>	
-				            </div>
-		              	</div>
-		              	<div class="col s12" id="clienteBusqueda"><br><br></div>
-		              	<div class="col s12">
-		              		<b class="indigo-text col s12 m4"><br>DIRECCION: </b>
-		              		<div class="col s12 m8">
-				              <input id="direccion" type="text" class="validate" data-length="100" value="<?php echo $DIRECCION;?>" required>	
-				            </div>
-		              	</div>     
-		              	<div class="col s12">
-		              		<b class="indigo-text col s12 m4"><br>COLONIA: </b>
-		              		<div class="col s12 m8">
-				              <input id="colonia" type="text" class="validate" data-length="20" value="<?php echo $COLONIA;?>" required>	
-				            </div>
-		              	</div>   
-		              	<div class="col s12">
-		              		<b class="indigo-text col s12 m4"><br>LOCALIDAD: </b>
-		              		<div class="col s12 m8">
-				              <input id="localidad" type="text" class="validate" data-length="20" value="<?php echo $LOCALIDAD;?>" required>	
-				            </div>
-		              	</div>  
-		              	<div class="col s12">
-		              		<b class="indigo-text col s12 m4">CODIGO POSTAL: </b>
-		              		<div class="col s12 m8">
-				              <input id="cp" type="text" class="validate" data-length="6" value="<?php echo $CP;?>" required>	
-				            </div>
-		              	</div>  
-		              	<div class="col s12">
-		              		<b class="indigo-text col s12 m4"><br>EMAIL: </b>
-		              		<div class="col s12 m8">
-				              <input id="email" type="text" value="<?php echo $EMAIL;?>" required>	
-				            </div>
-		              	</div>
-		              	<div class="col s12">
-		              		<b class="indigo-text col s12 m4"><br>TELEFONO: </b>
-		              		<div class="col s12 m8">
-				              <input id="telefono" type="text" class="validate" data-length="10" value="<?php echo $TELEFONO;?>" required>	
-				            </div>
-		              	</div>
-		              	<div class="col s12">
-		              		<b class="indigo-text col s12 m4"><br>LIMPIEZA: </b>
-		              		<div class="col s12 m8">
-				              <input id="limpieza" type="text" class="validate" data-length="100" value="<?php echo $LIMPIEZA;?>" required>	
-				            </div>
-		              	</div>		            		
-		              </b></p>
+					  ?>					  	
+		                <div class="row col s12" id="infoCliente">
+					        <b>		
+					            <div class="col s12">
+					              	<b class="indigo-text col s12 m4"><br>NOMBRE: </b>
+					              	<div class="col s12 m8">
+							        	<input id="nombreCliente" type="text" class="validate" data-length="100"  onkeyup="buscarClientes()" required>	
+									</div>
+					        	</div>
+					            <div class="col s12" id="clienteBusqueda"><br><br></div>              	
+					            <div class="col s12">
+					              	<b class="indigo-text col s12 m4"><br>DIRECCION: </b>
+					              	<div class="col s12 m8">
+							            <input id="direccion" type="text" class="validate" data-length="100" required>	
+							        </div>
+					            </div>     
+					            <div class="col s12">
+					              	<b class="indigo-text col s12 m3"><br>COLONIA: </b>
+					              	<div class="col s12 m5">
+							            <input id="colonia" type="text" class="validate" data-length="20"  required>	
+							        </div>
+							        <b class="indigo-text col s12 m1"><br>CP: </b>
+					              	<div class="col s12 m3">
+							            <input id="cp" type="text" class="validate" data-length="6"  required>	
+							        </div>
+					            </div>   
+					            <div class="col s12">
+					              	<b class="indigo-text col s12 m4"><br>LOCALIDAD: </b>
+					              	<div class="col s12 m8">
+							            <input id="localidad" type="text" class="validate" data-length="20" required>	
+							        </div>
+					            </div>  
+					            <div class="col s12">
+					              	<b class="indigo-text col s12 m4"><br>RFC: </b>
+					              	<div class="col s12 m8">
+							            <input id="cp" type="text" class="validate" data-length="6"  required>	
+							        </div>
+					            </div>  
+					            <div class="col s12">
+					              	<b class="indigo-text col s12 m4"><br>EMAIL: </b>
+					              	<div class="col s12 m8">
+							            <input id="email" type="text"  required>	
+							        </div>
+					            </div>
+					            <div class="col s12">
+					              	<b class="indigo-text col s12 m4"><br>TELEFONO: </b>
+					              	<div class="col s12 m8">
+							            <input id="telefono" type="text" class="validate" data-length="10"  required>	
+							        </div>
+					            </div>
+					            <div class="col s12">
+					              	<b class="indigo-text col s12 m4"><br>LIMPIEZA: </b>
+					              	<div class="col s12 m8">
+							            <input id="limpieza" type="text" class="validate" data-length="100"  required>	
+							        </div>
+					            </div>		            		
+					        </b>
+				        </div>
 		            </li>
 		          </ul>
 		        </div>
@@ -137,8 +139,8 @@
 			<div class="col s12 m6">
 				<div class="row"><br>
 		   		  <ul class="collection">
-		            <li class="collection-item avatar"><br>
-		              <img src="../img/hotel.png" alt="" class="circle">
+		            <li class="collection-item avatar">
+		              <img src="../img/hotel.png" alt="" class="circle"><br>
 		              <span class="title"><b>DETALLES DE HABITACION</b></span><br><br>
 		              <div class="col s12"><br>
 		              		<b class="indigo-text col s12 m5"><br>HABITACION: </b>
@@ -168,36 +170,24 @@
 					            </select>
 					        </div>
 		              </div>
-		              <div class="row col s12" id="infoHabitacion"><b>
-		              	
-		              	<div class="col s12"><br>
-		              		<br>
-		              		<b class="indigo-text col s12 m5">ESTADO: </b>
-		              		
+		              <div class="row" id="infoHabitacion"><b>		              	
+		              	<div class="col s12"><br><br>
+		              		<b class="indigo-text col s12 m5">ESTADO: </b>		              		
 		              	</div>      
 		              	<div class="col s12"><br>
-		              		<br>
-		              		<b class="indigo-text col s12 m5">NIVEL / PISO: </b>
-		              		
-		              	</div> 
+		              		<b class="indigo-text col s12 m5">HASTA: </b>		              		
+		              	</div>  
 		              	<div class="col s12"><br>
-		              		<b class="indigo-text col s12 m5">HASTA: </b>
-		              		
-		              	</div>           		
+		              		<b class="indigo-text col s12 m5">NIVEL / PISO: </b>		              		
+		              	</div> 		              	         		
 		              	<div class="col s12"><br>
-		              		<b class="indigo-text col s12 m5">DESCRIPCION: </b>
-		              		<br>
-		              		
+		              		<b class="indigo-text col s12 m5">DESCRIPCION: </b><br>		              		
 		              	</div>
 		              	<div class="col s12"><br>
-		              		<b class="indigo-text col s12 m5">TIPO DE HABITACION: </b>
-		              		<br>
+		              		<b class="indigo-text col s12 m5">TIPO DE HABITACION: </b><br>
 		              	</div> 
 		              	<div class="col s12"><br><br>
-		              		<b class="indigo-text col s12 m5">PRECIO POR DIA: </b>
-		              		<br>
-		              		<br>
-		              				
+		              		<b class="indigo-text col s12 m5">PRECIO POR DIA: <br><br></b>		              				
 		              	</div>
 		              </b></div>
 		            </li>
@@ -212,7 +202,7 @@
 		    	<div class="input-field">
 		            <i class="material-icons prefix">people</i>
 		            <input id="nombreReservacion" type="text" class="validate" data-length="50" required>
-		            <label for="nombreReservacion">Nombre Completo:</label>
+		            <label for="nombreReservacion">Nombre del Responsable:</label>
 		        </div>
 		    </div>
 		    <div class="col s12 m3">
@@ -224,7 +214,7 @@
                 <input id="fecha_salida" type="date" >
 		    </div>
 		    <div class="col s12 m3"><br>
-		    <h5><b>TOTAL</b></h5>	
+		    	<h5><b>TOTAL</b></h5>	
 		    </div>
 		</div>
 		<!-- BOTON QUE MANDA LLAMAR EL SCRIPT PARA QUE EL SCRIPT HAGA LO QUE LA FUNCION CONTENGA -->
