@@ -24,6 +24,7 @@
       var textoColonia = $("input#colonia").val();
       var textoLocalidad = $("input#localidad").val();
       var textoCP = $("input#cp").val();
+      var textoLimpieza = $("input#limpieza").val();
 
       // CREAMOS CONDICIONES QUE SI SE CUMPLEN MANDARA MENSAJES DE ALERTA EN FORMA DE TOAST
       //SI SE CUMPLEN LOS IF QUIERE DECIR QUE NO PASA LOS REQUISITOS MINIMOS DE LLENADO...
@@ -59,6 +60,7 @@
             valorColonia: textoColonia,
             valorLocalidad: textoLocalidad,
             valorCP: textoCP,
+            valorLimpieza: textoLimpieza,
           }, function(mensaje) {
               //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "control_clientes.php"
               $("#resultado_insert").html(mensaje);
@@ -104,7 +106,12 @@
             <i class="material-icons prefix">person</i>
             <input id="rfc" type="text" class="validate" data-length="15" required>
             <label for="rfc">RFC:</label>
-          </div>         
+          </div> 
+          <div class="input-field">
+            <i class="material-icons prefix">directions_walk</i>
+            <input id="limpieza" type="text" class="validate" data-length="15" required>
+            <label for="limpieza">Limpieza (Instrucciones del cliente):</label>
+          </div>        
         </div>
         <!-- DIV DOBLE COLUMNA EN ESCRITORIO PARTE DERECHA -->
         <div class="col s12 m6 l6">
