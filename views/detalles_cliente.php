@@ -50,7 +50,7 @@
               		<div class="col s12"><b class="indigo-text">COLONIA: </b><?php echo $cliente['colonia'];?></div>          		
               		<div class="col s12"><b class="indigo-text">LOCALIDAD: </b><?php echo $cliente['localidad'];?></div>          		
               	</div>
-              </b></p><br><br>
+              </b></p><br><br><br><br>
             </li>
           </ul>
         </div>
