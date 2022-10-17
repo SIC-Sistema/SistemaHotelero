@@ -217,7 +217,7 @@
 		        </div>        
 			</div>
 		</div>
-		<div class="row">
+		<div class="row s12">
 		    <h4>Reservar</h4>
 			<hr>
 		    <div class="col s12 m3">
@@ -236,11 +236,43 @@
                 <input id="fecha_salida" type="date" onchange="total();">
 		    </div>
 		    <div class="col s12 m3"><br>
-		    	<h5><b><div class="col s6">TOTAL $</div><input class="col s6" type="" id="total" value="0.00"></b></h5>		    		
+		    	<h5><b><div class="col s6">TOTAL $</div><input class="col s6" type="" id="total" value="0.00"></b></h5>	<br><br><br>    		
 		    </div>
+		    <div class="col s12 m4">
+		    	<div class="input-field">
+		            <i class="material-icons prefix">edit</i>
+		            <input id="observacionR" type="text" class="validate" data-length="100" required>
+		            <label for="observacionR">Observaciones:</label>
+		        </div>
+		    </div>
+		    <div class="col s12 m3">
+		    	<div class="input-field">
+		            <i class="material-icons prefix">monetization_on</i>
+		            <input id="anticipoR" type="number" class="validate" required>
+		            <label for="anticipoR">Anticipo:</label>
+		        </div>
+		    </div>
+		    <div class="col s6 m2 l2">
+              <p>
+                <br>
+                <label>
+                  <input type="checkbox" id="bancoR" />
+                  <span for="bancoR">Banco</span>
+                </label>
+              </p>
+            </div>
+            <div class="col s6 m2 l2">
+              <p>
+                <br>
+                <label>
+                  <input type="checkbox" id="creditoR" />
+                  <span for="creditoR">Credito</span>
+                </label>
+              </p>
+            </div>
 		</div>
 		<!-- BOTON QUE MANDA LLAMAR EL SCRIPT PARA QUE EL SCRIPT HAGA LO QUE LA FUNCION CONTENGA -->
-      <a onclick="insert_reservacion();" class="waves-effect waves-light btn pink right"><i class="material-icons right">add</i>Registrar</a><br><br><br><br>
+      <a onclick="insert_reservacion();" class="waves-effect waves-light btn grey darken-4 right"><i class="material-icons right">add</i>Registrar</a><br><br><br><br>
 	   
 	</div>
 

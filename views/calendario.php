@@ -1,19 +1,23 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="es">
 <head>
 <link rel="stylesheet" href="../fullcalendar/fullcalendar.min.css" />
 <script src="../fullcalendar/lib/jquery.min.js"></script>
 <script src="../fullcalendar/lib/moment.min.js"></script>
 <script src="../fullcalendar/fullcalendar.min.js"></script>
+<script src='../fullcalendar/lib/locale/es.js'></script>
 
-<script>
-
+<script >
 $(document).ready(function () {
     var calendar = $('#calendar').fullCalendar({
         editable: true,
-        events: "../php/fetch-event.php",
-        displayEventTime: false,
+        header: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'month,basicWeek', 
+            },
+        events: "../php/fetch-event.php?id=1",
+        displayEventTime: true,
         eventRender: function (event, element, view) {
             if (event.allDay === 'true') {
                 event.allDay = true;
@@ -22,17 +26,10 @@ $(document).ready(function () {
             }
         },
         selectable: true,
-        selectHelper: true,
-        
+        selectHelper: true,        
     });
 });
-
-function displayMessage(message) {
-	    $(".response").html("<div class='success'>"+message+"</div>");
-    setInterval(function() { $(".success").fadeOut(); }, 1000);
-}
 </script>
-
 <style>
 body {
     margin-top: 50px;
@@ -40,29 +37,14 @@ body {
     font-size: 12px;
     font-family: "Lucida Grande", Helvetica, Arial, Verdana, sans-serif;
 }
-
 #calendar {
     width: 700px;
     margin: 0 auto;
 }
-
-.response {
-    height: 60px;
-}
-
-.success {
-    background: #cdf3cd;
-    padding: 10px 60px;
-    border: #c3e6c3 1px solid;
-    display: inline-block;
-}
 </style>
 </head>
 <body>
-    <h2>PHP Calendar Event Management FullCalendar JavaScript Library</h2>
-    <div class="response"></div>
+    <h2>CALENDARIO</h2>
     <div id='calendar'></div>
 </body>
-
-
 </html>
