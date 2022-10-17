@@ -77,6 +77,106 @@
 		    }else{
 		    	document.getElementById("total").value = (0).toFixed(2);
 		    }
+    	}// FIN function total
+
+    	function insert_reservacion() {
+    		var habitacion = $("select#habitacion").val();
+    		var cliente = $("input#id_cliente").val();
+    		var NomResp = $("input#nombreReservacion").val();
+    		var fechaEntrada = $("input#fecha_llegada").val();
+    		var fechaSalida = $("input#fecha_salida").val();
+    		var Observacion = $("input#observacionR").val();
+    		var Total = $("input#total").val();
+    		var Anticipo = $("input#anticipoR").val();
+
+    		if(document.getElementById('bancoR').checked==true){
+	            tipo_cambio = 'Banco';
+	        }else if (document.getElementById('creditoR').checked==true) {
+	            tipo_cambio = 'Credito';
+	        }else{
+	            tipo_cambio = 'Efectivo';
+	        }
+	        clienteEntra = true;
+	        if (cliente == '') {
+		          var textoNombre = $("input#nombreCliente").val();//ej:LA VARIABLE "textoNombre" GUARDAREMOS LA INFORMACION QUE ESTE EN EL INPUT QUE TENGA EL id = "nombreCliente"
+			      var textoTelefono = $("input#telefono").val();// ej: TRAE LE INFORMACION DEL INPUT FILA 
+			      var textoEmail = $("input#email").val();
+			      var textoRFC = $("input#rfc").val();
+			      var textoDireccion = $("input#direccion").val();
+			      var textoColonia = $("input#colonia").val();
+			      var textoLocalidad = $("input#localidad").val();
+			      var textoCP = $("input#cp").val();
+			      var textoLimpieza = $("input#limpieza").val();
+
+			      // CREAMOS CONDICIONES QUE SI SE CUMPLEN MANDARA MENSAJES DE ALERTA EN FORMA DE TOAST
+			      //SI SE CUMPLEN LOS IF QUIERE DECIR QUE NO PASA LOS REQUISITOS MINIMOS DE LLENADO...
+			      if (textoNombre == "") {
+			       	msj = 'El campo Nombre Cliente se encuentra vacío.';
+			      }else if(textoTelefono.length < 10){
+			       	msj = 'El Telefono tiene que tener al menos 10 dijitos.';
+			      }else if(textoEmail == ""){
+			        msj = "Por favor ingrese un Email.";
+			      }else if (!validar_email(textoEmail)) {
+			        msj = "Por favor ingrese un Email correcto.";
+			      }else if(textoRFC.length < 12){
+			       	msj = 'El RFC tiene que tener al menos 12 dijitos.';
+			      }else if(textoDireccion == ""){
+			       	msj = 'El campo Dirección se encuentra vacío.';
+			      }else if(textoColonia == ""){
+			       	msj = 'El campo Colonia se encuentra vacío.';
+			      }else if(textoLocalidad == ""){
+			       	msj = 'El campo Localidad se encuentra vacío.';
+			      }else if(textoCP == ""){
+			       	msj = 'El campo Codigo Postal se encuentra vacío.';
+			      }else{
+			      	clienteEntra = false;
+			      }
+	        }else{
+	        	clienteEntra = false;
+	        	var textoNombre = ''; var textoTelefono = ''; var textoEmail = ''; var textoRFC = ''; var textoDireccion = '';
+			    var textoColonia = ''; var textoLocalidad = ''; var textoCP = ''; var textoLimpieza = '';
+	        }
+
+	        if (clienteEntra) {
+		        M.toast({html:""+msj, classes: "rounded"});
+	        }else if (habitacion == 0) {
+		        M.toast({html:"Por favor seleccione una Habitación.", classes: "rounded"});
+	        }else if (NomResp == '') {	        	
+		        M.toast({html:"Por ingrese un nombre del responsable.", classes: "rounded"});
+	        }else if (fechaEntrada == '') {
+		        M.toast({html:"Por favor seleccione una Fecha de Entrada.", classes: "rounded"});
+	        }else if (fechaSalida == '') {
+		        M.toast({html:"Por favor seleccione una Fecha de Salida.", classes: "rounded"});
+	        }else if(Total <= 0){
+		        M.toast({html:"El total no es valido o aceptado.", classes: "rounded"});
+	        }else{
+	        	//SI LOS IF NO SE CUMPLEN QUIERE DECIR QUE LA INFORMACION CUENTA CON TODO LO REQUERIDO
+		        //MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO NE LA DIRECCION "../php/control_clientes.php"
+		        $.post("../php/control_clientes.php", {
+		          //Cada valor se separa por una ,
+		            accion: 3,
+		            valorNombre: textoNombre,
+		            valorTelefono: textoTelefono,
+		            valorEmail: textoEmail,
+		            valorRFC: textoRFC,
+		            valorDireccion: textoDireccion,
+		            valorColonia: textoColonia,
+		            valorLocalidad: textoLocalidad,
+		            valorCP: textoCP,
+		            valorLimpieza: textoLimpieza,
+		            valorCliente: cliente,
+		            valorNomResp: NomResp,
+		            valorFE: fechaEntrada,
+		            valorFS: fechaSalidaa,
+		            valorObservacion: Observacion,
+		            valorTotal: Total,
+		            valorAnticipo: Anticipo,
+		            valortipo_cambio: tipo_cambio,
+		          }, function(mensaje) {
+		              //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "control_clientes.php"
+		              $("#resultado_insert").html(mensaje);
+		          }); 
+		    }//FIN else CONDICIONES
     	}
     </script>
 </head>
@@ -104,7 +204,8 @@
 							        	<input id="nombreCliente" type="text" class="validate" data-length="100"  onkeyup="buscarClientes()" required>	
 									</div>
 					        	</div>
-					            <div class="col s12" id="clienteBusqueda"><br><br></div>              	
+					            <div class="col s12" id="clienteBusqueda"><br><br></div> 
+					            <input type="hidden" name="id_cliente" id="id_cliente" value="">             	
 					            <div class="col s12">
 					              	<b class="indigo-text col s12 m4"><br>DIRECCION: </b>
 					              	<div class="col s12 m8">

@@ -1,4 +1,3 @@
-					
 <?php
 //ARCHIVO QUE CONTIENE LA VARIABLE CON LA CONEXION A LA BASE DE DATOS
 include('../php/conexion.php');
@@ -74,7 +73,8 @@ switch ($Accion) {
 					        	<input id="nombreCliente" type="text" class="validate" data-length="100" value="<?php echo $cliente['nombre'];?>" onkeyup = 'buscarClientes()' required>	
 							</div>
 			        	</div>
-			            <div class="col s12" id="clienteBusqueda"><br><br></div>              	
+			            <div class="col s12" id="clienteBusqueda"><br><br></div>
+					    <input type="hidden" name="id_cliente" id="id_cliente" value="<?php echo $id_cliente;?>">           	
 			            <div class="col s12">
 			              	<b class="indigo-text col s12 m4"><br>DIRECCION: </b>
 			              	<div class="col s12 m8">
@@ -155,6 +155,10 @@ switch ($Accion) {
 			echo '<br><br>';
 		}//FIN else $Texto VACIO O NO
     	// code...
+    	break;
+    case 3:///////////////           IMPORTANTE               ///////////////
+        // $Accion es igual a 3 realiza:
+
     	break;
 
 }// FIN switch
