@@ -129,7 +129,7 @@ switch ($Accion) {
     case 2:///////////////           IMPORTANTE               ///////////////
         // $Accion es igual a 2 realiza:
 
-    	//CON POST RECIBIMOS UN TEXTO DEL BUSCADOR VACIO O NO de "articulos_punto_venta.php"
+    	//CON POST RECIBIMOS UN TEXTO DEL BUSCADOR VACIO O NO de "reservacion.php"
         $Texto = $conn->real_escape_string($_POST['texto']);
         //VERIFICAMOS SI CONTIENE ALGO DE TEXTO LA VARIABLE
 		if ($Texto != "") {
@@ -158,6 +158,9 @@ switch ($Accion) {
     	break;
     case 3:///////////////           IMPORTANTE               ///////////////
         // $Accion es igual a 3 realiza:
+
+    	//CON POST RECIBIMOS UN TEXTO DEL BUSCADOR VACIO O NO de "reservacion.php"
+        $Texto = $conn->real_escape_string($_POST['texto']);
 
     	break;
 
