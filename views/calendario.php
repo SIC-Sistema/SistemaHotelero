@@ -16,7 +16,7 @@ $(document).ready(function () {
                 center: 'title',
                 right: 'month,basicWeek', 
             },
-        events: "../php/fetch-event.php?id=1",
+        events: "../php/fetch-event.php?id=2",
         displayEventTime: true,
         eventRender: function (event, element, view) {
             if (event.allDay === 'true') {

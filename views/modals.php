@@ -17,6 +17,9 @@
   function home() {
     setTimeout("location.href='home.php'", 1000);
   }
+  function checkIn() {
+    setTimeout("location.href='check_in.php'", 1000);
+  }
 </script>
 
 <!--Modal cortes-->

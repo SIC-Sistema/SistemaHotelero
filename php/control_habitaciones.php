@@ -11,7 +11,7 @@ $Fecha_hoy = date('Y-m-d');// FECHA ACTUAL
 //CON METODO POST TOMAMOS UN VALOR DEL 0 AL 3 PARA VER QUE ACCION HACER (Para Insertar = 0, Actualizar = 1, Borrar = 2)
 $Accion = $conn->real_escape_string($_POST['accion']);
 
-//UN SWITCH EL CUAL DECIDIRA QUE ACCION REALIZA DEL CRUD (Para Insertar = 0, Consultar = 1, Actualizar = 2, Borar = 3)
+//UN SWITCH EL CUAL DECIDIRA QUE ACCION REALIZA DEL CRUD (Para Insertar = 0, Actualizar = 1, Borrar = 2)
 //echo "hola aqui estoy";
 switch ($Accion) {
     case 0:  ///////////////           IMPORTANTE               ///////////////
@@ -98,40 +98,7 @@ switch ($Accion) {
             echo '<script >M.toast({html:"Permiso denegado.", classes: "rounded"});
             M.toast({html:"Comunicate con un administrador.", classes: "rounded"});</script>';
         }  
-        break;
-    case 3:///////////////           IMPORTANTE               ///////////////
-        // $Accion es igual a 3 realiza:
-    
-        //CON POST RECIBIMOS LA VARIABLE DEL BOTON POR EL SCRIPT DE "almacenes_punto_venta.php" QUE NESECITAMOS PARA BORRAR
-        $id = $conn->real_escape_string($_POST['id']);
-    	//Obtenemos la informacion del Usuario
-        $User = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `users` WHERE user_id = $id_user"));
-        //SE VERIFICA SI EL USUARIO LOGEADO TIENE PERMISO DE BORRAR ALMACENES
-        if ($User['b_almacenes'] == 1) {
-            #SELECCIONAMOS LA INFORMACION A BORRAR
-            $almacen = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `punto_venta_almacenes` WHERE id = $id"));
-            #CREAMOS EL SQL DE LA INSERCION A LA TABLA  `pv_borrar_almacenes` PARA NO PERDER INFORMACION
-            $sql = "INSERT INTO `pv_borrar_almacenes` (id_almacen, nombre, registro, borro, fecha_borro) 
-                    VALUES($id, '".$almacen['nombre']."', '".$almacen['usuario']."', '$id_user','$Fecha_hoy')";
-            //VERIFICAMOS QUE LA SENTECIA FUE EJECUTADA CON EXITO!
-            if(mysqli_query($conn, $sql)){
-                //SI DE CREA LA INSERCION PROCEDEMOS A BORRRAR DE LA TABLA `punto_venta_almacenes`
-                #VERIFICAMOS QUE SE BORRE CORRECTAMENTE EL ALMACEN DE `punto_venta_almacenes`
-                if(mysqli_query($conn, "DELETE FROM `punto_venta_almacenes` WHERE `punto_venta_almacenes`.`id` = $id")){
-                #SI ES ELIMINADO MANDAR MSJ CON ALERTA
-                    echo '<script >M.toast({html:"Almacen borrado con exito.", classes: "rounded"})</script>';
-                    echo '<script>recargar_almacen_lista()</script>';// REDIRECCIONAMOS (FUNCION ESTA EN ARCHIVO modals.php)
-                }else{
-                #SI NO ES BORRADO MANDAR UN MSJ CON ALERTA
-                    echo "<script >M.toast({html: 'Ha ocurrido un error.', classes: 'rounded'});/script>";
-                }
-            } 
-        }else{
-            echo '<script >M.toast({html:"Permiso denegado.", classes: "rounded"});
-            M.toast({html:"Comunicate con un administrador.", classes: "rounded"});</script>';
-        }   
-        break;
-   
+        break;   
 }// FIN switch
 mysqli_close($conn);
     

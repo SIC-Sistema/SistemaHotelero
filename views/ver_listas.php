@@ -18,7 +18,7 @@ function getRangeDate($date_ini, $date_end, $format = 'Y-m-d') {
 
 $Lista_ocupadas = getRangeDate('2022-10-14', '2022-10-20');
 $Lista_buscar = getRangeDate('2022-10-09', '2022-10-15');
-
+echo($Lista_buscar);
 foreach ($Lista_buscar as $busca) {
     if (in_array($busca, $Lista_ocupadas)) {
         echo 'FECHA NO DISPONIBLE: '.$busca;

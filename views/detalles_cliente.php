@@ -20,8 +20,8 @@
 		  <?php
 		}else{
 			$id = $_POST['id'];// POR EL METODO POST RECIBIMOS EL ID DEL cliente
-		    //CONSULTA PARA SACAR LA INFORMACION DE LA cliente Y ASIGNAMOS EL ARRAY A UNA VARIABLE $cliente
-		    $cliente = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `clientes` WHERE id=$id"));
+		  //CONSULTA PARA SACAR LA INFORMACION DE LA cliente Y ASIGNAMOS EL ARRAY A UNA VARIABLE $cliente
+		  $cliente = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `clientes` WHERE id=$id"));
 		}
 		?>
 </head>
@@ -72,15 +72,52 @@
 	              <thead>
 	                <tr>
 	                  <th>N°</th>
-	                  <th>Cliente</th>
-	                  <th>Precio</th>
+	                  <th>Habitacion</th>
+	                  <th>Responsable</th>
 	                  <th>Fecha Entrada</th>            
 	                  <th>Fecha Salida</th>
+	                  <th>Total</th>
 	                  <th>Estatus</th>
+	                  <th>Registro</th>
+	                  <th>Fecha Registro</th>
 	                </tr>
 	              </thead>
 	              <tbody>
-	                
+	              	<?php
+	              	$reservaciones = mysqli_query($conn,"SELECT * FROM reservaciones WHERE id_cliente = $id"); 
+						      //VERIFICAMOS QUE LA VARIABLE SI CONTENGA INFORMACION
+						      if (mysqli_num_rows($reservaciones) == 0) {
+						        echo '<h4>No se encontraron reservaciones.</h4>';
+						      } else {
+						        while ($reservacion = mysqli_fetch_array($reservaciones)) {
+						        	$id_usuario = $reservacion['usuario'];// ID DEL USUARIO REGISTRO
+									    //Obtenemos la informacion del Usuario
+									    $usuario = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `users` WHERE user_id = $id_usuario"));
+						        	if ($reservacion['estatus'] == 0) {
+						        		$estatus = 'Pendiente';
+						        	}else if ($reservacion['estatus'] == 1) {
+						        		$estatus = 'Ocupada';
+						        	}else if ($reservacion == 3) {
+						        		$estatus = 'Terminada';
+						        	}else if ($reservacion['estatus'] == 4) {
+						        		$estatus = 'Cancelada';
+						        	}
+						        	?>
+						        	<tr>
+						        		<td><?php echo $reservacion['id']; ?></td>
+						        		<td>N°<?php echo $reservacion['id_habitacion']; ?></td>
+						        		<td><?php echo $reservacion['nombre']; ?></td>
+						        		<td><?php echo $reservacion['fecha_entrada']; ?></td>
+						        		<td><?php echo $reservacion['fecha_salida']; ?></td>
+						        		<td>$<?php echo sprintf('%.2f', $reservacion['total']); ?></td>
+						        		<td><?php echo $reservacion['estatus']; ?></td>
+						        		<td><?php echo $usuario['firstname']; ?></td>
+						        		<td><?php echo $reservacion['fecha_registro']; ?></td>
+						        	</tr>
+						        	<?php
+						        }//FIN while
+						      }//FIN ELSE
+	                ?>
 	              </tbody>
 	            </table>
 	          </div></p>
@@ -94,13 +131,39 @@
 	              <thead>
 	                <tr>
 	                  <th>N°</th>
+	                  <th>Cantidad</th>
+	                  <th>Tipo</th>
 	                  <th>Descripcion</th>
+	                  <th>Usuario</th>
 	                  <th>Fecha</th>
-	                  <th>Estatus</th> 
+	                  <th>Cambio</th> 
 	                </tr>
 	              </thead>
 	              <tbody>
-	                
+	              	<?php
+	              	$pagos = mysqli_query($conn,"SELECT * FROM pagos WHERE id_cliente = $id"); 
+						      //VERIFICAMOS QUE LA VARIABLE SI CONTENGA INFORMACION
+						      if (mysqli_num_rows($pagos) == 0) {
+						        echo '<h4>No se encontraron pagos.</h4>';
+						      } else {
+						        while ($pago = mysqli_fetch_array($pagos)) {
+						        	$id_usuario = $pago['id_user'];// ID DEL USUARIO REGISTRO
+									    //Obtenemos la informacion del Usuario
+									    $usuario = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `users` WHERE user_id = $id_usuario"));
+						        	?>
+						        	<tr>
+						        		<td><?php echo $pago['id_pago']; ?></td>
+						        		<td>$<?php echo sprintf('%.2f', $pago['cantidad']); ?></td>
+						        		<td><?php echo $pago['tipo']; ?></td>
+						        		<td><?php echo $pago['descripcion']; ?></td>
+						        		<td><?php echo $usuario['firstname']; ?></td>
+						        		<td><?php echo $pago['fecha'].' '.$pago['hora']; ?></td>
+						        		<td><?php echo $pago['tipo_cambio']; ?></td>
+						        	</tr>
+						        	<?php
+	                	}//FIN while
+						      }//FIN ELSE
+	                ?>
 	              </tbody>
 	            </table>
 	          </div></p>

@@ -2,7 +2,6 @@
 <html>
 <head>
     <title>San Roman | Reservar</title>
-
     <?php
     //INCLUIMOS EL ARCHIVO QUE CONTIENE LA BARRA DE NAVEGACION TAMBIEN TIENE (scripts, conexion, is_logged, modals)
     include('fredyNav.php');
@@ -151,8 +150,8 @@
 		        M.toast({html:"El total no es valido o aceptado.", classes: "rounded"});
 	        }else{
 	        	//SI LOS IF NO SE CUMPLEN QUIERE DECIR QUE LA INFORMACION CUENTA CON TODO LO REQUERIDO
-		        //MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO NE LA DIRECCION "../php/control_clientes.php"
-		        $.post("../php/control_clientes.php", {
+		        //MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO NE LA DIRECCION "../php/control_reservaciones.php"
+		        $.post("../php/control_reservaciones.php", {
 		          //Cada valor se separa por una ,
 		            accion: 3,
 		            valorNombre: textoNombre,
@@ -165,23 +164,31 @@
 		            valorCP: textoCP,
 		            valorLimpieza: textoLimpieza,
 		            valorCliente: cliente,
+		            valorHabitacion: habitacion,
 		            valorNomResp: NomResp,
 		            valorFE: fechaEntrada,
-		            valorFS: fechaSalidaa,
+		            valorFS: fechaSalida,
 		            valorObservacion: Observacion,
 		            valorTotal: Total,
 		            valorAnticipo: Anticipo,
 		            valortipo_cambio: tipo_cambio,
 		          }, function(mensaje) {
-		              //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "control_clientes.php"
+		              //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "control_reservaciones.php"
 		              $("#resultado_insert").html(mensaje);
 		          }); 
 		    }//FIN else CONDICIONES
     	}
+    	 //FUNCION QUE AL USAR VALIDA LA VARIABLE QUE LLEVE UN FORMATO DE CORREO 
+	    function validar_email( email )   {
+	      var regex = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+	      return regex.test(email) ? true : false;
+	    };
     </script>
 </head>
 <body>
 	<div class="container">
+		<!-- CREAMOS UN DIV EL CUAL TENGA id = "resultado_insert"  PARA QUE EN ESTA PARTE NOS MUESTRE LOS RESULTADOS EN TEXTO HTML DEL SCRIPT EN FUNCION  -->
+     	<div id="resultado_insert"></div>
 		<div class="row col s12">
 			<div class="col s12 m6">
 				<div class="row"><br>
@@ -231,7 +238,7 @@
 					            <div class="col s12">
 					              	<b class="indigo-text col s12 m4"><br>RFC: </b>
 					              	<div class="col s12 m8">
-							            <input id="cp" type="text" class="validate" data-length="6"  required>	
+							            <input id="rfc" type="text" class="validate" data-length="6"  required>	
 							        </div>
 					            </div>  
 					            <div class="col s12">

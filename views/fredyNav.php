@@ -36,18 +36,8 @@ $Hoy = date('Y-m-d');
 					<li><a href = "#" class="black-text"><i class="material-icons">assignment_return</i>Check Out</a></li>   			 
  				 </ul>
 				<li><a class='dropdown-button' data-target='dropdown2'><i class="material-icons left">hotel</i><b>Hotel</b><span class=" new badge pink" data-badge-caption="">4</span><i class="material-icons right">arrow_drop_down</i></a></li>
-				<ul id='dropdown2' class='dropdown-content'>
-					<li><a href = "almacenes_punto_venta.php" class="black-text"><i class="material-icons">assignment_turned_in</i>Almacenes</a></li>    
-					<li><a href = "almacen_punto_venta.php" class="black-text"><i class="material-icons">list</i>Mi Almacen</a></li>
-					<li><a href = "compras_punto_venta.php" class="black-text"><i class="material-icons">add_shopping_cart</i>Compras</a></li>
-					<li><a href class="black-text"><i class="material-icons">add_circle</i>Item 3</a></li>
-					<li><a href = "clientes_punto_venta.php" class="black-text"><i class="material-icons">people</i>Clientes </a></li>
-				    <li><a class='dropdown-btn1 black-text' data-target='sub-dropdown4'><i class="material-icons left">assignment_ind</i> Item 11 <i class="material-icons right">chevron_right</i></a></li>
-					<ul id='sub-dropdown4' class='dropdown-content'>
-				    	<li><a href class="black-text"><i class="material-icons">assignment_late</i>Pendientes </a></li>   
-				    	<li><a href class="black-text"><i class="material-icons">assignment_turned_in</i>Listas </a></li>
-				    </ul>	
-					 
+				<ul id='dropdown2' class='dropdown-content'>  
+					<li><a href = "cuentas.php" class="black-text"><i class="material-icons">list</i>Cuentas<span class=" new badge pink" data-badge-caption="">4</span></a></li>	
  				</ul>
  				<li><a class='dropdown-button' data-target='dropdown5'><i class="material-icons left">person_pin</i><b>Admin</b> <i class="material-icons right">arrow_drop_down</i></a></li>
 				<ul id='dropdown5' class='dropdown-content'>
@@ -105,9 +95,7 @@ $Hoy = date('Y-m-d');
 		      		<div class="collapsible-body indigo lighten-5">
 		      			<span>
 		      			  <ul>
-							<li><a href = "almacenes_punto_venta.php"><i class="material-icons">assignment_turned_in</i>Almacenes</a></li>
-							<li><a href = "almacen_punto_venta.php"><i class="material-icons">list</i>Mi Almacen</a></li>
-							<li><a href = "compras_punto_venta.php"><i class="material-icons">add_shopping_cart</i>Compras</a></li>			 
+							<li><a href = "cuentas.php"><i class="material-icons">list</i>Cuentas</a></li>
 					      </ul>
 					    </span>
 		      		</div>    			

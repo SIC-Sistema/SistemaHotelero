@@ -166,7 +166,6 @@ switch ($Accion) {
 			#SI LAS CONTRASEÑA ANTERIOR NO ES IGUAL MANDA UN MSJ CON ALERTA
 		    echo '<script>M.toast({html:"La contraseña anterior no coincide.", classes: "rounded"})</script>';
 		}
-
     	break;
 }// FIN switch
 mysqli_close($conn);
