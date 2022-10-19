@@ -56,6 +56,18 @@
 		          }); 
     		}//FIN else
     	}
+    	//FUNCION QUE MUESTRA LA INFORMACION EL CALENDARIO
+    	function calendario() {
+      		var habitacion = $("select#habitacion").val();
+      		if(habitacion == 0){
+		        M.toast({html:"Por favor seleccione una Habitación.", classes: "rounded"});
+		    }else{
+		        var a = document.createElement("a");
+		          a.href = "../views/calendario.php?id="+habitacion;
+		          a.target = "blank";
+		          a.click();
+    		}//FIN else
+    	}
 
     	function total(){
     		var habitacion = $("select#habitacion").val();
@@ -182,7 +194,7 @@
 	    function validar_email( email )   {
 	      var regex = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
 	      return regex.test(email) ? true : false;
-	    };
+	    }; 
     </script>
 </head>
 <body>
@@ -327,6 +339,7 @@
 		</div>
 		<div class="row s12">
 		    <h4>Reservar</h4>
+		    <a onclick="calendario();" class="waves-effect waves-light btn grey darken-4 right"><i class="material-icons right">date_range</i>CALENDARIO</a><br><br>
 			<hr>
 		    <div class="col s12 m3">
 		    	<div class="input-field">
