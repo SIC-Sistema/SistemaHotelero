@@ -44,6 +44,9 @@ if (isset($_POST['id']) == false) {
           if(document.getElementById('reportes').checked==true){
             Reportes = 1;
           }else { Reportes = 0; }
+          if(document.getElementById('cancelar').checked==true){
+            Cancelar = 1;
+          }else { Cancelar = 0; }
 
             //MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO NE LA DIRECCION "../php/control_users.php"
             $.post("../php/control_users.php", { 
@@ -56,6 +59,7 @@ if (isset($_POST['id']) == false) {
                 Borrar: Borrar,               
                 Facturar: Facturar,               
                 Reportes: Reportes,               
+                Cancelar: Cancelar,               
                 Area: textoArea,               
             }, function(mensaje) {
               //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "control_users.php"
@@ -148,11 +152,20 @@ if (isset($_POST['id']) == false) {
               <p>
                 <br>
                 <label>
+                  <input  type="checkbox" <?php echo ($datos['cancelar']  == 1)?"checked":"";?> id="cancelar"/>
+                  <span for="cancelar">Cancelar Reservación</span>
+                </label>
+              </p>
+            </div>
+            <div class="col s6 m3 l3">
+              <p>
+                <br>
+                <label>
                   <input  type="checkbox" <?php echo ($datos['facturar']  == 1)?"checked":"";?> id="facturar"/>
                   <span for="facturar">Facturar</span>
                 </label>
               </p>
-            </div>
+            </div>            
             <div class="col s6 m3 l3">
               <p>
                 <br>

@@ -93,15 +93,13 @@
 						        	$id_usuario = $reservacion['usuario'];// ID DEL USUARIO REGISTRO
 									    //Obtenemos la informacion del Usuario
 									    $usuario = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `users` WHERE user_id = $id_usuario"));
-						        	if ($reservacion['estatus'] == 0) {
-						        		$estatus = 'Pendiente';
-						        	}else if ($reservacion['estatus'] == 1) {
-						        		$estatus = 'Ocupada';
-						        	}else if ($reservacion == 3) {
-						        		$estatus = 'Terminada';
-						        	}else if ($reservacion['estatus'] == 4) {
-						        		$estatus = 'Cancelada';
-						        	}
+						        	if($reservacion['estatus'] == 3){
+												$estatus = '<span class="new badge red" data-badge-caption="Cancelada"></span>';
+											}elseif ($reservacion['estatus'] == 2) {
+												$estatus = '<span class="new badge black" data-badge-caption="Terminada"></span>';
+											}else{
+												$estatus = ($reservacion['estatus'] == 1)? '<span class="new badge blue" data-badge-caption="Ocupada"></span>': '<span class="new badge green" data-badge-caption="Pendiente"></span>';
+											}
 						        	?>
 						        	<tr>
 						        		<td><?php echo $reservacion['id']; ?></td>
@@ -110,7 +108,7 @@
 						        		<td><?php echo $reservacion['fecha_entrada']; ?></td>
 						        		<td><?php echo $reservacion['fecha_salida']; ?></td>
 						        		<td>$<?php echo sprintf('%.2f', $reservacion['total']); ?></td>
-						        		<td><?php echo $reservacion['estatus']; ?></td>
+						        		<td><?php echo $estatus; ?></td>
 						        		<td><?php echo $usuario['firstname']; ?></td>
 						        		<td><?php echo $reservacion['fecha_registro']; ?></td>
 						        	</tr>

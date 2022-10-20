@@ -266,11 +266,13 @@ switch ($Accion) {
 					//VERIFICAMOS QUE LA SENTECIA FUE EJECUTADA CON EXITO!
 					if(mysqli_query($conn, $sql)){
 						echo '<script >M.toast({html:"La reservacion se dió de alta satisfactoriamente.", classes: "rounded"})</script>';
+						$ultimaReserv =  mysqli_fetch_array(mysqli_query($conn, "SELECT MAX(id) AS id FROM resrevaciones WHERE usuario = $id_user"));            
+          				$reservacion = $ultimaReserv['id'];
 						//SI HAY UN ANTICIPO REGISTRAR PAGO Y TICKET (SE HABRE EL CAJON SI ES PAGO EN EFECTIVO)
 						if ($anticipo > 0) {
 							// code...
         					$tipo_cambio = $conn->real_escape_string($_POST['valortipo_cambio']);
-        					$descripcion = 'Reservación Habitacion N°'.$habitacion.' ('.$Entrada.' - '.$Salida.')';
+        					$descripcion = 'Reservación N°'.$reservacion.' ('.$Entrada.' - '.$Salida.')';
 
         					if ($tipo_cambio == 'Credito') {
         						// CREAMOS LA DEUDA DE CREDITO AL CLIENTE
@@ -290,6 +292,103 @@ switch ($Accion) {
 			 	}// FIN else DE BUSCAR CLIENTE IGUAL
         	}
         }
+    	break;
+    case 4:
+    	// code...
+
+    	//CON POST RECIBIMOS UN TEXTO DEL BUSCADOR VACIO O NO DE "check_in.php"
+    	$Texto = $conn->real_escape_string($_POST['texto']);
+
+    	//VERIFICAMOS SI CONTIENE ALGO DE TEXTO LA VARIABLE
+		if ($Texto != "") {
+			//MOSTRARA LOS CLIENTES QUE SE ESTAN BUSCANDO Y GUARDAMOS LA CONSULTA SQL EN UNA VARIABLE $sql......
+			$sql = "SELECT * FROM `reservaciones` WHERE  (id_cliente = '$Texto' OR id_habitacion = '$Texto' OR nombre LIKE '%$Texto%') AND estatus = 0 ORDER BY id";	
+		}else{
+			//ESTA CONSULTA SE HARA SIEMPRE QUE NO ALLA NADA EN EL BUSCADOR Y GUARDAMOS LA CONSULTA SQL EN UNA VARIABLE $sql...
+			$sql = "SELECT * FROM `reservaciones` WHERE estatus = 0 limit 50";
+		}//FIN else $Texto VACIO O NO
+
+		// REALIZAMOS LA CONSULTA A LA BASE DE DATOS MYSQL Y GUARDAMOS EN FORMARTO ARRAY EN UNA VARIABLE $consulta
+		$consulta = mysqli_query($conn, $sql);		
+		$contenido = '';//CREAMOS UNA VARIABLE VACIA PARA IR LLENANDO CON LA INFORMACION EN FORMATO
+
+		//VERIFICAMOS QUE LA VARIABLE SI CONTENGA INFORMACION
+		if (mysqli_num_rows($consulta) == 0) {
+				echo '<script>M.toast({html:"No se encontraron reservaciones pendientes.", classes: "rounded"})</script>';
+			
+		} else {
+			//SI NO ESTA EN == 0 SI TIENE INFORMACION
+			//La variable $resultado contiene el array que se genera en la consulta, así que obtenemos los datos y los mostramos en un bucle
+			//RECORREMOS UNO A UNO LOS CLIENTES CON EL WHILE	
+			while($reservacion = mysqli_fetch_array($consulta)) {
+				$id_user = $reservacion['usuario'];
+				$user = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `users` WHERE user_id=$id_user"));
+
+				$id_cliente = $reservacion['id_cliente'];
+				$cliente = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `clientes` WHERE id=$id_cliente"));
+				$estatus = ($reservacion['estatus'] == 0)? '<span class="new badge green" data-badge-caption="Pendiente"></span>':'';
+				//Output
+				$contenido .= '			
+		          <tr>
+		            <td>'.$reservacion['id'].'</td>
+		            <td>'.$id_cliente.'. '.$cliente['nombre'].'</td>
+		            <td>N°'.$reservacion['id_habitacion'].'</td>
+		            <td>'.$reservacion['nombre'].'</td>
+		            <td>'.$reservacion['fecha_entrada'].'</td>
+		            <td>'.$reservacion['fecha_salida'].'</td>
+		            <td>'.$reservacion['observacion'].'</td>
+		            <td>'.$estatus.'</td>
+		            <td>'.$user['firstname'].'</td>
+		            <td>'.$reservacion['fecha_registro'].'</td>
+		            <td><form method="post" action="../views/reservacion.php"><input id="cliente" name="cliente" type="hidden" value="'.$cliente['id'].'"><button class="btn-small green waves-effect waves-light"><i class="material-icons">done</i></button></form> </td>
+		            <td><a onclick="cancelar_reservacion('.$reservacion['id'].')" class="btn-small red waves-effect waves-light"><i class="material-icons">close</i></a></td>
+		          </tr>';
+			}//FIN while
+		}//FIN else
+		echo $contenido;// MOSTRAMOS LA INFORMACION HTML
+    	break;
+    case 5:
+    	// code...
+
+    	//CON POST RECIBIMOS LA VARIABLE DEL BOTON POR EL SCRIPT DE "check_in.php" QUE NESECITAMOS PARA BORRAR
+    	$id = $conn->real_escape_string($_POST['id']);
+    	//Obtenemos la informacion del Usuario
+    	$User = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `users` WHERE user_id = $id_user"));
+    	//SE VERIFICA SI EL USUARIO LOGEADO TIENE PERMISO DE BORRAR CLIENTES
+    	if ($User['cancelar'] == 1) {
+    		//CREAMO LA SENTENCIA SQL PARA HACER LA ACTUALIZACION DE LA INFORMACION DEL CLIENTE Y LA GUARDAMOS EN UNA VARIABLE
+			$sql = "UPDATE `reservaciones` SET estatus = 3 WHERE id = '$id'";
+			//VERIFICAMOS QUE LA SENTECIA FUE EJECUTADA CON EXITO!
+			if(mysqli_query($conn, $sql)){
+				echo '<script >M.toast({html:"Cancelación correcta....", classes: "rounded"})</script>';	
+				echo '<script>checkIn()</script>';// REDIRECCIONAMOS (FUNCION ESTA EN ARCHIVO modals.php)
+			}else{
+					echo '<script >M.toast({html:"Ocurrio un error...", classes: "rounded"})</script>';	
+			}//FIN else DE ERROR
+	    }else{
+			echo '<script >M.toast({html:"Permiso denegado.", classes: "rounded"});
+			M.toast({html:"Comunicate con un administrador.", classes: "rounded"});</script>';
+	    }   
+    	break;
+    case 6:
+    	// code...
+    
+    	//CON POST RECIBIMOS LA VARIABLE DEL BOTON POR EL SCRIPT DE "modal_nota.php" QUE NESECITAMOS PARA BORRAR
+    	$id = $conn->real_escape_string($_POST['id']);
+    	$DescripcionNota = $conn->real_escape_string($_POST['valorNota']);
+    	//VERIFICAMOS QUE NO HALLA UN CLIENTE CON LOS MISMOS DATOS
+		if(mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `notas` WHERE descripcion='$DescripcionNota' AND id_reservacion='$id'"))>0){
+			echo '<script >M.toast({html:"Ya se encuentra una nota igual registrada.", classes: "rounded"})</script>';
+		}else{
+			// SI NO HAY NUNGUNO IGUAL CREAMOS LA SENTECIA SQL  CON LA INFORMACION REQUERIDA Y LA ASIGNAMOS A UNA VARIABLE
+			$sql = "INSERT INTO `notas` (id_reservacion, descripcion, usuario, fecha) VALUES('$id', '$DescripcionNota', '$id_user','$Fecha_hoy')";
+			//VERIFICAMOS QUE LA SENTECIA FUE EJECUTADA CON EXITO!
+			if(mysqli_query($conn, $sql)){
+				echo '<script >M.toast({html:"La nota se dió de alta satisfactoriamente.", classes: "rounded"})</script>';
+				}else{
+					echo '<script >M.toast({html:"Ocurrio un error en el registro de la nota.", classes: "rounded"})</script>';	
+				}//FIN else DE ERROR
+			}// FIN else DE BUSCAR nota IGUAL
     	break;
 
 }// FIN switch
