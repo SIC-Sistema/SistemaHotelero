@@ -326,7 +326,6 @@ switch ($Accion) {
 
 				$id_cliente = $reservacion['id_cliente'];
 				$cliente = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `clientes` WHERE id=$id_cliente"));
-				$estatus = ($reservacion['estatus'] == 0)? '<span class="new badge green" data-badge-caption="Pendiente"></span>':'';
 				//Output
 				$contenido .= '			
 		          <tr>
@@ -337,7 +336,6 @@ switch ($Accion) {
 		            <td>'.$reservacion['fecha_entrada'].'</td>
 		            <td>'.$reservacion['fecha_salida'].'</td>
 		            <td>'.$reservacion['observacion'].'</td>
-		            <td>'.$estatus.'</td>
 		            <td>'.$user['firstname'].'</td>
 		            <td>'.$reservacion['fecha_registro'].'</td>
 		            <td><form method="post" action="../views/reservacion.php"><input id="cliente" name="cliente" type="hidden" value="'.$cliente['id'].'"><button class="btn-small green waves-effect waves-light"><i class="material-icons">done</i></button></form> </td>
@@ -390,8 +388,53 @@ switch ($Accion) {
 				}//FIN else DE ERROR
 			}// FIN else DE BUSCAR nota IGUAL
     	break;
+    case 7:
+    	// code...
+    	//CON POST RECIBIMOS UN TEXTO DEL BUSCADOR VACIO O NO DE "check_in.php"
+    	$Texto = $conn->real_escape_string($_POST['texto']);
 
+    	//VERIFICAMOS SI CONTIENE ALGO DE TEXTO LA VARIABLE
+		if ($Texto != "") {
+			//MOSTRARA LOS CLIENTES QUE SE ESTAN BUSCANDO Y GUARDAMOS LA CONSULTA SQL EN UNA VARIABLE $sql......
+			$sql = "SELECT * FROM `reservaciones` WHERE  (id_cliente = '$Texto' OR id_habitacion = '$Texto' OR nombre LIKE '%$Texto%') AND estatus = 0 OR estatus = 1 ORDER BY id";	
+		}else{
+			//ESTA CONSULTA SE HARA SIEMPRE QUE NO ALLA NADA EN EL BUSCADOR Y GUARDAMOS LA CONSULTA SQL EN UNA VARIABLE $sql...
+			$sql = "SELECT * FROM `reservaciones` WHERE estatus = 0 OR estatus = 1";
+		}//FIN else $Texto VACIO O NO
+
+		// REALIZAMOS LA CONSULTA A LA BASE DE DATOS MYSQL Y GUARDAMOS EN FORMARTO ARRAY EN UNA VARIABLE $consulta
+		$consulta = mysqli_query($conn, $sql);		
+		$contenido = '';//CREAMOS UNA VARIABLE VACIA PARA IR LLENANDO CON LA INFORMACION EN FORMATO
+
+		//VERIFICAMOS QUE LA VARIABLE SI CONTENGA INFORMACION
+		if (mysqli_num_rows($consulta) == 0) {
+				echo '<script>M.toast({html:"No se encontraron reservaciones pendientes.", classes: "rounded"})</script>';			
+		} else {
+			//SI NO ESTA EN == 0 SI TIENE INFORMACION
+			//La variable $resultado contiene el array que se genera en la consulta, así que obtenemos los datos y los mostramos en un bucle
+			//RECORREMOS UNO A UNO LOS CLIENTES CON EL WHILE	
+			while($reservacion = mysqli_fetch_array($consulta)) {
+				$id_user = $reservacion['usuario'];
+				$user = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `users` WHERE user_id=$id_user"));
+				$id_cliente = $reservacion['id_cliente'];
+				$cliente = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `clientes` WHERE id=$id_cliente"));
+				$estatus = ($reservacion['estatus'] == 0)? '<span class="new badge green" data-badge-caption="Pendiente"></span>':'<span class="new badge blue" data-badge-caption="Ocupada"></span>';
+				//Output
+				$contenido .= '			
+		          <tr>
+		            <td>'.$reservacion['id'].'</td>
+		            <td>'.$id_cliente.'. '.$cliente['nombre'].'</td>
+		            <td>N°'.$reservacion['id_habitacion'].'</td>
+		            <td>'.$reservacion['nombre'].'</td>
+		            <td>'.$estatus.'</td>
+		            <td>'.$user['firstname'].'</td>
+		            <td>'.$reservacion['fecha_registro'].'</td>
+		            <td><form method="post" action="../views/detalles_cuenta.php"><input id="id" name="id" type="hidden" value="'.$cliente['id'].'"><button class="btn-small grey darken-4 waves-effect waves-light"><i class="material-icons">list</i></button></form> </td>
+		          </tr>';
+			}//FIN while
+		}//FIN else
+		echo $contenido;// MOSTRAMOS LA INFORMACION HTML
+    	break;
 }// FIN switch
-mysqli_close($conn);
-    
+mysqli_close($conn);    
 ?>
