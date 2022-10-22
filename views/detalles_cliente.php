@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -135,6 +134,7 @@
 	                  <th>Usuario</th>
 	                  <th>Fecha</th>
 	                  <th>Cambio</th> 
+	                  <th>Borrar</th> 
 	                </tr>
 	              </thead>
 	              <tbody>

@@ -396,7 +396,7 @@ switch ($Accion) {
     	//VERIFICAMOS SI CONTIENE ALGO DE TEXTO LA VARIABLE
 		if ($Texto != "") {
 			//MOSTRARA LOS CLIENTES QUE SE ESTAN BUSCANDO Y GUARDAMOS LA CONSULTA SQL EN UNA VARIABLE $sql......
-			$sql = "SELECT * FROM `reservaciones` WHERE  (id_cliente = '$Texto' OR id_habitacion = '$Texto' OR nombre LIKE '%$Texto%') AND estatus = 0 OR estatus = 1 ORDER BY id";	
+			$sql = "SELECT * FROM `reservaciones` WHERE  (id_habitacion = '$Texto' OR id_cliente = '$Texto' OR  nombre LIKE '%$Texto%') AND estatus = 0 OR estatus = 1 ORDER BY id";	
 		}else{
 			//ESTA CONSULTA SE HARA SIEMPRE QUE NO ALLA NADA EN EL BUSCADOR Y GUARDAMOS LA CONSULTA SQL EN UNA VARIABLE $sql...
 			$sql = "SELECT * FROM `reservaciones` WHERE estatus = 0 OR estatus = 1";
@@ -418,7 +418,7 @@ switch ($Accion) {
 				$user = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `users` WHERE user_id=$id_user"));
 				$id_cliente = $reservacion['id_cliente'];
 				$cliente = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `clientes` WHERE id=$id_cliente"));
-				$estatus = ($reservacion['estatus'] == 0)? '<span class="new badge green" data-badge-caption="Pendiente"></span>':'<span class="new badge blue" data-badge-caption="Ocupada"></span>';
+				$estatus = ($reservacion['estatus'] == 0)? '<span class="new badge green " data-badge-caption="Pendiente"></span>':'<span class="new badge blue" data-badge-caption="Ocupada"></span>';
 				//Output
 				$contenido .= '			
 		          <tr>
@@ -429,7 +429,7 @@ switch ($Accion) {
 		            <td>'.$estatus.'</td>
 		            <td>'.$user['firstname'].'</td>
 		            <td>'.$reservacion['fecha_registro'].'</td>
-		            <td><form method="post" action="../views/detalles_cuenta.php"><input id="id" name="id" type="hidden" value="'.$cliente['id'].'"><button class="btn-small grey darken-4 waves-effect waves-light"><i class="material-icons">list</i></button></form> </td>
+		            <td><form method="post" action="../views/detalles_cuenta.php"><input id="id" name="id" type="hidden" value="'.$reservacion['id'].'"><button class="btn-small grey darken-4 waves-effect waves-light"><i class="material-icons">list</i></button></form> </td>
 		          </tr>';
 			}//FIN while
 		}//FIN else
