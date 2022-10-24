@@ -8,10 +8,10 @@ date_default_timezone_set('America/Mexico_City');
 $id_user = $_SESSION['user_id'];// ID DEL USUARIO LOGEADO
 $Fecha_hoy = date('Y-m-d');// FECHA ACTUAL
 
-//CON METODO POST TOMAMOS UN VALOR DEL 0 AL 3 PARA VER QUE ACCION HACER (Para Insertar = 0, Consultar = 1, Actualizar = 2, Borrar = 3)
+//CON METODO POST TOMAMOS UN VALOR DEL 0 AL 3 PARA VER QUE ACCION HACER (Para Insertar = 0, Consultar = 1, Actualizar = 2, Borrar Clientes = 3, Borrar pagos = 4)
 $Accion = $conn->real_escape_string($_POST['accion']);
 
-//UN SWITCH EL CUAL DECIDIRA QUE ACCION REALIZA DEL CRUD (Para Insertar = 0, Consultar = 1, Actualizar = 2, Borrar = 3)
+//UN SWITCH EL CUAL DECIDIRA QUE ACCION REALIZA DEL CRUD (Para Insertar = 0, Consultar = 1, Actualizar = 2, Borrar Clientes = 3, Borrar pagos = 4)
 switch ($Accion) {
     case 0:  ///////////////           IMPORTANTE               ///////////////
         // $Accion es igual a 0 realiza:
@@ -149,11 +149,54 @@ switch ($Accion) {
 				if(mysqli_query($conn, "DELETE FROM `clientes` WHERE `clientes`.`id` = $id")){
 				  #SI ES ELIMINADO MANDAR MSJ CON ALERTA
 				  echo '<script >M.toast({html:"Cliente borrado con exito.", classes: "rounded"})</script>';
+				  echo '<script>recargar_clientes()</script>';// REDIRECCIONAMOS (FUNCION ESTA EN ARCHIVO modals.php)
 				}else{
 				  #SI NO ES BORRADO MANDAR UN MSJ CON ALERTA
 				  echo "<script >M.toast({html: 'Ha ocurrido un error.', classes: 'rounded'});/script>";
 				}
-				echo '<script>recargar_clientes()</script>';// REDIRECCIONAMOS (FUNCION ESTA EN ARCHIVO modals.php)
+			}
+	    }else{
+			echo '<script >M.toast({html:"Permiso denegado.", classes: "rounded"});
+			M.toast({html:"Comunicate con un administrador.", classes: "rounded"});</script>';
+	    }   
+    	break;
+    case 4:
+        // $Accion es igual a 4 realiza:
+    	//CON POST RECIBIMOS LA VARIABLE DEL BOTON POR EL SCRIPT DE "clientes.php" QUE NESECITAMOS PARA BORRAR
+    	$id = $conn->real_escape_string($_POST['id']);
+    	//Obtenemos la informacion del Usuario
+    	$User = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `users` WHERE user_id = $id_user"));
+    	//SE VERIFICA SI EL USUARIO LOGEADO TIENE PERMISO DE BORRAR INGRESOS/EGRESOS
+    	if ($User['borrar'] == 1) {
+    		$motivo = $conn->real_escape_string($_POST['motivo']);
+    		#SELECCIONAMOS LA INFORMACION A BORRAR
+    		$pago = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `pagos` WHERE id_pago = $id"));
+    		#CREAMOS EL SQL DE LA INSERCION A LA TABLA  `pagos_borrados` PARA NO PERDER INFORMACION
+			$sql = "INSERT INTO `pagos_borrados` (cliente, cantidad, descripcion, realizo, tipo_cambio, fecha_hora_registro, motivo, borro, fecha_borrado) 
+				VALUES('".$pago['id_cliente']."', '".$pago['cantidad']."', '".$pago['descripcion']." (".$pago['tipo'].")', '".$pago['id_user']."', '".$pago['tipo_cambio']."', '".$pago['fecha']." ".$pago['hora']."', '".$motivo."', '$id_user','$Fecha_hoy')";
+			//VERIFICAMOS QUE LA SENTECIA FUE EJECUTADA CON EXITO!
+			if(mysqli_query($conn, $sql)){
+				//SI DE CREA LA INSERCION PROCEDEMOS A BORRRAR DE LA TABLA `pagos`
+	    		#VERIFICAMOS QUE SE BORRE CORRECTAMENTE EL PAGO DE `pagos`
+				if(mysqli_query($conn, "DELETE FROM `pagos` WHERE `pagos`.`id_pago` = $id")){
+				  #SI ES ELIMINADO MANDAR MSJ CON ALERTA
+				  echo '<script >M.toast({html:"Pago/Ingreso borrado con exito.", classes: "rounded"})</script>';
+    			  $redireciona = $conn->real_escape_string($_POST['redireciona']);
+    			  if ($redireciona == 0) {
+    			  	echo '<script>recargar_clientes()</script>';// REDIRECCIONAMOS (FUNCION ESTA EN ARCHIVO modals.php)
+    			  }else{
+    			  	?>
+			        <script>
+			          var a = document.createElement("a");
+			            a.href = "../views/detalles_cuenta.php?id="+<?php echo $redireciona; ?>;
+			            a.click();
+			        </script>
+			        <?php
+    			  }
+				}else{
+				  #SI NO ES BORRADO MANDAR UN MSJ CON ALERTA
+				  echo "<script >M.toast({html: 'Ha ocurrido un error.', classes: 'rounded'});/script>";
+				}
 			}
 	    }else{
 			echo '<script >M.toast({html:"Permiso denegado.", classes: "rounded"});

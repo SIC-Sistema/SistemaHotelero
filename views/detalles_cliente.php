@@ -23,6 +23,17 @@
 		  $cliente = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `clientes` WHERE id=$id"));
 		}
 		?>
+		<script>
+			function verificar_eliminar(IdPago){ 
+        var textoIdCliente = $("input#id_cliente").val();  
+        $.post("../views/verificar_eliminar_pago.php", {
+              valorIdPago: IdPago,
+              redireciona: 0,
+            }, function(mensaje) {
+                $("#editPagos").html(mensaje);
+            }); 
+       };
+		</script>
 </head>
 <body>
 	<div class="container">
@@ -137,6 +148,7 @@
 	                  <th>Borrar</th> 
 	                </tr>
 	              </thead>
+                <div id="editPagos"></div>
 	              <tbody>
 	              	<?php
 	              	$pagos = mysqli_query($conn,"SELECT * FROM pagos WHERE id_cliente = $id"); 
@@ -157,6 +169,7 @@
 						        		<td><?php echo $usuario['firstname']; ?></td>
 						        		<td><?php echo $pago['fecha'].' '.$pago['hora']; ?></td>
 						        		<td><?php echo $pago['tipo_cambio']; ?></td>
+						        		<td><a onclick="verificar_eliminar(<?php echo $pago['id_pago']; ?>)" class="btn-small red waves-effect waves-light"><i class="material-icons">delete</i></a></td>
 						        	</tr>
 						        	<?php
 	                	}//FIN while

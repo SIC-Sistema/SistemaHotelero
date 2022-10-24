@@ -85,7 +85,7 @@ switch ($Accion) {
             $id = $conn->real_escape_string($_POST['id']);
 
             //SI DE CREA LA INSERCION PROCEDEMOS A BORRRAR DE LA TABLA `habitaciones`
-            #VERIFICAMOS QUE SE BORRE CORRECTAMENTE EL ALMACEN DE `habitaciones`
+            #VERIFICAMOS QUE SE BORRE CORRECTAMENTE LA HABITACION DE `habitaciones`
             if(mysqli_query($conn, "DELETE FROM `habitaciones` WHERE `habitaciones`.`id` = $id")){
                 #SI ES ELIMINADO MANDAR MSJ CON ALERTA
                 echo '<script >M.toast({html:"Habitacion borrada con exito.", classes: "rounded"})</script>';

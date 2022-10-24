@@ -302,10 +302,10 @@ switch ($Accion) {
     	//VERIFICAMOS SI CONTIENE ALGO DE TEXTO LA VARIABLE
 		if ($Texto != "") {
 			//MOSTRARA LOS CLIENTES QUE SE ESTAN BUSCANDO Y GUARDAMOS LA CONSULTA SQL EN UNA VARIABLE $sql......
-			$sql = "SELECT * FROM `reservaciones` WHERE  (id_cliente = '$Texto' OR id_habitacion = '$Texto' OR nombre LIKE '%$Texto%') AND estatus = 0 ORDER BY id";	
+			$sql = "SELECT * FROM `reservaciones` WHERE  (id_cliente = '$Texto' OR id_habitacion = '$Texto' OR nombre LIKE '%$Texto%') AND estatus = 0 ORDER BY fecha_entrada";	
 		}else{
 			//ESTA CONSULTA SE HARA SIEMPRE QUE NO ALLA NADA EN EL BUSCADOR Y GUARDAMOS LA CONSULTA SQL EN UNA VARIABLE $sql...
-			$sql = "SELECT * FROM `reservaciones` WHERE estatus = 0 limit 50";
+			$sql = "SELECT * FROM `reservaciones` WHERE estatus = 0  ORDER BY fecha_entrada limit 50";
 		}//FIN else $Texto VACIO O NO
 
 		// REALIZAMOS LA CONSULTA A LA BASE DE DATOS MYSQL Y GUARDAMOS EN FORMARTO ARRAY EN UNA VARIABLE $consulta
@@ -383,10 +383,10 @@ switch ($Accion) {
 			//VERIFICAMOS QUE LA SENTECIA FUE EJECUTADA CON EXITO!
 			if(mysqli_query($conn, $sql)){
 				echo '<script >M.toast({html:"La nota se dió de alta satisfactoriamente.", classes: "rounded"})</script>';
-				}else{
-					echo '<script >M.toast({html:"Ocurrio un error en el registro de la nota.", classes: "rounded"})</script>';	
-				}//FIN else DE ERROR
-			}// FIN else DE BUSCAR nota IGUAL
+			}else{
+				echo '<script >M.toast({html:"Ocurrio un error en el registro de la nota.", classes: "rounded"})</script>';	
+			}//FIN else DE ERROR
+		}// FIN else DE BUSCAR nota IGUAL
     	break;
     case 7:
     	// code...
@@ -429,12 +429,65 @@ switch ($Accion) {
 		            <td>'.$estatus.'</td>
 		            <td>'.$user['firstname'].'</td>
 		            <td>'.$reservacion['fecha_registro'].'</td>
-		            <td><form method="post" action="../views/detalles_cuenta.php"><input id="id" name="id" type="hidden" value="'.$reservacion['id'].'"><button class="btn-small grey darken-4 waves-effect waves-light"><i class="material-icons">list</i></button></form> </td>
+		            <td><a href = "../views/detalles_cuenta.php?id='.$reservacion['id'].'" class="btn-small grey darken-4 waves-effect waves-light"><i class="material-icons">list</i></a></td>
 		          </tr>';
 			}//FIN while
 		}//FIN else
 		echo $contenido;// MOSTRAMOS LA INFORMACION HTML
     	break;
+    case 8:
+    	// code...
+    
+    	//CON POST RECIBIMOS LA VARIABLE DEL BOTON POR EL SCRIPT DE "modal_nota.php" QUE NESECITAMOS PARA BORRAR
+    	$id_res = $conn->real_escape_string($_POST['id_res']);
+    	$id_nota = $conn->real_escape_string($_POST['id_nota']);
+    	$DescripcionNota = $conn->real_escape_string($_POST['valorNota']);
+    	//VERIFICAMOS QUE NO HALLA UN CLIENTE CON LOS MISMOS DATOS
+		if(mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `notas` WHERE descripcion='$DescripcionNota' AND id_reservacion='$id_res'"))>0){
+			echo '<script >M.toast({html:"Ya se encuentra una nota igual registrada.", classes: "rounded"})</script>';
+		}else{
+			// SI NO HAY NUNGUNO IGUAL CREAMOS LA SENTECIA SQL  CON LA INFORMACION REQUERIDA Y LA ASIGNAMOS A UNA VARIABLE
+			$sql = "UPDATE `notas` SET descripcion = '$DescripcionNota', usuario = '$id_user', fecha = '$Fecha_hoy' WHERE id = $id_nota";
+			//VERIFICAMOS QUE LA SENTECIA FUE EJECUTADA CON EXITO!
+			if(mysqli_query($conn, $sql)){
+				echo '<script >M.toast({html:"La nota se actualizo satisfactoriamente.", classes: "rounded"})</script>';
+				?>
+		        <script>
+		          var a = document.createElement("a");
+		            a.href = "../views/detalles_cuenta.php?id="+<?php echo $id_res; ?>;
+		            a.click();
+		        </script>
+		        <?php 
+			}else{
+				echo '<script >M.toast({html:"Ocurrio un error en la actualizacion de la nota.", classes: "rounded"})</script>';	
+			}//FIN else DE ERROR
+		}// FIN else DE BUSCAR nota IGUAL         
+    	break;
+    case 9:///////////////           IMPORTANTE               ///////////////
+        // $Accion es igual a 2 realiza:
+
+            //CON POST RECIBIMOS LA VARIABLE DEL BOTON POR EL SCRIPT DE "detalles_habitacion.php" QUE NESECITAMOS PARA BORRAR
+            $id = $conn->real_escape_string($_POST['id']);
+            $id_res = $conn->real_escape_string($_POST['id_res']);
+
+            //SI DE CREA LA INSERCION PROCEDEMOS A BORRRAR DE LA TABLA `notas`
+            #VERIFICAMOS QUE SE BORRE CORRECTAMENTE LA NOTA DE `notas`
+            if(mysqli_query($conn, "DELETE FROM `notas` WHERE `notas`.`id` = $id")){
+                #SI ES ELIMINADO MANDAR MSJ CON ALERTA
+                echo '<script >M.toast({html:"Nota borrada con exito.", classes: "rounded"})</script>';
+                ?>
+		        <script>
+		          var a = document.createElement("a");
+		            a.href = "../views/detalles_cuenta.php?id="+<?php echo $id_res; ?>;
+		            a.click();
+		        </script>
+		        <?php 
+            }else{
+                #SI NO ES BORRADO MANDAR UN MSJ CON ALERTA
+                echo "<script >M.toast({html: 'Ha ocurrido un error.', classes: 'rounded'});/script>";
+            }
+        
+        break; 
 }// FIN switch
 mysqli_close($conn);    
 ?>

@@ -5,7 +5,7 @@
     //INCLUIMOS EL ARCHIVO QUE CONTIENE LA BARRA DE NAVEGACION TAMBIEN TIENE (scripts, conexion, is_logged, modals)
     include('fredyNav.php');
     ?>
-    <title>San Roman | Check In</title>
+    <title>San Roman | Check-in</title>
     <script>
       //FUNCION QUE HACE LA BUSQUEDA DE CLIENTES (SE ACTIVA AL INICIAR EL ARCHIVO O AL ECRIBIR ALGO EN EL BUSCADOR)
       function buscar_reservaciones(){
@@ -46,8 +46,8 @@
       <div id="cancelarRe"></div>
       <div class="row">
         <!--    //////    TITULO    ///////   -->
-        <h3 class="hide-on-med-and-down col s12 m6 l6">Check In</h3>
-        <h5 class="hide-on-large-only col s12 m6 l6">Check In</h5>
+        <h3 class="hide-on-med-and-down col s12 m6 l6">Check-in</h3>
+        <h5 class="hide-on-large-only col s12 m6 l6">Check-in</h5>
         <!--    //////    INPUT DE EL BUSCADOR    ///////   -->
         <form class="col s12 m6 l6"><br><br>
           <div class="row">

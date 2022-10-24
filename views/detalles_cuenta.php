@@ -7,7 +7,7 @@
     include('fredyNav.php');   
 
     //VERIFICAMOS QUE SI NOS ENVIE POR POST EL ID DEL ARTICULO
-    if (isset($_POST['id']) == false) {
+    if (isset($_GET['id']) == false) {
       ?>
       <script>    
         M.toast({html:"Regresando a cuentas.", classes: "rounded"});
@@ -15,7 +15,7 @@
       </script>
       <?php
     }else{
-      $id = $_POST['id'];// POR EL METODO POST RECIBIMOS EL ID DE LA RESERVACION
+      $id = $_GET['id'];// POR EL METODO POST RECIBIMOS EL ID DE LA RESERVACION
       //CONSULTA PARA SACAR LA INFORMACION DE LA reservacion Y ASIGNAMOS EL ARRAY A UNA VARIABLE $reservacion
       $reservacion = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `reservaciones` WHERE id=$id"));
       $id_cliente = $reservacion['id_cliente'];
@@ -23,7 +23,7 @@
       $estatus = ($reservacion['estatus'] == 0)? '<span class="new badge green" data-badge-caption="Pendiente"></span>':'<span class="new badge blue" data-badge-caption="Ocupada"></span>';
     ?>
     <script>
-      //FUNCION QUE MUESTRA EL MODAL PARA CAMBIAR AGREGAR UNA NOTA
+      //FUNCION QUE MUESTRA EL MODAL PARA AGREGAR UNA NOTA
       function modal_nota(id){
           //MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO EN LA DIRECCION "modal_nota.php" PARA MOSTRAR EL MODAL
           $.post("modal_nota.php", {
@@ -54,6 +54,67 @@
           });//FIN post
         }//FIN else
       }//FIN function
+
+      //FUNCION QUE MUESTRA EL MODAL PARA EDITAR UNA NOTA
+      function modal_nota_edit(id_hab, id_nota){
+          //MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO EN LA DIRECCION "modal_nota.php" PARA MOSTRAR EL MODAL
+          $.post("modal_editar_nota.php", {
+            //Cada valor se separa por una ,
+              id_hab:id_hab,
+              id_nota:id_nota,
+            }, function(mensaje){
+                //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "modal_nota.php"
+                $("#modal").html(mensaje);
+          });//FIN post
+      }//FIN function
+
+      //FUNCION QUE MUESTRA EL MODAL PARA  EDITAR UNA NOTA
+      function editar_nota(id_res, id_nota){          
+        var DescripcionNota = $("input#descripcionNota").val();
+
+        if (DescripcionNota == '') {
+          M.toast({html:"Porfavor ingrese una descripción a la nota", classes: "rounded"});
+        }else{
+          //MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO EN LA DIRECCION "control_reservaciones.php" PARA MOSTRAR EL MODAL
+          $.post("../php/control_reservaciones.php", {
+            //Cada valor se separa por una ,
+              id_res: id_res,
+              id_nota: id_nota,
+              valorNota: DescripcionNota,
+              accion: 8,
+            }, function(mensaje){
+                //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "control_reservaciones.php"
+                $("#editNotas").html(mensaje);
+          });//FIN post
+        }//FIN else
+      }//FIN function
+
+      //FUNCION QUE BORRAR NOTAS (SE ACTIVA AL INICIAR EL BOTON BORRAR)
+      function borrar_nota(id_res,id){
+        var answer = confirm("Deseas eliminar la nota N°"+id+"?");
+        if (answer) {
+          //MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO EN LA DIRECCION "../php/control_reservaciones.php"
+          $.post("../php/control_reservaciones.php", {
+            //Cada valor se separa por una ,
+            id_res: id_res,
+            id: id,
+            accion: 9,
+          }, function(mensaje) {
+            //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "control_reservaciones.php"
+            $("#editNotas").html(mensaje);
+          }); //FIN post
+        }//FIN IF
+      };//FIN function
+
+      function verificar_eliminar(id_res, IdPago){ 
+        var textoIdCliente = $("input#id_cliente").val();  
+        $.post("../views/verificar_eliminar_pago.php", {
+              valorIdPago: IdPago,
+              redireciona: id_res,
+            }, function(mensaje) {
+                $("#editPagos").html(mensaje);
+            }); 
+       };
     </script>
   </head>
   <main>
@@ -114,6 +175,7 @@
                     <th>Borrar</th> 
                   </tr>
                 </thead>
+                <div id="editPagos"></div>
                 <tbody>
                   <?php
                   $descripcion = 'Reservación N°'.$id.' ';
@@ -136,6 +198,7 @@
                         <td><?php echo $usuario['firstname']; ?></td>
                         <td><?php echo $pago['fecha'].' '.$pago['hora']; ?></td>
                         <td><?php echo $pago['tipo_cambio']; ?></td>
+                        <td><a onclick="verificar_eliminar(<?php echo $id; ?>,<?php echo $pago['id_pago']; ?>)" class="btn-small red waves-effect waves-light"><i class="material-icons">delete</i></a></td>
                       </tr>
                       <?php
                     }//FIN while
@@ -162,6 +225,7 @@
                     <th>Borrar</th>
                   </tr>
                 </thead>
+                <div id="editNotas"></div>
                 <tbody>
                   <?php
                   $notas = mysqli_query($conn,"SELECT * FROM notas WHERE id_reservacion = $id"); 
@@ -179,6 +243,8 @@
                         <td><?php echo $nota['descripcion']; ?></td>
                         <td><?php echo $usuario['firstname']; ?></td>
                         <td><?php echo $nota['fecha']; ?></td>
+                        <td><a onclick="modal_nota_edit(<?php echo $reservacion['id_habitacion'];?>,<?php echo $nota['id']; ?>)" class="btn-small indigo waves-effect waves-light"><i class="material-icons">edit</i></a></td>
+                        <td><a onclick="borrar_nota(<?php echo $id; ?>,<?php echo $nota['id']; ?>)" class="btn-small red waves-effect waves-light"><i class="material-icons">delete</i></a></td>
                       </tr>
                       <?php
                     }//FIN while
