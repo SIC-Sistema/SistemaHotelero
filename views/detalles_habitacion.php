@@ -21,7 +21,7 @@
 		}
 	?>
 	<script>
-	  //FUNCION QUE BORRA HABITACIONES (SE ACTIVA AL INICIAR EL BOTON BORRAR)
+	  	//FUNCION QUE BORRA HABITACIONES (SE ACTIVA AL INICIAR EL BOTON BORRAR)
       function borrar_habitacion(id){
         var answer = confirm("Deseas eliminar la habitacion N°"+id+"?");
         if (answer) {
