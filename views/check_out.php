@@ -5,7 +5,7 @@
     //INCLUIMOS EL ARCHIVO QUE CONTIENE LA BARRA DE NAVEGACION TAMBIEN TIENE (scripts, conexion, is_logged, modals)
     include('fredyNav.php');
     ?>
-    <title>San Roman | Check-in</title>
+    <title>San Roman | Check-out</title>
     <script>
       //FUNCION QUE HACE LA BUSQUEDA DE CLIENTES (SE ACTIVA AL INICIAR EL ARCHIVO O AL ECRIBIR ALGO EN EL BUSCADOR)
       function buscar_reservaciones(){
@@ -15,15 +15,15 @@
         $.post("../php/control_reservaciones.php", {
           //Cada valor se separa por una ,
             texto: texto,
-            accion: 4,
+            accion: 10,
           }, function(mensaje){
               //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "control_reservaciones.php"
-              $("#reservacionesPendientes").html(mensaje);
+              $("#reservacionesOcupadas").html(mensaje);
         });//FIN post
       };//FIN function
 
       //FUNCION QUE BORRA EL CLIENTES (SE ACTIVA AL INICIAR EL BOTON BORRAR)
-      function cancelar_reservacion(id){
+      function check_out(id){
         var answer = confirm("Deseas cancelar la reservacion N°"+id+"?");
         if (answer) {
           //MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO EN LA DIRECCION "../php/control_reservaciones.php"
@@ -38,14 +38,14 @@
         }//FIN IF
       };//FIN function
 
-      //FUNCION QUE MUESTRA EL MODAL HACER CHECK IN
-      function modal_check_in(){
-          //MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO EN LA DIRECCION "modal_check_in.php" PARA MOSTRAR EL MODAL
-          $.post("modal_check_in.php", {
+      //FUNCION QUE MUESTRA EL MODAL PARA AGREGAR UNA NOTA
+      function modal_check_out(){
+          //MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO EN LA DIRECCION "modal_nota.php" PARA MOSTRAR EL MODAL
+          $.post("modal_check_out.php", {
             //Cada valor se separa por una ,
               id:1,
             }, function(mensaje){
-                //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "modal_check_in.php"
+                //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "modal_nota.php"
                 $("#modal").html(mensaje);
           });//FIN post
       }//FIN function
@@ -54,14 +54,12 @@
   <main>
   <body onload="buscar_reservaciones();">
     <div class="container"><br><br>      
-      <!-- CREAMOS UN DIV EL CUAL TENGA id = "cancelarRe"  PARA QUE EN ESTA PARTE NOS MUESTRE LOS RESULTADOS EN TEXTO HTML DEL SCRIPT EN FUNCION  -->
-      <div id="cancelarRe"></div>
       <!-- CREAMOS UN DIV EL CUAL TENGA id = "modal"  PARA QUE EN ESTA PARTE NOS MUESTRE LOS RESULTADOS EN TEXTO HTML DEL SCRIPT EN FUNCION  -->
       <div id="modal"></div>
       <div class="row">
         <!--    //////    TITULO    ///////   -->
-        <h3 class="hide-on-med-and-down col s12 m6 l6">Check-in</h3>
-        <h5 class="hide-on-large-only col s12 m6 l6">Check-in</h5>
+        <h3 class="hide-on-med-and-down col s12 m6 l6">Check-out</h3>
+        <h5 class="hide-on-large-only col s12 m6 l6">Check-out</h5>
         <!--    //////    INPUT DE EL BUSCADOR    ///////   -->
         <form class="col s12 m6 l6"><br><br>
           <div class="row">
@@ -84,15 +82,13 @@
               <th>Responsable</th>
               <th>Fecha Entrada</th>
               <th>Fecha Salida</th>
-              <th>Observacion</th>
               <th>Registro</th>
               <th>Fecha Registro</th>
-              <th>Check-in</th>
-              <th>Cancelar</th>
+              <th>Check-out</th>
             </tr>
           </thead>
-          <!-- DENTRO DEL tbody COLOCAMOS id = "reservacionesPendientes"  PARA QUE EN ESTA PARTE NOS MUESTRE LOS RESULTADOS EN TEXTO HTML DEL SCRIPT EN FUNCION buscar_reservaciones() -->
-          <tbody id="reservacionesPendientes">
+          <!-- DENTRO DEL tbody COLOCAMOS id = "reservacionesOcupadas"  PARA QUE EN ESTA PARTE NOS MUESTRE LOS RESULTADOS EN TEXTO HTML DEL SCRIPT EN FUNCION buscar_reservaciones() -->
+          <tbody id="reservacionesOcupadas">
           </tbody>
         </table>
       </div><br><br>

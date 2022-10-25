@@ -338,7 +338,7 @@ switch ($Accion) {
 		            <td>'.$reservacion['observacion'].'</td>
 		            <td>'.$user['firstname'].'</td>
 		            <td>'.$reservacion['fecha_registro'].'</td>
-		            <td><form method="post" action="../views/reservacion.php"><input id="cliente" name="cliente" type="hidden" value="'.$cliente['id'].'"><button class="btn-small green waves-effect waves-light"><i class="material-icons">done</i></button></form> </td>
+		            <td><a onclick="modal_check_in()" class="btn-small green waves-effect waves-light"><i class="material-icons prefix">exit_to_app</i></a></td>
 		            <td><a onclick="cancelar_reservacion('.$reservacion['id'].')" class="btn-small red waves-effect waves-light"><i class="material-icons">close</i></a></td>
 		          </tr>';
 			}//FIN while
@@ -464,29 +464,76 @@ switch ($Accion) {
 		}// FIN else DE BUSCAR nota IGUAL         
     	break;
     case 9:///////////////           IMPORTANTE               ///////////////
-        // $Accion es igual a 2 realiza:
+        // $Accion es igual a 9 realiza:
 
-            //CON POST RECIBIMOS LA VARIABLE DEL BOTON POR EL SCRIPT DE "detalles_habitacion.php" QUE NESECITAMOS PARA BORRAR
-            $id = $conn->real_escape_string($_POST['id']);
-            $id_res = $conn->real_escape_string($_POST['id_res']);
+        //CON POST RECIBIMOS LA VARIABLE DEL BOTON POR EL SCRIPT DE "detalles_habitacion.php" QUE NESECITAMOS PARA BORRAR
+        $id = $conn->real_escape_string($_POST['id']);
+        $id_res = $conn->real_escape_string($_POST['id_res']);
 
-            //SI DE CREA LA INSERCION PROCEDEMOS A BORRRAR DE LA TABLA `notas`
-            #VERIFICAMOS QUE SE BORRE CORRECTAMENTE LA NOTA DE `notas`
-            if(mysqli_query($conn, "DELETE FROM `notas` WHERE `notas`.`id` = $id")){
-                #SI ES ELIMINADO MANDAR MSJ CON ALERTA
-                echo '<script >M.toast({html:"Nota borrada con exito.", classes: "rounded"})</script>';
-                ?>
-		        <script>
-		          var a = document.createElement("a");
-		            a.href = "../views/detalles_cuenta.php?id="+<?php echo $id_res; ?>;
-		            a.click();
-		        </script>
-		        <?php 
-            }else{
-                #SI NO ES BORRADO MANDAR UN MSJ CON ALERTA
-                echo "<script >M.toast({html: 'Ha ocurrido un error.', classes: 'rounded'});/script>";
-            }
-        
+        //SI DE CREA LA INSERCION PROCEDEMOS A BORRRAR DE LA TABLA `notas`
+        #VERIFICAMOS QUE SE BORRE CORRECTAMENTE LA NOTA DE `notas`
+        if(mysqli_query($conn, "DELETE FROM `notas` WHERE `notas`.`id` = $id")){
+            #SI ES ELIMINADO MANDAR MSJ CON ALERTA
+            echo '<script >M.toast({html:"Nota borrada con exito.", classes: "rounded"})</script>';
+            ?>
+		    <script>
+		      var a = document.createElement("a");
+		        a.href = "../views/detalles_cuenta.php?id="+<?php echo $id_res; ?>;
+		        a.click();
+		    </script>
+		    <?php 
+        }else{
+            echo "<script >M.toast({html: 'Ha ocurrido un error.', classes: 'rounded'});/script>";
+        }        
+        break;
+    case 10:///////////////           IMPORTANTE               ///////////////
+        // $Accion es igual a 10 realiza:
+
+        //CON POST RECIBIMOS UN TEXTO DEL BUSCADOR VACIO O NO DE "check_in.php"
+    	$Texto = $conn->real_escape_string($_POST['texto']);
+
+    	//VERIFICAMOS SI CONTIENE ALGO DE TEXTO LA VARIABLE
+		if ($Texto != "") {
+			//MOSTRARA LOS CLIENTES QUE SE ESTAN BUSCANDO Y GUARDAMOS LA CONSULTA SQL EN UNA VARIABLE $sql......
+			$sql = "SELECT * FROM `reservaciones` WHERE  (id_cliente = '$Texto' OR id_habitacion = '$Texto' OR nombre LIKE '%$Texto%') AND estatus = 1 AND fecha_salida = '$Fecha_hoy' ORDER BY fecha_entrada";	
+		}else{
+			//ESTA CONSULTA SE HARA SIEMPRE QUE NO ALLA NADA EN EL BUSCADOR Y GUARDAMOS LA CONSULTA SQL EN UNA VARIABLE $sql...
+			$sql = "SELECT * FROM `reservaciones` WHERE estatus = 1 AND fecha_salida = '$Fecha_hoy' ORDER BY fecha_entrada limit 50";
+		}//FIN else $Texto VACIO O NO
+
+		// REALIZAMOS LA CONSULTA A LA BASE DE DATOS MYSQL Y GUARDAMOS EN FORMARTO ARRAY EN UNA VARIABLE $consulta
+		$consulta = mysqli_query($conn, $sql);		
+		$contenido = '';//CREAMOS UNA VARIABLE VACIA PARA IR LLENANDO CON LA INFORMACION EN FORMATO
+
+		//VERIFICAMOS QUE LA VARIABLE SI CONTENGA INFORMACION
+		if (mysqli_num_rows($consulta) == 0) {
+				echo '<script>M.toast({html:"No se encontraron reservaciones para check-out.", classes: "rounded"})</script>';			
+		} else {
+			//SI NO ESTA EN == 0 SI TIENE INFORMACION
+			//La variable $resultado contiene el array que se genera en la consulta, así que obtenemos los datos y los mostramos en un bucle
+			//RECORREMOS UNO A UNO LOS CLIENTES CON EL WHILE	
+			while($reservacion = mysqli_fetch_array($consulta)) {
+				$id_user = $reservacion['usuario'];
+				$user = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `users` WHERE user_id=$id_user"));
+
+				$id_cliente = $reservacion['id_cliente'];
+				$cliente = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `clientes` WHERE id=$id_cliente"));
+				//Output
+				$contenido .= '			
+		          <tr>
+		            <td>'.$reservacion['id'].'</td>
+		            <td>'.$id_cliente.'. '.$cliente['nombre'].'</td>
+		            <td>N°'.$reservacion['id_habitacion'].'</td>
+		            <td>'.$reservacion['nombre'].'</td>
+		            <td>'.$reservacion['fecha_entrada'].'</td>
+		            <td>'.$reservacion['fecha_salida'].'</td>
+		            <td>'.$user['firstname'].'</td>
+		            <td>'.$reservacion['fecha_registro'].'</td>
+		            <td><a onclick="modal_check_out()" class="btn-small green waves-effect waves-light"><i class="material-icons prefix">exit_to_app</i></a></td>
+		          </tr>';
+			}//FIN while
+		}//FIN else
+		echo $contenido;// MOSTRAMOS LA INFORMACION HTML  
         break; 
 }// FIN switch
 mysqli_close($conn);    
