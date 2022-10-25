@@ -38,14 +38,14 @@
         }//FIN IF
       };//FIN function
 
-      //FUNCION QUE MUESTRA EL MODAL PARA AGREGAR UNA NOTA
+      //FUNCION QUE MUESTRA EL MODAL HACER CHECK OUT
       function modal_check_out(){
-          //MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO EN LA DIRECCION "modal_nota.php" PARA MOSTRAR EL MODAL
+          //MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO EN LA DIRECCION "modal_check_out.php" PARA MOSTRAR EL MODAL
           $.post("modal_check_out.php", {
             //Cada valor se separa por una ,
-              id:1,
+              id:6,
             }, function(mensaje){
-                //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "modal_nota.php"
+                //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "modal_check_out.php"
                 $("#modal").html(mensaje);
           });//FIN post
       }//FIN function

@@ -131,7 +131,7 @@
               <p class="row col s12"><b>
                 <div class="col s12 m4">
                   <div class="col s12"><b class="indigo-text">N° RESERVACION: </b><?php echo $id;?></div>
-                  <div class="col s12"><b class="indigo-text">Cliente: </b><?php echo $cliente['nombre'];?></div>              
+                  <div class="col s12"><b class="indigo-text">CLIENTE: </b><?php echo $cliente['nombre'];?></div>              
                   <div class="col s12"><b class="indigo-text">HABITACION N°: </b><?php echo $reservacion['id_habitacion'];?></div>         
                   <div class="col s12"><b class="indigo-text">RESPONSABLE: </b><?php echo $reservacion['nombre'];?></div>                
                 </div>
