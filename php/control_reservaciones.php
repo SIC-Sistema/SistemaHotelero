@@ -338,7 +338,7 @@ switch ($Accion) {
 		            <td>'.$reservacion['observacion'].'</td>
 		            <td>'.$user['firstname'].'</td>
 		            <td>'.$reservacion['fecha_registro'].'</td>
-		            <td><a onclick="modal_check_in()" class="btn-small green waves-effect waves-light"><i class="material-icons prefix">exit_to_app</i></a></td>
+		            <td><a onclick="modal_check_in('.$reservacion['id'].')" class="btn-small green waves-effect waves-light"><i class="material-icons prefix">exit_to_app</i></a></td>
 		            <td><a onclick="cancelar_reservacion('.$reservacion['id'].')" class="btn-small red waves-effect waves-light"><i class="material-icons">close</i></a></td>
 		          </tr>';
 			}//FIN while

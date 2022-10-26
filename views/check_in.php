@@ -39,11 +39,11 @@
       };//FIN function
 
       //FUNCION QUE MUESTRA EL MODAL HACER CHECK IN
-      function modal_check_in(){
+      function modal_check_in(id){
           //MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO EN LA DIRECCION "modal_check_in.php" PARA MOSTRAR EL MODAL
           $.post("modal_check_in.php", {
             //Cada valor se separa por una ,
-              id:6,
+              id:id,
             }, function(mensaje){
                 //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "modal_check_in.php"
                 $("#modal").html(mensaje);
