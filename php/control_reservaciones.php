@@ -356,7 +356,7 @@ switch ($Accion) {
     	$User = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `users` WHERE user_id = $id_user"));
     	//SE VERIFICA SI EL USUARIO LOGEADO TIENE PERMISO DE CANCELAR RESERVACIONES
     	if ($User['cancelar'] == 1) {
-    		//CREAMO LA SENTENCIA SQL PARA HACER LA ACTUALIZACION DE LA INFORMACION DEL CLIENTE Y LA GUARDAMOS EN UNA VARIABLE
+    		//CREAMO LA SENTENCIA SQL PARA HACER LA ACTUALIZACION DE LA INFORMACION DEL CLIENTE Y LA GUARDAMOS EN UNA VARIABLE 3 = Cancelada
 			$sql = "UPDATE `reservaciones` SET estatus = 3 WHERE id = '$id'";
 			//VERIFICAMOS QUE LA SENTECIA FUE EJECUTADA CON EXITO!
 			if(mysqli_query($conn, $sql)){
@@ -546,14 +546,14 @@ switch ($Accion) {
 			echo '<script >M.toast({html:"No se realizo CHECK-IN", classes: "rounded"})</script>';	
 			echo '<script >M.toast({html:"Esta habitacion ya tiene una reservacion ocupada.", classes: "rounded"})</script>';	
 		}else{
-			//CREAMO LA SENTENCIA SQL PARA HACER LA ACTUALIZACION DE LA INFORMACION DEL CLIENTE Y LA GUARDAMOS EN UNA VARIABLE
+			//CREAMO LA SENTENCIA SQL PARA HACER LA ACTUALIZACION DE LA INFORMACION DEL CLIENTE Y LA GUARDAMOS EN UNA VARIABLE 1 = Ocupada
 			$sql = "UPDATE `reservaciones` SET estatus = 1 WHERE id = '$id'";
 			//VERIFICAMOS QUE LA SENTECIA FUE EJECUTADA CON EXITO!
 			if(mysqli_query($conn, $sql)){
 				echo '<script >M.toast({html:"CHECK-IN se realizo con exito", classes: "rounded"})</script>';
 				#CON POST RECIBIMOS LAS VARIABLES Y VERIFICAMOS SI HAY QUE REGISTRAR PAGO
         		$Abono = $conn->real_escape_string($_POST['abonoR']);
-        		if ($Abono > 0 OR $Abono != '') {
+        		if ($Abono > 0) {
         			$tipo_cambio = $conn->real_escape_string($_POST['tipo_cambio']);
         			$descripcion = 'Reservación N°'.$id.' ('.$reservacion['fecha_entrada'].' - '.$reservacion['fecha_salida'].')';
         			$cliente = $reservacion['id_cliente'];
@@ -575,6 +575,41 @@ switch ($Accion) {
 					echo '<script >M.toast({html:"Ocurrio un error...", classes: "rounded"})</script>';	
 			}//FIN else DE ERROR
 		}		
+    	break;
+    case 12:///////////////           IMPORTANTE               ///////////////
+        // $Accion es igual a 12 realiza:
+
+    	//CON POST RECIBIMOS EL ID DE LA RESERVACION Y EL ID DE LA HABITACION DE "check_in.php"
+        $id = $conn->real_escape_string($_POST['id']);
+        $reservacion = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `reservaciones` WHERE id=$id"));
+
+		//CREAMO LA SENTENCIA SQL PARA HACER LA ACTUALIZACION DE LA INFORMACION DEL CLIENTE Y LA GUARDAMOS EN UNA VARIABLE 2 = Terminada
+		$sql = "UPDATE `reservaciones` SET estatus = 2 WHERE id = '$id'";
+		//VERIFICAMOS QUE LA SENTECIA FUE EJECUTADA CON EXITO!
+		if(mysqli_query($conn, $sql)){
+			echo '<script >M.toast({html:"CHECK-OUT se realizo con exito", classes: "rounded"})</script>';
+			#CON POST RECIBIMOS LAS VARIABLES Y VERIFICAMOS SI HAY QUE REGISTRAR PAGO
+        	$Liquidacion = $conn->real_escape_string($_POST['liquidacion']);
+        	if ($Liquidacion > 0) {
+        		$tipo_cambio = $conn->real_escape_string($_POST['tipo_cambio']);
+        		$descripcion = 'Reservación N°'.$id.' ('.$reservacion['fecha_entrada'].' - '.$reservacion['fecha_salida'].')';
+        		$cliente = $reservacion['id_cliente'];
+
+        		if ($tipo_cambio == 'Credito') {
+        			// CREAMOS LA DEUDA DE CREDITO AL CLIENTE
+        		}
+
+        		#--- CREAMOS EL SQL PARA LA INSERCION ---
+      			$sql = "INSERT INTO pagos (id_cliente, descripcion, cantidad, fecha, hora, tipo, id_user, corte, tipo_cambio) VALUES ($cliente, '$descripcion', '$Liquidacion', '$Fecha_hoy', '$Hora', 'Liquidacion', $id_user, 0, '$tipo_cambio')";
+      			#--- SE INSERTA EL PAGO -----------
+				if(mysqli_query($conn, $sql)){
+					echo '<script>M.toast({html:"El pago se dió de alta satisfcatoriamente.", classes: "rounded"})</script>';
+				}// FIN if pago
+        	}// FIN if abono
+			echo '<script>checkout()</script>';// REDIRECCIONAMOS (FUNCION ESTA EN ARCHIVO modals.php)
+		}else{
+			echo '<script >M.toast({html:"Ocurrio un error en check-out...", classes: "rounded"})</script>';	
+		}//FIN else DE ERROR			
     	break;
 }// FIN switch
 mysqli_close($conn);    

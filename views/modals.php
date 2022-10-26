@@ -20,6 +20,9 @@
   function checkIn() {
     setTimeout("location.href='check_in.php'", 1000);
   }
+  function checkout() {
+    setTimeout("location.href='check_out.php'", 1000);
+  }
 </script>
 
 <!--Modal cortes-->
