@@ -491,7 +491,6 @@ switch ($Accion) {
 
         //CON POST RECIBIMOS UN TEXTO DEL BUSCADOR VACIO O NO DE "check_in.php"
     	$Texto = $conn->real_escape_string($_POST['texto']);
-
     	//VERIFICAMOS SI CONTIENE ALGO DE TEXTO LA VARIABLE
 		if ($Texto != "") {
 			//MOSTRARA LOS CLIENTES QUE SE ESTAN BUSCANDO Y GUARDAMOS LA CONSULTA SQL EN UNA VARIABLE $sql......
@@ -529,7 +528,7 @@ switch ($Accion) {
 		            <td>'.$reservacion['fecha_salida'].'</td>
 		            <td>'.$user['firstname'].'</td>
 		            <td>'.$reservacion['fecha_registro'].'</td>
-		            <td><a onclick="modal_check_out()" class="btn-small green waves-effect waves-light"><i class="material-icons prefix">exit_to_app</i></a></td>
+		            <td><a onclick="modal_check_out('.$reservacion['id'].')" class="btn-small green waves-effect waves-light"><i class="material-icons prefix">exit_to_app</i></a></td>
 		          </tr>';
 			}//FIN while
 		}//FIN else

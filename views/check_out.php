@@ -24,26 +24,37 @@
 
       //FUNCION QUE BORRA EL CLIENTES (SE ACTIVA AL INICIAR EL BOTON BORRAR)
       function check_out(id){
-        var answer = confirm("Deseas cancelar la reservacion N°"+id+"?");
+        var answer = confirm("Deseas realizar Check-out a la reservacion N°"+id+"?");
         if (answer) {
+          var textoLiquidacion = $("input#liquidacionR").val();
+
+          if(document.getElementById('bancoR').checked==true){
+              tipo_cambio = 'Banco';
+          }else if (document.getElementById('creditoR').checked==true) {
+              tipo_cambio = 'Credito';
+          }else{
+              tipo_cambio = 'Efectivo';
+          }
           //MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO EN LA DIRECCION "../php/control_reservaciones.php"
           $.post("../php/control_reservaciones.php", { 
             //Cada valor se separa por una ,
               id: id,
-              accion: 5,
+              liquidacion: textoLiquidacion,
+              tipo_cambio: tipo_cambio,
+              accion: 11,
           }, function(mensaje) {
             //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "control_reservaciones.php"
-            $("#cancelarRe").html(mensaje);
+            $("#modal").html(mensaje);
           }); //FIN post
         }//FIN IF
       };//FIN function
 
       //FUNCION QUE MUESTRA EL MODAL HACER CHECK OUT
-      function modal_check_out(){
+      function modal_check_out(id){
           //MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO EN LA DIRECCION "modal_check_out.php" PARA MOSTRAR EL MODAL
           $.post("modal_check_out.php", {
             //Cada valor se separa por una ,
-              id:6,
+              id:id,
             }, function(mensaje){
                 //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "modal_check_out.php"
                 $("#modal").html(mensaje);
