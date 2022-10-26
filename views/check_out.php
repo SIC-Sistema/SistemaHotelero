@@ -41,7 +41,7 @@
               id: id,
               liquidacion: textoLiquidacion,
               tipo_cambio: tipo_cambio,
-              accion: 11,
+              accion: 12,
           }, function(mensaje) {
             //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "control_reservaciones.php"
             $("#modal").html(mensaje);

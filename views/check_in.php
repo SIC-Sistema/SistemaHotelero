@@ -49,6 +49,32 @@
                 $("#modal").html(mensaje);
           });//FIN post
       }//FIN function
+
+      function check_in(id) {
+        var answer = confirm("Deseas realizar Check-in a la reservacion N°"+id+"?");
+        if (answer) {
+          var textoAbono = $("input#abonoR").val();
+
+          if(document.getElementById('bancoR').checked==true){
+              tipo_cambio = 'Banco';
+          }else if (document.getElementById('creditoR').checked==true) {
+              tipo_cambio = 'Credito';
+          }else{
+              tipo_cambio = 'Efectivo';
+          }
+          //MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO EN LA DIRECCION "../php/control_reservaciones.php"
+          $.post("../php/control_reservaciones.php", { 
+            //Cada valor se separa por una ,
+              id: id,
+              abonoR: textoAbono,
+              tipo_cambio: tipo_cambio,
+              accion: 11,
+          }, function(mensaje) {
+            //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "control_reservaciones.php"
+            $("#modal").html(mensaje);
+          }); //FIN post
+        }//FIN IF
+      }
     </script>
   </head>
   <main>

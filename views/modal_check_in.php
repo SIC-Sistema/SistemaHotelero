@@ -45,7 +45,7 @@ $estatus = ($reservacion['estatus'] == 0)? '<span class="new badge green" data-b
 	      	</div>
 	        <div class="input-field col s6 m3">
 	            <i class="material-icons prefix">monetization_on</i>
-	            <input type="text" class="validate" required  id="abonoR" >
+	            <input type="number" class="validate" required  id="abonoR">
 	            <label for="abonoR">Abono(Opcional):</label>
 	        </div>
 	        <div class="col s6 m2">
