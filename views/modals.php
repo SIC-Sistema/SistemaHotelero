@@ -58,3 +58,23 @@
   </div>
 </div>
 <!--Cierre modal Cortes-->
+
+<!--MODAL MATENIMIENTO-->
+<div id="modalMantenimiento" class="modal">
+    <div class="modal-content row">
+        <h5 class="red-text center"><b>Nuevo Mantenimiento</b></h5><br>
+        <h6><b>Describa que mantenimiento hay que realizarle a la habitacion</b></h6><br>
+        <form class="row">
+          <div class="row">
+            <div class="input-field col s12 m6 l6">
+              <i class="material-icons prefix">comment</i>
+              <textarea id="descripcionMto" class="materialize-textarea"></textarea>
+              <label for="descripcionMto">Descripcion del mantenimiento:</label>
+            </div>
+          </div>
+          <a onclick="crear_mto();" class="btn waves-effect waves-light grey darken-3 right">Agregar<i class="material-icons left">save</i></a>
+          <a href="#" class="modal-action modal-close waves-effect waves-green btn red accent-2 right">Cancelar<i class="material-icons left">close</i></a>
+        </form>
+    </div>
+</div>
+<!--Cierre modal mantenimiento-->
