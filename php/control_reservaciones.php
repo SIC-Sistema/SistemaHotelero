@@ -270,7 +270,6 @@ switch ($Accion) {
           				$reservacion = $ultimaReserv['id'];
 						//SI HAY UN ANTICIPO REGISTRAR PAGO Y TICKET (SE HABRE EL CAJON SI ES PAGO EN EFECTIVO)
 						if ($anticipo > 0) {
-							// code...
         					$tipo_cambio = $conn->real_escape_string($_POST['valortipo_cambio']);
         					$descripcion = 'Reservación N°'.$reservacion.' ('.$Entrada.' - '.$Salida.')';
 
@@ -550,6 +549,8 @@ switch ($Accion) {
 			$sql = "UPDATE `reservaciones` SET estatus = 1 WHERE id = '$id'";
 			//VERIFICAMOS QUE LA SENTECIA FUE EJECUTADA CON EXITO!
 			if(mysqli_query($conn, $sql)){
+				mysqli_query($conn, "UPDATE `habitaciones` SET estatus = 1 WHERE id = '$habitacion'");
+
 				echo '<script >M.toast({html:"CHECK-IN se realizo con exito", classes: "rounded"})</script>';
 				#CON POST RECIBIMOS LAS VARIABLES Y VERIFICAMOS SI HAY QUE REGISTRAR PAGO
         		$Abono = $conn->real_escape_string($_POST['abonoR']);
@@ -582,11 +583,13 @@ switch ($Accion) {
     	//CON POST RECIBIMOS EL ID DE LA RESERVACION Y EL ID DE LA HABITACION DE "check_in.php"
         $id = $conn->real_escape_string($_POST['id']);
         $reservacion = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `reservaciones` WHERE id=$id"));
+        $habitacion = $reservacion['id_habitacion'];
 
 		//CREAMO LA SENTENCIA SQL PARA HACER LA ACTUALIZACION DE LA INFORMACION DEL CLIENTE Y LA GUARDAMOS EN UNA VARIABLE 2 = Terminada
 		$sql = "UPDATE `reservaciones` SET estatus = 2 WHERE id = '$id'";
 		//VERIFICAMOS QUE LA SENTECIA FUE EJECUTADA CON EXITO!
 		if(mysqli_query($conn, $sql)){
+			mysqli_query($conn, "UPDATE `habitaciones` SET estatus = 0 WHERE id = '$habitacion'");
 			echo '<script >M.toast({html:"CHECK-OUT se realizo con exito", classes: "rounded"})</script>';
 			#CON POST RECIBIMOS LAS VARIABLES Y VERIFICAMOS SI HAY QUE REGISTRAR PAGO
         	$Liquidacion = $conn->real_escape_string($_POST['liquidacion']);
