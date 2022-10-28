@@ -266,7 +266,7 @@ switch ($Accion) {
 					//VERIFICAMOS QUE LA SENTECIA FUE EJECUTADA CON EXITO!
 					if(mysqli_query($conn, $sql)){
 						echo '<script >M.toast({html:"La reservacion se dió de alta satisfactoriamente.", classes: "rounded"})</script>';
-						$ultimaReserv =  mysqli_fetch_array(mysqli_query($conn, "SELECT MAX(id) AS id FROM resrevaciones WHERE usuario = $id_user"));            
+						$ultimaReserv =  mysqli_fetch_array(mysqli_query($conn, "SELECT MAX(id) AS id FROM reservaciones WHERE usuario = $id_user"));            
           				$reservacion = $ultimaReserv['id'];
 						//SI HAY UN ANTICIPO REGISTRAR PAGO Y TICKET (SE HABRE EL CAJON SI ES PAGO EN EFECTIVO)
 						if ($anticipo > 0) {
