@@ -23,6 +23,9 @@
   function checkout() {
     setTimeout("location.href='check_out.php'", 1000);
   }
+  function recargar_mantenimientos() {
+    setTimeout("location.href='mantenimientos.php'", 1000);
+  }
 </script>
 
 <!--Modal cortes-->

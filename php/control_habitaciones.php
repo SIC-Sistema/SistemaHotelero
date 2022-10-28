@@ -38,7 +38,7 @@ switch ($Accion) {
                 echo '<script >M.toast({html:"Ocurrio un error...", classes: "rounded"})</script>';	
             }//FIN else DE ERROR
             
-        }// FIN else DE BUSCAR CATEGORIA IGUAL
+        }// FIN else DE BUSCAR HABITACION IGUAL
 
         break;
     case 1:  ///////////////           IMPORTANTE               ///////////////
@@ -99,6 +99,77 @@ switch ($Accion) {
             M.toast({html:"Comunicate con un administrador.", classes: "rounded"});</script>';
         }  
         break;   
+    case 3:///////////////           IMPORTANTE               ///////////////
+        // $Accion es igual a 3 realiza:
+
+        //CON POST RECIBIMOS TODAS LAS VARIABLES DEL FORMULARIO QUE NESECITAMOS PARA INSERTAR
+        $habitacion = $conn->real_escape_string($_POST['id']);     
+        $Descripcion = $conn->real_escape_string($_POST['descripcionMto']);
+        echo $habitacion;
+        //VERIFICAMOS QUE NO HALLA UN ARTICULO CON LOS MISMOS DATOS
+        if(mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `mantenimientos` WHERE id_habitacion = $habitacion AND descripcion = '$Descripcion' AND fecha = 'Fecha_hoy'"))>0){
+            echo '<script >M.toast({html:"Ya se encuentra un mantenimientos igual hoy para esta habitacion.", classes: "rounded"})</script>';
+        }else{
+            // SI NO HAY NUNGUNO IGUAL CREAMOS LA SENTECIA SQL  CON LA INFORMACION REQUERIDA Y LA ASIGNAMOS A UNA VARIABLE
+            $sql_m = "INSERT INTO `mantenimientos` (`id_habitacion`, `descripcion`, `fecha`, `estatus`, `usuario`) 
+               VALUES($habitacion, '$Descripcion', '$Fecha_hoy', 0, $id_user)";
+            //VERIFICAMOS QUE LA SENTECIA FUE EJECUTADA CON EXITO!
+            if(mysqli_query($conn, $sql_m)){
+                echo '<script >M.toast({html:"El mantenimiento se registró exitosamente.", classes: "rounded"})</script>';  
+                echo '<script>recargar_mantenimientos()</script>';// REDIRECCIONAMOS (FUNCION ESTA EN ARCHIVO modals.php)
+            }else{
+                echo '<script >M.toast({html:"Ocurrio un error...", classes: "rounded"})</script>'; 
+            }//FIN else DE ERROR
+            
+        }// FIN else DE BUSCAR HABITACION IGUAL
+        
+        break;
+    case 4:///////////////           IMPORTANTE               ///////////////
+        // $Accion es igual a 4 realiza:
+
+        //CON POST RECIBIMOS UN TEXTO DEL BUSCADOR VACIO O NO DE "clientes_punto_venta.php"
+        $Texto = $conn->real_escape_string($_POST['texto']);
+
+        //VERIFICAMOS SI CONTIENE ALGO DE TEXTO LA VARIABLE
+        if ($Texto != "") {
+            //MOSTRARA LOS CLIENTES QUE SE ESTAN BUSCANDO Y GUARDAMOS LA CONSULTA SQL EN UNA VARIABLE $sql......
+            $sql = "SELECT * FROM `mantenimientos` WHERE (id_habitacion = '$Texto' OR descripcion LIKE '%$Texto%') AND estatus = 0 ORDER BY id";    
+        }else{
+            //ESTA CONSULTA SE HARA SIEMPRE QUE NO ALLA NADA EN EL BUSCADOR Y GUARDAMOS LA CONSULTA SQL EN UNA VARIABLE $sql...
+            $sql = "SELECT * FROM `mantenimientos` WHERE estatus = 0 limit 50";
+        }//FIN else $Texto VACIO O NO
+
+        // REALIZAMOS LA CONSULTA A LA BASE DE DATOS MYSQL Y GUARDAMOS EN FORMARTO ARRAY EN UNA VARIABLE $consulta
+        $consulta = mysqli_query($conn, $sql);      
+        $contenido = '';//CREAMOS UNA VARIABLE VACIA PARA IR LLENANDO CON LA INFORMACION EN FORMATO
+
+        //VERIFICAMOS QUE LA VARIABLE SI CONTENGA INFORMACION
+        if (mysqli_num_rows($consulta) == 0) {
+                echo '<script>M.toast({html:"No se encontraron mantenimientos.", classes: "rounded"})</script>';            
+        } else {
+            //SI NO ESTA EN == 0 SI TIENE INFORMACION
+            //RECORREMOS UNO A UNO LOS MANTENIMIENTOS CON EL WHILE    
+            while($mantenimiento = mysqli_fetch_array($consulta)) {
+                $id_user = $mantenimiento['usuario'];
+                $user = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `users` WHERE user_id=$id_user"));
+                $estatus = ($mantenimiento['estatus'] == 0)? '<span class="new badge red" data-badge-caption="Pendiente"></span>': '';
+                //Output
+                $contenido .= '         
+                  <tr>
+                    <td>'.$mantenimiento['id'].'</td>
+                    <td>N°'.$mantenimiento['id_habitacion'].'</td>
+                    <td>'.$mantenimiento['descripcion'].'</td>
+                    <td>'.$mantenimiento['fecha'].'</td>
+                    <td>'.$user['firstname'].'</td>
+                    <td>'.$estatus.'</td>
+                    <td><form method="post" action="../views/atender_mto.php"><input id="id" name="id" type="hidden" value="'.$mantenimiento['id'].'"><button class="btn-small waves-effect waves-light green"><i class="material-icons">list</i></button></form></td>
+                    <td><form method="post" action="../views/editar_mantenimiento.php"><input id="id" name="id" type="hidden" value="'.$mantenimiento['id'].'"><button class="btn-small waves-effect waves-light grey darken-3"><i class="material-icons">edit</i></button></form></td>
+                    <td><a onclick="borrar_mantenimiento('.$mantenimiento['id'].')" class="btn-small red waves-effect waves-light"><i class="material-icons">delete</i></a></td>
+                  </tr>';
+            }//FIN while
+        }//FIN else
+        echo $contenido;// MOSTRAMOS LA INFORMACION HTML
+        break;
 }// FIN switch
 mysqli_close($conn);
     

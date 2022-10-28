@@ -18,6 +18,11 @@
 		$id = $_GET['id'];// POR EL METODO POST RECIBIMOS EL ID DEL HABITACION
 		//CONSULTA PARA SACAR LA INFORMACION DE LA HABITACION Y ASIGNAMOS EL ARRAY A UNA VARIABLE $habitacion
 		$habitacion = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `habitaciones` WHERE id=$id"));
+		if ($habitacion['estatus'] == 2) {
+	        $estatus = '<span class="new badge blue" data-badge-caption="Limpieza"></span>';
+	    }else{
+	        $estatus = ($habitacion['estatus'] == 1)? '<span class="new badge red" data-badge-caption="Ocupada"></span>': '<span class="new badge green" data-badge-caption="Disponible"></span>';
+	    }
 	}// FIN else
 	?>
 	<script>
@@ -78,7 +83,7 @@
 		       //Cada valor se separa por una ,
 		        id: <?php echo $id; ?>,
 		        descripcionMto: DescripcionMto,
-		        accion: 4,
+		        accion: 3,
 	          }, function(mensaje){
 	            //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "control_habitaciones.php"
 	            $("#modal").html(mensaje);
@@ -107,7 +112,7 @@
               		<div class="col s12"><b class="indigo-text">NIVEL / PISO: </b><?php echo $habitacion['piso'];?></div>           		
               	</div>
               	<div class="col s12 m4">
-              		<div class="col s12 m11 l9"><b class="indigo-text">ESTADO: </b><span class="new badge <?php echo ($habitacion['estatus'] == 0)?'green':'red';?> prefix" data-badge-caption=""><?php echo ($habitacion['estatus'] == 0)?'Disponible':'Ocupada';?></span></div>          
+              		<div class="col s12 m11 l9"><b class="indigo-text">ESTADO: </b><?php echo $estatus;?></div>          
               		<div class="col s12"><b class="indigo-text">PRECIO: </b><?php echo '$'.sprintf('%.2f', $habitacion['precio']);?></div>          		
               	</div>
               </b></p><br><br>
