@@ -8,10 +8,10 @@ date_default_timezone_set('America/Mexico_City');
 $id_user = $_SESSION['user_id'];// ID DEL USUARIO LOGEADO
 $Fecha_hoy = date('Y-m-d');// FECHA ACTUAL
 
-//CON METODO POST TOMAMOS UN VALOR DEL 0 AL 3 PARA VER QUE ACCION HACER (Para Insertar = 0, Actualizar = 1, Borrar = 2, crear matenimiento = 3)
+//CON METODO POST TOMAMOS UN VALOR DEL 0 AL 3 PARA VER QUE ACCION HACER (Para Insertar = 0, Actualizar = 1, Borrar = 2, crear matenimiento = 3, buscar mto = 4 , Borrar mto = 5)
 $Accion = $conn->real_escape_string($_POST['accion']);
 
-//UN SWITCH EL CUAL DECIDIRA QUE ACCION REALIZA DEL CRUD (Para Insertar = 0, Actualizar = 1, Borrar = 2, crear matenimiento = 3 )
+//UN SWITCH EL CUAL DECIDIRA QUE ACCION REALIZA DEL CRUD (Para Insertar = 0, Actualizar = 1, Borrar = 2, crear matenimiento = 3, buscar mto = 4, Borrar mto = 5 )
 //echo "hola aqui estoy";
 switch ($Accion) {
     case 0:  ///////////////           IMPORTANTE               ///////////////
@@ -28,6 +28,7 @@ switch ($Accion) {
             echo '<script >M.toast({html:"Ya se encuentra una habitacion con el mismo numero.", classes: "rounded"})</script>';
         }else{
             // SI NO HAY NUNGUNO IGUAL CREAMOS LA SENTECIA SQL  CON LA INFORMACION REQUERIDA Y LA ASIGNAMOS A UNA VARIABLE
+            
             $sql_h = "INSERT INTO `habitaciones` (id, piso, descripcion, precio, tipo, estatus, usuario, fecha) 
                VALUES($No, '$Piso', '$Descripcion', '$Precio', '$Tipo', 0, $id_user, '$Fecha_hoy')";
             //VERIFICAMOS QUE LA SENTECIA FUE EJECUTADA CON EXITO!
@@ -136,7 +137,7 @@ switch ($Accion) {
             $sql = "SELECT * FROM `mantenimientos` WHERE (id_habitacion = '$Texto' OR descripcion LIKE '%$Texto%') AND estatus = 0 ORDER BY id";    
         }else{
             //ESTA CONSULTA SE HARA SIEMPRE QUE NO ALLA NADA EN EL BUSCADOR Y GUARDAMOS LA CONSULTA SQL EN UNA VARIABLE $sql...
-            $sql = "SELECT * FROM `mantenimientos` WHERE estatus = 0 limit 50";
+            $sql = "SELECT * FROM `mantenimientos` WHERE estatus = 0";
         }//FIN else $Texto VACIO O NO
 
         // REALIZAMOS LA CONSULTA A LA BASE DE DATOS MYSQL Y GUARDAMOS EN FORMARTO ARRAY EN UNA VARIABLE $consulta
@@ -163,13 +164,38 @@ switch ($Accion) {
                     <td>'.$user['firstname'].'</td>
                     <td>'.$estatus.'</td>
                     <td><form method="post" action="../views/atender_mto.php"><input id="id" name="id" type="hidden" value="'.$mantenimiento['id'].'"><button class="btn-small waves-effect waves-light green"><i class="material-icons">list</i></button></form></td>
-                    <td><form method="post" action="../views/editar_mantenimiento.php"><input id="id" name="id" type="hidden" value="'.$mantenimiento['id'].'"><button class="btn-small waves-effect waves-light grey darken-3"><i class="material-icons">edit</i></button></form></td>
+                    <td><a onclick="modal_mto_edit('.$mantenimiento['id_habitacion'].', '.$mantenimiento['id'].')" class="btn-small grey darken-3 waves-effect waves-light"><i class="material-icons">edit</i></a></td>
                     <td><a onclick="borrar_mantenimiento('.$mantenimiento['id'].')" class="btn-small red waves-effect waves-light"><i class="material-icons">delete</i></a></td>
                   </tr>';
             }//FIN while
         }//FIN else
         echo $contenido;// MOSTRAMOS LA INFORMACION HTML
         break;
+    case 5:///////////////           IMPORTANTE               ///////////////
+        // $Accion es igual a 5 realiza:
+
+        //Obtenemos la informacion del Usuario
+        $User = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `users` WHERE user_id = $id_user"));
+        //SE VERIFICA SI EL USUARIO LOGEADO TIENE PERMISO DE BORRAR HABITACIONES
+        if ($User['habitaciones'] == 1) {
+            //CON POST RECIBIMOS LA VARIABLE DEL BOTON POR EL SCRIPT DE "detalles_habitacion.php" QUE NESECITAMOS PARA BORRAR
+            $id = $conn->real_escape_string($_POST['id']);
+
+            //SI DE CREA LA INSERCION PROCEDEMOS A BORRRAR DE LA TABLA `mantenimientos`
+            #VERIFICAMOS QUE SE BORRE CORRECTAMENTE LA HABITACION DE `mantenimientos`
+            if(mysqli_query($conn, "DELETE FROM `mantenimientos` WHERE `mantenimientos`.`id` = $id")){
+                #SI ES ELIMINADO MANDAR MSJ CON ALERTA
+                echo '<script >M.toast({html:"Mantenimiento borrado con exito.", classes: "rounded"})</script>';
+                echo '<script>recargar_mantenimientos()</script>';// REDIRECCIONAMOS (FUNCION ESTA EN ARCHIVO modals.php)
+            }else{
+                #SI NO ES BORRADO MANDAR UN MSJ CON ALERTA
+                echo "<script >M.toast({html: 'Ha ocurrido un error.', classes: 'rounded'});/script>";
+            }
+        }else{
+            echo '<script >M.toast({html:"Permiso denegado.", classes: "rounded"});
+            M.toast({html:"Comunicate con un administrador.", classes: "rounded"});</script>';
+        }  
+        break;   
 }// FIN switch
 mysqli_close($conn);
     

@@ -5,6 +5,8 @@ include('../php/is_logged.php');
 include('../php/conexion.php');
 #GENERAMOS UNA FECHA DEL DIA EN CURSO REFERENTE A LA ZONA HORARIA
 $Hoy = date('Y-m-d');
+$cuentas = mysqli_fetch_array(mysqli_query($conn,"SELECT count(*) FROM `reservaciones` WHERE estatus = 0 OR estatus = 1"));
+$mantenimientos = mysqli_fetch_array(mysqli_query($conn,"SELECT count(*) FROM `mantenimientos` WHERE estatus = 0"));
 ?>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,7 +29,7 @@ $Hoy = date('Y-m-d');
 				<i class="material-icons">menu</i>
 			</a>
 			<ul class="right hide-on-med-and-down">
-				<li><a class='dropdown-button' data-target='dropdown1'><i class="material-icons left">input</i><b>Rescepción</b> <i class="material-icons right">arrow_drop_down</i></a></li>
+				<li><a class='dropdown-button' data-target='dropdown1'><i class="material-icons left">input</i><b>Recepción</b> <i class="material-icons right">arrow_drop_down</i></a></li>
 				<ul id='dropdown1' class='dropdown-content'>
 					<li><a href = "reservacion.php" class="black-text"><i class="material-icons">date_range</i>Reservar </a></li>
 				    <li><a href = "clientes.php" class="black-text"><i class="material-icons">people</i>Clientes </a></li>
@@ -35,9 +37,10 @@ $Hoy = date('Y-m-d');
 				    <li><a href = "check_in.php" class="black-text"><i class="material-icons">assignment_turned_in</i>Check In </a></li>
 					<li><a href = "check_out.php" class="black-text"><i class="material-icons">assignment_return</i>Check Out</a></li>   			 
  				 </ul>
-				<li><a class='dropdown-button' data-target='dropdown2'><i class="material-icons left">hotel</i><b>Hotel</b><span class=" new badge pink" data-badge-caption="">4</span><i class="material-icons right">arrow_drop_down</i></a></li>
+				<li><a class='dropdown-button' data-target='dropdown2'><i class="material-icons left">hotel</i><b>Hotel</b><span class="new badge pink" data-badge-caption=""><?php echo $cuentas['count(*)']+$mantenimientos['count(*)'];?></span><i class="material-icons right">arrow_drop_down</i></a></li>
 				<ul id='dropdown2' class='dropdown-content'>  
-					<li><a href = "cuentas.php" class="black-text"><i class="material-icons">list</i>Cuentas<span class=" new badge pink" data-badge-caption="">4</span></a></li>	
+					<li><a href = "cuentas.php" class="black-text"><i class="material-icons">list</i>Cuentas<span class="new badge pink" data-badge-caption=""><?php echo $cuentas['count(*)'];?></span></a></li>	
+					<li><a href = "mantenimientos.php" class="black-text"><i class="material-icons">settings</i>Mantenimientos<span class="new badge pink" data-badge-caption=""><?php echo $mantenimientos['count(*)'];?></span></a></li>	
  				</ul>
  				<li><a class='dropdown-button' data-target='dropdown5'><i class="material-icons left">person_pin</i><b>Admin</b> <i class="material-icons right">arrow_drop_down</i></a></li>
 				<ul id='dropdown5' class='dropdown-content'>
@@ -73,7 +76,7 @@ $Hoy = date('Y-m-d');
 		<li>
 	    	<ul class="collapsible collapsible-accordion">
 	    		<li>
-	    			<div class="collapsible-header"><i class="material-icons">input</i>Rescepción <i class="material-icons right">arrow_drop_down</i></div>
+	    			<div class="collapsible-header"><i class="material-icons">input</i>Recepción <i class="material-icons right">arrow_drop_down</i></div>
 		      		<div class="collapsible-body indigo lighten-5">
 		      		    <span>
 		      			  <ul>
@@ -91,11 +94,13 @@ $Hoy = date('Y-m-d');
 		<li>
 	    	<ul class="collapsible collapsible-accordion">
 	    		<li>
-	    			<div class="collapsible-header"><i class="material-icons">hotel</i>Hotel <i class="material-icons right">arrow_drop_down</i></div>
+	    			<div class="collapsible-header"><i class="material-icons">hotel</i>Hotel <span class="new badge pink" data-badge-caption=""><?php echo $cuentas['count(*)']+$mantenimientos['count(*)'];?></span><i class="material-icons right">arrow_drop_down</i></div>
 		      		<div class="collapsible-body indigo lighten-5">
 		      			<span>
 		      			  <ul>
-							<li><a href = "cuentas.php"><i class="material-icons">list</i>Cuentas</a></li>
+							<li><a href = "cuentas.php"><i class="material-icons">list</i>Cuentas<span class="new badge pink" data-badge-caption=""><?php echo $cuentas['count(*)'];?></span></a></li>
+							<li><a href = "mantenimientos.php"><i class="material-icons">settings</i>Mantenimientos<span class="new badge pink" data-badge-caption=""><?php echo $mantenimientos['count(*)'];?></span></a></li>	
+
 					      </ul>
 					    </span>
 		      		</div>    			
