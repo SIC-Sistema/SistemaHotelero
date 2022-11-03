@@ -106,7 +106,6 @@ switch ($Accion) {
         //CON POST RECIBIMOS TODAS LAS VARIABLES DEL FORMULARIO QUE NESECITAMOS PARA INSERTAR
         $habitacion = $conn->real_escape_string($_POST['id']);     
         $Descripcion = $conn->real_escape_string($_POST['descripcionMto']);
-        echo $habitacion;
         //VERIFICAMOS QUE NO HALLA UN ARTICULO CON LOS MISMOS DATOS
         if(mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `mantenimientos` WHERE id_habitacion = $habitacion AND descripcion = '$Descripcion' AND fecha = 'Fecha_hoy'"))>0){
             echo '<script >M.toast({html:"Ya se encuentra un mantenimientos igual hoy para esta habitacion.", classes: "rounded"})</script>';
@@ -122,8 +121,7 @@ switch ($Accion) {
                 echo '<script >M.toast({html:"Ocurrio un error...", classes: "rounded"})</script>'; 
             }//FIN else DE ERROR
             
-        }// FIN else DE BUSCAR HABITACION IGUAL
-        
+        }// FIN else DE BUSCAR HABITACION IGUAL        
         break;
     case 4:///////////////           IMPORTANTE               ///////////////
         // $Accion es igual a 4 realiza:
@@ -196,6 +194,45 @@ switch ($Accion) {
             M.toast({html:"Comunicate con un administrador.", classes: "rounded"});</script>';
         }  
         break;   
+    case 6:///////////////           IMPORTANTE               ///////////////
+        // $Accion es igual a 6 realiza:
+        //Obtenemos la informacion del Usuario
+        $User = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `users` WHERE user_id = $id_user"));
+        //SE VERIFICA SI EL USUARIO LOGEADO TIENE PERMISO DE EDITAR MANTENIMINETOS
+        if ($User['habitaciones'] == 1) {
+
+            //CON POST RECIBIMOS TODAS LAS VARIABLES DEL FORMULARIO QUE NESECITAMOS PARA ACTUALIZAR
+            $habitacion = $conn->real_escape_string($_POST['id_hab']);     
+            $id_mto = $conn->real_escape_string($_POST['id_mto']);
+            $Descripcion = $conn->real_escape_string($_POST['valorMto']);
+
+            $sql = "UPDATE `mantenimientos` SET  descripcion = '$Descripcion' WHERE id_habitacion = $habitacion AND id = $id_mto";
+            if (mysqli_query($conn, $sql)) {
+                echo '<script>M.toast({html:"Mantenimineto actualizado correctamente", classes: "rounded"})</script>';
+                echo '<script>recargar_mantenimientos()</script>';// REDIRECCIONAMOS (FUNCION ESTA EN ARCHIVO modals.php)
+            }else{
+                echo '<script >M.toast({html:"Ha ocurrido un error...", classes: "rounded"})</script>'; 
+            }
+        }else{
+            echo '<script >M.toast({html:"Permiso denegado.", classes: "rounded"});
+            M.toast({html:"Comunicate con un administrador.", classes: "rounded"});</script>';
+        } 
+        break; 
+    case 7:///////////////           IMPORTANTE               ///////////////
+        //CON POST RECIBIMOS TODAS LAS VARIABLES DEL FORMULARIO QUE NESECITAMOS PARA ACTUALIZAR    
+        $id_mto = $conn->real_escape_string($_POST['id']);
+        $estatus = $conn->real_escape_string($_POST['estatus']);
+        $solucion = $conn->real_escape_string($_POST['solucion']);
+
+        $sql = "UPDATE `mantenimientos` SET  estatus = $estatus, solucion = '$solucion' WHERE id = $id_mto";
+        if (mysqli_query($conn, $sql)) {
+            echo '<script>M.toast({html:"Mantenimineto actualizado correctamente", classes: "rounded"})</script>';
+            echo '<script>recargar_mantenimientos()</script>';// REDIRECCIONAMOS (FUNCION ESTA EN ARCHIVO modals.php)
+        }else{
+            echo '<script >M.toast({html:"Ha ocurrido un error...", classes: "rounded"})</script>'; 
+        }
+        
+        break; 
 }// FIN switch
 mysqli_close($conn);
     

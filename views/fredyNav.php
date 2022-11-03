@@ -7,6 +7,8 @@ include('../php/conexion.php');
 $Hoy = date('Y-m-d');
 $cuentas = mysqli_fetch_array(mysqli_query($conn,"SELECT count(*) FROM `reservaciones` WHERE estatus = 0 OR estatus = 1"));
 $mantenimientos = mysqli_fetch_array(mysqli_query($conn,"SELECT count(*) FROM `mantenimientos` WHERE estatus = 0"));
+$check_in = mysqli_fetch_array(mysqli_query($conn,"SELECT count(*) FROM `reservaciones` WHERE estatus = 0"));
+$check_out = mysqli_fetch_array(mysqli_query($conn,"SELECT count(*) FROM `reservaciones` WHERE estatus = 1 AND fecha_salida <= '$Hoy' "));
 ?>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -29,13 +31,13 @@ $mantenimientos = mysqli_fetch_array(mysqli_query($conn,"SELECT count(*) FROM `m
 				<i class="material-icons">menu</i>
 			</a>
 			<ul class="right hide-on-med-and-down">
-				<li><a class='dropdown-button' data-target='dropdown1'><i class="material-icons left">input</i><b>Recepción</b> <i class="material-icons right">arrow_drop_down</i></a></li>
+				<li><a class='dropdown-button' data-target='dropdown1'><i class="material-icons left">input</i><b>Recepción</b> <span class="new badge pink" data-badge-caption=""><?php echo $check_in['count(*)']+$check_out['count(*)'];?></span><i class="material-icons right">arrow_drop_down</i></a></li>
 				<ul id='dropdown1' class='dropdown-content'>
 					<li><a href = "reservacion.php" class="black-text"><i class="material-icons">date_range</i>Reservar </a></li>
 				    <li><a href = "clientes.php" class="black-text"><i class="material-icons">people</i>Clientes </a></li>
 					<li><a href = "habitaciones.php" class="black-text"><i class="material-icons">hotel</i>Habitaciones </a></li>
-				    <li><a href = "check_in.php" class="black-text"><i class="material-icons">assignment_turned_in</i>Check In </a></li>
-					<li><a href = "check_out.php" class="black-text"><i class="material-icons">assignment_return</i>Check Out</a></li>   			 
+				    <li><a href = "check_in.php" class="black-text"><i class="material-icons">assignment_turned_in</i>Check In <span class="new badge pink" data-badge-caption=""><?php echo $check_in['count(*)'];?></span></a></li>
+					<li><a href = "check_out.php" class="black-text"><i class="material-icons">assignment_return</i>Check Out <span class="new badge pink" data-badge-caption=""><?php echo $check_out['count(*)'];?></span></a></li>   			 
  				 </ul>
 				<li><a class='dropdown-button' data-target='dropdown2'><i class="material-icons left">hotel</i><b>Hotel</b><span class="new badge pink" data-badge-caption=""><?php echo $cuentas['count(*)']+$mantenimientos['count(*)'];?></span><i class="material-icons right">arrow_drop_down</i></a></li>
 				<ul id='dropdown2' class='dropdown-content'>  
@@ -76,15 +78,15 @@ $mantenimientos = mysqli_fetch_array(mysqli_query($conn,"SELECT count(*) FROM `m
 		<li>
 	    	<ul class="collapsible collapsible-accordion">
 	    		<li>
-	    			<div class="collapsible-header"><i class="material-icons">input</i>Recepción <i class="material-icons right">arrow_drop_down</i></div>
+	    			<div class="collapsible-header"><i class="material-icons">input</i>Recepción <span class="new badge pink" data-badge-caption=""><?php echo $check_in['count(*)']+$check_out['count(*)'];?></span><i class="material-icons right">arrow_drop_down</i></div>
 		      		<div class="collapsible-body indigo lighten-5">
 		      		    <span>
 		      			  <ul>
 							<li><a href = "reservacion.php"><i class="material-icons">date_range</i>Reservar </a></li>
 						    <li><a href = "clientes.php"><i class="material-icons">people</i>Clientes </a></li>
 							<li><a href = "habitaciones.php"><i class="material-icons">hotel</i>Habitaciones </a></li>
-						    <li><a href = "check_in.php"><i class="material-icons">assignment_turned_in</i>Check In </a></li>
-							<li><a href = "check_out.php"><i class="material-icons">assignment_return</i>Check Out</a></li>  			 
+						    <li><a href = "check_in.php"><i class="material-icons">assignment_turned_in</i>Check In <span class="new badge pink" data-badge-caption=""><?php echo $check_in['count(*)'];?></span></a></li>
+							<li><a href = "check_out.php"><i class="material-icons">assignment_return</i>Check Out <span class="new badge pink" data-badge-caption=""><?php echo $check_out['count(*)'];?></span></a></li>  			 
 					      </ul>
 					    </span>
 		      		</div>    			

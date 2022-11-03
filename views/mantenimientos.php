@@ -107,7 +107,7 @@
               <th>Fecha</th>
               <th>Registro</th>
               <th>Estatus</th>
-              <th>Detalles</th>
+              <th>Atender</th>
               <th>Editar</th>
               <th>Borrar</th>
             </tr>

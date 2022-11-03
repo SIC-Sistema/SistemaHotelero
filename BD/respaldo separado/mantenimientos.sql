@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost:3306
--- Tiempo de generación: 27-10-2022 a las 19:40:52
+-- Tiempo de generación: 03-11-2022 a las 09:39:28
 -- Versión del servidor: 5.7.23-23
 -- Versión de PHP: 7.4.30
 
@@ -36,7 +36,8 @@ CREATE TABLE `mantenimientos` (
   `estatus` int(11) NOT NULL,
   `usuario` int(11) NOT NULL,
   `fecha_atendio` date NOT NULL,
-  `solucion` varchar(200) COLLATE utf8_unicode_ci NOT NULL
+  `solucion` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
+  `atendio` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
