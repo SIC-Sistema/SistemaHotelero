@@ -42,7 +42,8 @@ $check_out = mysqli_fetch_array(mysqli_query($conn,"SELECT count(*) FROM `reserv
 				<li><a class='dropdown-button' data-target='dropdown2'><i class="material-icons left">hotel</i><b>Hotel</b><span class="new badge pink" data-badge-caption=""><?php echo $cuentas['count(*)']+$mantenimientos['count(*)'];?></span><i class="material-icons right">arrow_drop_down</i></a></li>
 				<ul id='dropdown2' class='dropdown-content'>  
 					<li><a href = "cuentas.php" class="black-text"><i class="material-icons">list</i>Cuentas<span class="new badge pink" data-badge-caption=""><?php echo $cuentas['count(*)'];?></span></a></li>	
-					<li><a href = "mantenimientos.php" class="black-text"><i class="material-icons">settings</i>Mantenimientos<span class="new badge pink" data-badge-caption=""><?php echo $mantenimientos['count(*)'];?></span></a></li>	
+					<li><a href = "mantenimientos.php" class="black-text"><i class="material-icons">settings</i>Mantenimientos<span class="new badge pink" data-badge-caption=""><?php echo $mantenimientos['count(*)'];?></span></a></li>
+					<li><a href = "salida.php" class="black-text"><i class="material-icons">money_off</i>Salida (Egreso)</a></li>	
  				</ul>
  				<li><a class='dropdown-button' data-target='dropdown5'><i class="material-icons left">person_pin</i><b>Admin</b> <i class="material-icons right">arrow_drop_down</i></a></li>
 				<ul id='dropdown5' class='dropdown-content'>
@@ -102,7 +103,7 @@ $check_out = mysqli_fetch_array(mysqli_query($conn,"SELECT count(*) FROM `reserv
 		      			  <ul>
 							<li><a href = "cuentas.php"><i class="material-icons">list</i>Cuentas<span class="new badge pink" data-badge-caption=""><?php echo $cuentas['count(*)'];?></span></a></li>
 							<li><a href = "mantenimientos.php"><i class="material-icons">settings</i>Mantenimientos<span class="new badge pink" data-badge-caption=""><?php echo $mantenimientos['count(*)'];?></span></a></li>	
-
+							<li><a href = "salida.php"><i class="material-icons">money_off</i>Salida (Egreso)</a></li>
 					      </ul>
 					    </span>
 		      		</div>    			
