@@ -6,7 +6,10 @@
     setTimeout("location.href='habitaciones.php'", 800);
   }
   function cerrar_sesion() {
-    setTimeout("location.href='../php/cerrar_sesion.php'", 1200);
+    setTimeout("location.href='../php/cerrar_sesion.php'", 1000);
+  }
+  function en_caja() {
+    setTimeout("location.href='../php/en_caja.php'", 1000);
   }
   function recargar_proveedores() {
     setTimeout("location.href='proveedores_punto_venta.php'", 800);
