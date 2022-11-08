@@ -9,7 +9,7 @@
     setTimeout("location.href='../php/cerrar_sesion.php'", 1000);
   }
   function en_caja() {
-    setTimeout("location.href='../php/en_caja.php'", 1000);
+    setTimeout("location.href='../views/en_caja.php'", 1000);
   }
   function recargar_proveedores() {
     setTimeout("location.href='proveedores_punto_venta.php'", 800);
