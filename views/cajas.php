@@ -4,16 +4,20 @@
   <?php 
   //INCLUIMOS EL ARCHIVO QUE CONTIENE LA BARRA DE NAVEGACION TAMBIEN TIENE (scripts, conexion, is_logged, modals)
   include('fredyNav.php');
-  $id_user = $_SESSION['user_id'];// ID DEL USUARIO LOGEADO
 
-  $sql_efectivo = mysqli_query($conn,"SELECT * FROM `pagos` WHERE corte = 0 AND tipo_cambio = 'Efectivo'  AND id_user = $id_user");
-  $Efectivo = mysqli_num_rows($sql_efectivo);
-  $sql_banco = mysqli_query($conn,"SELECT * FROM `pagos` WHERE corte = 0 AND tipo_cambio = 'Banco'  AND id_user = $id_user");
-  $Banco = mysqli_num_rows($sql_banco);
-  $sql_credito = mysqli_query($conn,"SELECT * FROM `pagos` WHERE corte = 0 AND tipo_cambio = 'Credito'  AND id_user = $id_user");
-  $Credito = mysqli_num_rows($sql_credito);
-  $sql_salidas = mysqli_query($conn,"SELECT * FROM `salidas` WHERE corte = 0 AND usuario = $id_user");
-  $salidas = mysqli_num_rows($sql_salidas);
+  $id = $_SESSION['user_id'];
+  #TOMAMOS LA INFORMACION DEL USUARIO (PARA SABER A QUE AREA PERTENECE)
+  $area = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM users WHERE user_id=$id"));
+  #COMPARAMOS SI SU AREA ES DIFERENTE A UN ADMINISTRADOR
+  if($area['area'] != "Administrador" ){
+    #SI NO ES DIFERENTE A UN ADMINISTRADOR LE MUESTRA MENSAJE DE NEGACION Y REDIRECCIONA A LA PAGINA PRINCIPAL
+    echo '<script>M.toast({html:"Permiso denegado. Direccionando a la página principal.", classes: "rounded"})</script>';
+      #LLAMAR LA FUNCION admin() DEFINIDA EN EL ARCHIVO MODALS PARA REDIRECCIONAR
+      echo '<script>admin();</script>';
+      #CERRAR LA CONEXION A LA BASE DE DATOS
+    mysqli_close($conn);
+    exit;
+  }
   ?>
 </head>
 <main>
@@ -21,46 +25,70 @@
   <!-- DENTRO DE ESTE DIV VA TODO EL CONTENIDO Y HACE QUE SE VEA AL CENTRO DE LA PANTALLA.-->
   <div class="container"><br>
     <div class="row">
-     <div class="row">        
+     <div class="row"><br>        
         <ul class="collection">
           <li class="collection-item grey"><h6><b> >>> SALDOS EN CAJAS (SIN CORTE):</b></h6></li>
         </ul>
-        <?php 
-          if ($salidas > 0) {
-            ?>
-            <table>
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>N°</th>
-                    <th>Motivo</th>
-                    <th>Fecha y Hora</th>
-                    <th>Cantidad</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <?php 
-                  $aux = 0;
-                  $Total = 0;
-                  while ($salida = mysqli_fetch_array($sql_salidas)) {  
-                    $aux ++;
-                    ?>
-                    <tr>
-                      <td><?php echo $aux; ?></td>
-                      <td><?php echo $salida['id']; ?></td>
-                      <td><?php echo $salida['motivo']; ?></td>
-                      <td><?php echo $salida['fecha'].' '.$salida['hora']; ?></td>
-                      <td>$<?php echo sprintf('%.2f', $salida['cantidad']); ?></td>
-                    </tr>
-                    <?php 
-                    $Total += $salida['cantidad'];
-                  }?>
-                </tbody>
-            </table>
-            <h6 class="right"><b>TOTAL SALIDAS . $<?php echo sprintf('%.2f', $Total); ?> </b></h6><br>
+        <table class="centered">
+          <thead>
+            <tr>
+              <th>N°</th>
+              <th>Nombre</th>
+              <th>Apellidos</th>
+              <th>Entradas</th>
+              <th>Salidas</th>
+              <th>Efectivo</th>
+              <th>Banco</th>
+              <th>Credito</th>
+              <th>Detalles</th>
+            </tr>
+          </thead>
+          <tbody>
             <?php 
-          }
-        ?>
+              $sql_tmp = mysqli_query($conn,"SELECT * FROM users WHERE estatus = 1");
+              $columnas = mysqli_num_rows($sql_tmp);
+              if($columnas == 0){
+                echo '<h5 class="center">No se encontraron Usuarios</h5>';
+              }else{
+                $AllEfectivo = 0;  $AllBanco = 0;  $AllCredito = 0;
+
+                while($tmp = mysqli_fetch_array($sql_tmp)){
+                  $id_user = $tmp['user_id'];
+                  $entradas = mysqli_fetch_array(mysqli_query($conn,"SELECT SUM(cantidad) AS suma FROM pagos WHERE id_user=$id_user AND corte = 0 AND tipo_cambio='Efectivo'"));         
+                  $banco = mysqli_fetch_array(mysqli_query($conn,"SELECT SUM(cantidad) AS suma FROM pagos WHERE id_user=$id_user AND corte = 0 AND tipo_cambio='Banco'"));
+                  $credito = mysqli_fetch_array(mysqli_query($conn,"SELECT SUM(cantidad) AS suma FROM pagos WHERE id_user=$id_user AND corte = 0 AND tipo_cambio='Credito'"));
+                  $salidas = mysqli_fetch_array(mysqli_query($conn,"SELECT SUM(cantidad) AS suma FROM salidas WHERE corte = 0 AND usuario = $id_user"));
+                  if ($salidas['suma'] == '') {
+                    $salidas['suma'] = 0;
+                  }
+                  ?>
+                  <tr>
+                    <td><?php echo $tmp['user_id']; ?></td>
+                    <td><?php echo $tmp['firstname']; ?></td>
+                    <td><?php echo $tmp['lastname']; ?></td>
+                    <td>$<?php echo sprintf('%.2f', $entradas['suma']); ?></td>
+                    <td>-$<?php echo sprintf('%.2f', $salidas['suma']); ?></td>
+                    <td>$<?php echo sprintf('%.2f', $entradas['suma']-$salidas['suma']); ?></td>
+                    <td>$<?php echo sprintf('%.2f', $banco['suma']); ?></td>
+                    <td>$<?php echo sprintf('%.2f', $credito['suma']); ?></td>
+                    <td><form method="post" action="../views/detalles_caja.php"><input id="id" name="id" type="hidden" value="<?php echo $tmp['user_id']; ?>"><button class="btn-small waves-effect waves-light grey darken-4"><i class="material-icons">list</i></button></form></td>
+                  </tr>
+                  <?php
+                  $AllEfectivo += $entradas['suma'];
+                  $AllEfectivo -= $salidas['suma'];
+                  $AllBanco += $banco['suma'];
+                  $AllCredito += $credito['suma'];
+                }//FIN WHILE
+              }//FIN ELSE
+            ?>   
+            <tr>
+            
+              <td colspan="5"><h6><b>TOTALES</b></h6></td>
+              <td><h6><b>$<?php echo sprintf('%.2f', $AllEfectivo); ?></b></h6></td>
+              <td><h6><b>$<?php echo sprintf('%.2f', $AllBanco); ?></b></h6></td>
+              <td><h6><b>$<?php echo sprintf('%.2f', $AllCredito) ?></b></h6></td>
+            </tr>         
+          </tbody>
     </div> 
   </div><br>
 </body>

@@ -1,14 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 4.9.7
+-- version 5.0.2
 -- https://www.phpmyadmin.net/
 --
--- Servidor: localhost:3306
--- Tiempo de generación: 03-11-2022 a las 18:49:43
--- Versión del servidor: 5.7.23-23
--- Versión de PHP: 7.4.30
+-- Servidor: 127.0.0.1
+-- Tiempo de generación: 08-11-2022 a las 16:12:05
+-- Versión del servidor: 10.4.11-MariaDB
+-- Versión de PHP: 7.4.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -19,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de datos: `hotels10_sistema_hotel_sr`
+-- Base de datos: `sistema_hotel_sr`
 --
 
 -- --------------------------------------------------------
@@ -34,7 +33,8 @@ CREATE TABLE `salidas` (
   `motivo` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
   `fecha` date NOT NULL,
   `hora` time NOT NULL,
-  `usuario` int(11) NOT NULL
+  `usuario` int(11) NOT NULL,
+  `corte` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
