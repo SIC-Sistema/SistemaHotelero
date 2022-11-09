@@ -71,7 +71,7 @@
                     <td>$<?php echo sprintf('%.2f', $entradas['suma']-$salidas['suma']); ?></td>
                     <td>$<?php echo sprintf('%.2f', $banco['suma']); ?></td>
                     <td>$<?php echo sprintf('%.2f', $credito['suma']); ?></td>
-                    <td><form method="post" action="../views/detalles_caja.php"><input id="id" name="id" type="hidden" value="<?php echo $tmp['user_id']; ?>"><button class="btn-small waves-effect waves-light grey darken-4"><i class="material-icons">list</i></button></form></td>
+                    <td><form method="post" action="../views/detalles_caja.php"><input id="id_usuario" name="id_usuario" type="hidden" value="<?php echo $tmp['user_id']; ?>"><button class="btn-small waves-effect waves-light grey darken-4"><i class="material-icons">list</i></button></form></td>
                   </tr>
                   <?php
                   $AllEfectivo += $entradas['suma'];

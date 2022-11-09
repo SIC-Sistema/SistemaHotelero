@@ -37,7 +37,7 @@
 </head>
 <body>
 	<div class="container">
-		<div class="row"><br>
+		  <div class="row"><br>
    		  <ul class="collection">
             <li class="collection-item avatar">
               <div class="hide-on-large-only"><br><br></div>
@@ -62,8 +62,8 @@
               	</div>
               </b></p><br><br><br><br>
             </li>
-          </ul>
-        </div>
+        </ul>
+      </div>
         
 	    <h4>Historial:</h4>
 	    <div class="row">
@@ -182,6 +182,5 @@
 	      </div>
 	    </div>
 	</div>
-
 </body>
 </html>
