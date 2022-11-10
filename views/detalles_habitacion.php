@@ -132,6 +132,7 @@
 	        			<th>Reservar</th>
 	        			<th>Nota</th>
 	        			<th>Mto.</th>
+	        			<th>Limp.</th>
 	        			<th>Editar</th>
 	        			<th>Borrar</th>
 	        		</tr>
@@ -140,7 +141,8 @@
 	        		<tr>
 	        			<td><form method="post" action="../views/reservacion.php"><input id="habitacion" name="habitacion" type="hidden" value="<?php echo $id;?>"><button class="btn-small green waves-effect waves-light"><i class="material-icons">event</i></button></form></td>
 	        			<td><a onclick="modal_nota(<?php echo $id;?>)" class="btn-small amber waves-effect waves-light"><i class="material-icons">note_add</i></a></td>
-	        			<td><a onclick="" class="btn-small indigo waves-effect waves-light modal-trigger" href="#modalMantenimiento"><i class="material-icons">settings</i></a></td>
+	        			<td><a onclick="" class="btn-small indigo waves-effect waves-light tooltipped modal-trigger" data-position="bottom" data-tooltip="Reporte Mantenimiento" href="#modalMantenimiento"><i class="material-icons">settings</i></a></td>
+	        			<td><a onclick="" class="btn-small waves-effect waves-light tooltipped modal-trigger" href="#modalLimpieza" data-position="bottom" data-tooltip="Reporte Limpieza"><i class="material-icons">photo_filter</i></a></td>
 	        			<td><a href="edit_habitacion.php?id=<?php echo $id;?>" class="btn-small grey darken-3 waves-effect waves-light"><i class="material-icons">edit</i></a></td>
 	        			<td><a onclick="borrar_habitacion(<?php echo $id;?>);" class="btn-small red darken-1 waves-effect waves-light"><i class="material-icons">delete</i></a></td>
 	        		</tr>
@@ -176,41 +178,40 @@
 	              </thead>
 	              <tbody>
 	              	<?php
-	              	$sql = "SELECT * FROM `reservaciones` WHERE id_habitacion = $id";
-									// REALIZAMOS LA CONSULTA A LA BASE DE DATOS MYSQL Y GUARDAMOS EN FORMARTO ARRAY EN UNA VARIABLE $consulta
-									$consulta = mysqli_query($conn, $sql);
-									//VERIFICAMOS QUE LA VARIABLE SI CONTENGA INFORMACION
-									if (mysqli_num_rows($consulta) == 0) {
-										echo '<h4>No se encontraron reservaciones.</h4>';
-									} else {
-										while ($reservacion = mysqli_fetch_array($consulta)) {
-											$id_user = $reservacion['usuario'];
-											$user = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `users` WHERE user_id=$id_user"));
-											$id_cliente = $reservacion['id_cliente'];
-											$cliente = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `clientes` WHERE id=$id_cliente"));
-											if($reservacion['estatus'] == 3){
-												$estatus = '<span class="new badge red" data-badge-caption="Cancelada"></span>';
-											}elseif ($reservacion['estatus'] == 2) {
-												$estatus = '<span class="new badge black" data-badge-caption="Terminada"></span>';
-											}else{
-												$estatus = ($reservacion['estatus'] == 1)? '<span class="new badge blue" data-badge-caption="Ocupada"></span>': '<span class="new badge green" data-badge-caption="Pendiente"></span>';
-											}
-										    ?>
-										    <tr>
-										        <td><?php echo $reservacion['id']; ?></td>
-										        <td><?php echo $cliente['id'].'. '.$cliente['nombre']; ?></td>
-										        <td><?php echo $reservacion['nombre']; ?></td>
-										        <td><?php echo $reservacion['fecha_entrada']; ?></td>
-										        <td><?php echo $reservacion['fecha_salida']; ?></td>
-										        <td><?php echo $reservacion['observacion']; ?></td>
-										        <td>$<?php echo sprintf('%.2f', $reservacion['total']); ?></td>
-										        <td><?php echo $estatus; ?></td>
-										        <td><?php echo $user['firstname']; ?></td>
-										        <td><?php echo $reservacion['fecha_registro']; ?></td>
-										    </tr>
-										    <?php
-					          }//FIN while
-									}//FIN ELSE
+					// REALIZAMOS LA CONSULTA A LA BASE DE DATOS MYSQL Y GUARDAMOS EN FORMARTO ARRAY EN UNA VARIABLE $consulta
+					$consulta = mysqli_query($conn, "SELECT * FROM `reservaciones` WHERE id_habitacion = $id");
+					//VERIFICAMOS QUE LA VARIABLE SI CONTENGA INFORMACION
+					if (mysqli_num_rows($consulta) == 0) {
+						echo '<h4>No se encontraron reservaciones.</h4>';
+					} else {
+						while ($reservacion = mysqli_fetch_array($consulta)) {
+							$id_user = $reservacion['usuario'];
+							$user = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `users` WHERE user_id=$id_user"));
+							$id_cliente = $reservacion['id_cliente'];
+							$cliente = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `clientes` WHERE id=$id_cliente"));
+							if($reservacion['estatus'] == 3){
+								$estatus = '<span class="new badge red" data-badge-caption="Cancelada"></span>';
+							}elseif ($reservacion['estatus'] == 2) {
+								$estatus = '<span class="new badge black" data-badge-caption="Terminada"></span>';
+							}else{
+								$estatus = ($reservacion['estatus'] == 1)? '<span class="new badge blue" data-badge-caption="Ocupada"></span>': '<span class="new badge green" data-badge-caption="Pendiente"></span>';
+							}
+							?>
+							<tr>
+							    <td><?php echo $reservacion['id']; ?></td>
+							    <td><?php echo $cliente['id'].'. '.$cliente['nombre']; ?></td>
+							    <td><?php echo $reservacion['nombre']; ?></td>
+							    <td><?php echo $reservacion['fecha_entrada']; ?></td>
+							    <td><?php echo $reservacion['fecha_salida']; ?></td>
+							    <td><?php echo $reservacion['observacion']; ?></td>
+							    <td>$<?php echo sprintf('%.2f', $reservacion['total']); ?></td>
+							    <td><?php echo $estatus; ?></td>
+							    <td><?php echo $user['firstname']; ?></td>
+							    <td><?php echo $reservacion['fecha_registro']; ?></td>
+							</tr>
+							<?php
+					    }//FIN while
+					}//FIN ELSE
 	                ?>	                
 	              </tbody>
 	            </table>

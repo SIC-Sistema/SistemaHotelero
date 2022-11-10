@@ -94,37 +94,37 @@
 	              </thead>
 	              <tbody>
 	              	<?php
-	              	$reservaciones = mysqli_query($conn,"SELECT * FROM reservaciones WHERE id_cliente = $id"); 
-						      //VERIFICAMOS QUE LA VARIABLE SI CONTENGA INFORMACION
-						      if (mysqli_num_rows($reservaciones) == 0) {
-						        echo '<h4>No se encontraron reservaciones.</h4>';
-						      } else {
-						        while ($reservacion = mysqli_fetch_array($reservaciones)) {
-						        	$id_usuario = $reservacion['usuario'];// ID DEL USUARIO REGISTRO
-									    //Obtenemos la informacion del Usuario
-									    $usuario = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `users` WHERE user_id = $id_usuario"));
-						        	if($reservacion['estatus'] == 3){
-												$estatus = '<span class="new badge red" data-badge-caption="Cancelada"></span>';
-											}elseif ($reservacion['estatus'] == 2) {
-												$estatus = '<span class="new badge black" data-badge-caption="Terminada"></span>';
-											}else{
-												$estatus = ($reservacion['estatus'] == 1)? '<span class="new badge blue" data-badge-caption="Ocupada"></span>': '<span class="new badge green" data-badge-caption="Pendiente"></span>';
-											}
-						        	?>
-						        	<tr>
-						        		<td><?php echo $reservacion['id']; ?></td>
-						        		<td>N°<?php echo $reservacion['id_habitacion']; ?></td>
-						        		<td><?php echo $reservacion['nombre']; ?></td>
-						        		<td><?php echo $reservacion['fecha_entrada']; ?></td>
-						        		<td><?php echo $reservacion['fecha_salida']; ?></td>
-						        		<td>$<?php echo sprintf('%.2f', $reservacion['total']); ?></td>
-						        		<td><?php echo $estatus; ?></td>
-						        		<td><?php echo $usuario['firstname']; ?></td>
-						        		<td><?php echo $reservacion['fecha_registro']; ?></td>
-						        	</tr>
-						        	<?php
-						        }//FIN while
-						      }//FIN ELSE
+	              	$reservaciones = mysqli_query($conn,"SELECT * FROM reservaciones WHERE id_cliente = $id");
+					//VERIFICAMOS QUE LA VARIABLE SI CONTENGA INFORMACION
+					if (mysqli_num_rows($reservaciones) == 0) {
+					    echo '<h4>No se encontraron reservaciones.</h4>';
+					} else {
+					    while ($reservacion = mysqli_fetch_array($reservaciones)) {
+						   	$id_usuario = $reservacion['usuario'];// ID DEL USUARIO REGISTRO
+						    //Obtenemos la informacion del Usuario
+						    $usuario = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `users` WHERE user_id = $id_usuario"));
+						   	if($reservacion['estatus'] == 3){
+								$estatus = '<span class="new badge red" data-badge-caption="Cancelada"></span>';
+							}elseif ($reservacion['estatus'] == 2) {
+								$estatus = '<span class="new badge black" data-badge-caption="Terminada"></span>';
+							}else{
+								$estatus = ($reservacion['estatus'] == 1)? '<span class="new badge blue" data-badge-caption="Ocupada"></span>': '<span class="new badge green" data-badge-caption="Pendiente"></span>';
+							}
+						   	?>
+						   	<tr>
+						   		<td><?php echo $reservacion['id']; ?></td>
+						   		<td>N°<?php echo $reservacion['id_habitacion']; ?></td>
+						  		<td><?php echo $reservacion['nombre']; ?></td>
+						   		<td><?php echo $reservacion['fecha_entrada']; ?></td>
+						   		<td><?php echo $reservacion['fecha_salida']; ?></td>
+						   		<td>$<?php echo sprintf('%.2f', $reservacion['total']); ?></td>
+						   		<td><?php echo $estatus; ?></td>
+						   		<td><?php echo $usuario['firstname']; ?></td>
+						  		<td><?php echo $reservacion['fecha_registro']; ?></td>
+						  	</tr>
+						  	<?php
+						}//FIN while
+					}//FIN ELSE
 	                ?>
 	              </tbody>
 	            </table>

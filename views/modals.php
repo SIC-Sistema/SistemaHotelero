@@ -84,3 +84,26 @@
     </div>
 </div>
 <!--Cierre modal mantenimiento-->
+
+<!--MODAL LIMPIEZA-->
+<div id="modalLimpieza" class="modal">
+    <div class="modal-content row">
+        <h5 class="red-text center"><b>Reporte de Limpieza</b></h5><br>
+        <h6><b>Seleccione una un tipo de limpieza a realizar</b></h6><br>
+        <form class="row">
+          <div class="row">
+            <div class="input-field col s12 m6 l6">
+              <select class="browser-default">
+                <option value="" disabled selected>Selecciona una opcion</option>
+                <option value="1">Option 1</option>
+                <option value="2">Option 2</option>
+                <option value="3">Option 3</option>
+              </select>
+            </div>
+          </div>
+          <a onclick="crear_mto();" class="btn waves-effect waves-light grey darken-3 right">Agregar<i class="material-icons left">save</i></a>
+          <a href="#" class="modal-action modal-close waves-effect waves-green btn red accent-2 right">Cancelar<i class="material-icons left">close</i></a>
+        </form>
+    </div>
+</div>
+<!--Cierre modal LIMPIEZA-->

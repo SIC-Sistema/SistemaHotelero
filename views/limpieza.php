@@ -40,20 +40,41 @@
           <thead>
             <tr>
               <th>N°</th>
-              <th>Nombre</th>
-              <th>Telefono</th>
-              <th>RFC</th>
-              <th>E-mail</th>
-              <th>Registro</th>
+              <th>Habiación</th>
+              <th>Descripción</th>
               <th>Fecha</th>
-              <th>Reserv.</th>
-              <th>Detalles</th>
-              <th>Editar</th>
-              <th>Borrar</th>
+              <th>Registro</th>
+              <th>Estatus</th>
+              <th>Accion</th>
             </tr>
           </thead>
-          <!-- DENTRO DEL tbody COLOCAMOS id = "clientesALL"  PARA QUE EN ESTA PARTE NOS MUESTRE LOS RESULTADOS EN TEXTO HTML DEL SCRIPT EN FUNCION buscar_clientes() -->
           <tbody>
+            <?php            
+            // REALIZAMOS LA CONSULTA A LA BASE DE DATOS MYSQL Y GUARDAMOS EN FORMARTO ARRAY EN UNA VARIABLE $consulta
+            $consulta = mysqli_query($conn, "SELECT * FROM `limpieza` WHERE estatus = 0 ORDER BY id_habitacion");
+            //VERIFICAMOS QUE LA VARIABLE SI CONTENGA INFORMACION
+            if (mysqli_num_rows($consulta) == 0) {
+              echo '<h4>No se encontraron reportes de limpieza.</h4>';
+            } else {
+              while ($limpar = mysqli_fetch_array($consulta)) {
+                $id_user = $limpar['usuario'];
+                $user = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `users` WHERE user_id=$id_user"));
+                $id_habitacion = $limpar['id_habitacion'];
+                $habitacion = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `habitaciones` WHERE id=$id_habitacion"));
+                ?>
+                <tr>
+                    <td><?php echo $limpar['id']; ?></td>
+                    <td><?php echo $habitacion['id'].'. '.$habitacion['descripcion'].'('.$habitacion['piso'].' piso)'; ?></td>
+                    <td><?php echo $limpar['descripcion']; ?></td>
+                    <td><?php echo $limpar['fecha']; ?></td>
+                    <td><?php echo $user['firstname']; ?></td>
+                    <td><?php echo ($limpar['estatus'] == 0)? '<span class="new badge red" data-badge-caption="Pendiente"></span>': ''; ?></td>
+                    <td><a onclick="verificar_eliminar(<?php echo $limpar['id']; ?>)" class="btn-small grey darken-4 waves-effect waves-light tooltipped" data-position="bottom" data-tooltip="Limpieza Realizada"><i class="material-icons">photo_filter</i></a></td>
+                </tr>
+                <?php
+                }//FIN while
+            }//FIN ELSE
+            ?>  
           </tbody>
         </table>
       </div><br><br>
