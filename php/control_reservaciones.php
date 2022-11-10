@@ -580,7 +580,7 @@ switch ($Accion) {
     case 12:///////////////           IMPORTANTE               ///////////////
         // $Accion es igual a 12 realiza:
 
-    	//CON POST RECIBIMOS EL ID DE LA RESERVACION Y EL ID DE LA HABITACION DE "check_in.php"
+    	//CON POST RECIBIMOS EL ID DE LA RESERVACION Y EL ID DE LA HABITACION DE "check_out.php"
         $id = $conn->real_escape_string($_POST['id']);
         $reservacion = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `reservaciones` WHERE id=$id"));
         $habitacion = $reservacion['id_habitacion'];
@@ -589,7 +589,12 @@ switch ($Accion) {
 		$sql = "UPDATE `reservaciones` SET estatus = 2 WHERE id = '$id'";
 		//VERIFICAMOS QUE LA SENTECIA FUE EJECUTADA CON EXITO!
 		if(mysqli_query($conn, $sql)){
-			mysqli_query($conn, "UPDATE `habitaciones` SET estatus = 0 WHERE id = '$habitacion'");
+			//CAMBIAMOS LA HABITACION A ESTATUS DE LIMPIEZA estatus = 2
+			mysqli_query($conn, "UPDATE `habitaciones` SET estatus = 2 WHERE id = '$habitacion'");
+			//Generamos el reporte de limpieza
+			mysqli_query($conn, "INSERT INTO `limpieza` (id_habitacion, descripcion, fecha, usuario) 
+						VALUES('$habitacion', 'LIMPIEZA GENERAL (CHECK-OUT)', '$Fecha_hoy', '$id_user')");
+
 			echo '<script >M.toast({html:"CHECK-OUT se realizo con exito", classes: "rounded"})</script>';
 			#CON POST RECIBIMOS LAS VARIABLES Y VERIFICAMOS SI HAY QUE REGISTRAR PAGO
         	$Liquidacion = $conn->real_escape_string($_POST['liquidacion']);
