@@ -42,6 +42,19 @@ if (isset($_POST['id_usuario']) == false) {
               </b></p><br><br>
             </li>
         </ul>
+        <ul class="collection">
+            <li class="collection-item avatar">
+              <div class="hide-on-large-only"><br><br></div>
+              <span class="title"><b>RESUMEN: </b></span><br><br>
+              <b>Entradas: </b><?php echo $user_id;?><br>               
+              <b>Salidas: </b><?php echo $user_id;?><br>  
+              <hr>             
+              <b class="indigo-text">TOTAL EFECTIVO: </b><?php echo $user_id;?><br>               
+              <b class="indigo-text">TOTAL A BANCO: </b><?php echo $user_id;?><br>               
+              <b class="indigo-text">TOTAL A CREDITO: </b><?php echo $user_id;?><br>               
+              
+            </li>
+        </ul>
       </div>
     </div>
   </body>

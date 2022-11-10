@@ -8,10 +8,10 @@ date_default_timezone_set('America/Mexico_City');
 $id_user = $_SESSION['user_id'];// ID DEL USUARIO LOGEADO
 $Fecha_hoy = date('Y-m-d');// FECHA ACTUAL
 
-//CON METODO POST TOMAMOS UN VALOR DEL 0 AL 3 PARA VER QUE ACCION HACER (Para Insertar = 0, Actualizar = 1, Borrar = 2, crear matenimiento = 3, buscar mto = 4 , Borrar mto = 5)
+//CON METODO POST TOMAMOS UN VALOR DEL 0 AL 3 PARA VER QUE ACCION HACER (Para Insertar = 0, Actualizar = 1, Borrar = 2, crear matenimiento = 3, buscar mto = 4 , Borrar mto = 5, editar mto = 6, atender mto = 7, reporte limpieza = 8)
 $Accion = $conn->real_escape_string($_POST['accion']);
 
-//UN SWITCH EL CUAL DECIDIRA QUE ACCION REALIZA DEL CRUD (Para Insertar = 0, Actualizar = 1, Borrar = 2, crear matenimiento = 3, buscar mto = 4, Borrar mto = 5 )
+//UN SWITCH EL CUAL DECIDIRA QUE ACCION REALIZA DEL CRUD (Para Insertar = 0, Actualizar = 1, Borrar = 2, crear matenimiento = 3, buscar mto = 4, Borrar mto = 5, editar mto = 6, atender mto = 7, reporte limpieza = 8 )
 //echo "hola aqui estoy";
 switch ($Accion) {
     case 0:  ///////////////           IMPORTANTE               ///////////////
@@ -233,6 +233,55 @@ switch ($Accion) {
         }
         
         break; 
+    case 8:///////////////           IMPORTANTE               ///////////////
+        //CON POST RECIBIMOS TODAS LAS VARIABLES DEL FORMULARIO QUE NESECITAMOS PARA ACTUALIZAR    
+        $id_habitacion = $conn->real_escape_string($_POST['id_habitacion']);
+        $limpieza = $conn->real_escape_string($_POST['limpieza']);
+        $reservacion = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `reservaciones` WHERE id_habitacion = $id_habitacion"));
+        $id_cliente = $reservacion['id_cliente'];
+        $cliente = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `clientes` WHERE id = $id_cliente"));
+        $Descripcion = $limpieza.' ('.$cliente['limpieza'].')';
+        if (mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `habitaciones` WHERE estatus = 2"))>0) {
+            echo '<script>M.toast({html:"La habitacion se encuentra en limpieza", classes: "rounded"})</script>';
+        }else{
+            if (mysqli_query($conn, "INSERT INTO `limpieza` (id_habitacion, descripcion, fecha, usuario) 
+                            VALUES('$id_habitacion', '$Descripcion', '$Fecha_hoy', '$id_user')")) {
+                //CAMBIAMOS LA HABITACION A ESTATUS DE LIMPIEZA estatus = 2
+                mysqli_query($conn, "UPDATE `habitaciones` SET estatus = 2 WHERE id = '$id_habitacion'");
+                echo '<script>M.toast({html:"Reporte de limpieza generado", classes: "rounded"})</script>';
+                echo '<script>recargar_limpieza()</script>';// REDIRECCIONAMOS (FUNCION ESTA EN ARCHIVO modals.php)
+            }else{
+                echo '<script >M.toast({html:"Ha ocurrido un error...", classes: "rounded"})</script>'; 
+            }   
+        } //FIN ELSE LIMPIEZA    
+        break; 
+    case 9:///////////////           IMPORTANTE               ///////////////
+        // $Accion es igual a 9 realiza:
+
+        //CON POST RECIBIMOS TODAS LAS VARIABLES DEL FORMULARIO QUE NESECITAMOS PARA ACTUALIZAR
+        $id = $conn->real_escape_string($_POST['id']);     
+        $Descripcion = $conn->real_escape_string($_POST['valorDescripcion']);
+
+        $sql = "UPDATE `limpieza` SET  descripcion = '$Descripcion' WHERE id = $id";
+        if (mysqli_query($conn, $sql)) {
+            echo '<script>M.toast({html:"Reporte actualizado correctamente", classes: "rounded"})</script>';
+            echo '<script>recargar_limpieza()</script>';// REDIRECCIONAMOS (FUNCION ESTA EN ARCHIVO modals.php)
+        }else{
+             echo '<script >M.toast({html:"Ha ocurrido un error...", classes: "rounded"})</script>'; 
+        }
+    case 10:///////////////           IMPORTANTE               ///////////////
+        // $Accion es igual a 10 realiza:
+
+        //CON POST RECIBIMOS TODAS LAS VARIABLES DEL FORMULARIO QUE NESECITAMOS PARA ACTUALIZAR
+        $id = $conn->real_escape_string($_POST['id']);     
+
+        $sql = "UPDATE `limpieza` SET  estatus = 1 WHERE id = $id";
+        if (mysqli_query($conn, $sql)) {
+            echo '<script>M.toast({html:"Reporte actualizado correctamente", classes: "rounded"})</script>';
+            echo '<script>recargar_limpieza()</script>';// REDIRECCIONAMOS (FUNCION ESTA EN ARCHIVO modals.php)
+        }else{
+             echo '<script >M.toast({html:"Ha ocurrido un error...", classes: "rounded"})</script>'; 
+        }
 }// FIN switch
 mysqli_close($conn);
     

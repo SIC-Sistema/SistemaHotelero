@@ -11,28 +11,64 @@
       function update_limpieza(id){
         var answer = confirm("Deseas terminar limpieza de la habitación N°"+id+"?");
         if (answer) {
-          //MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO EN LA DIRECCION "../php/control_clientes.php"
-          $.post("../php/control_clientes.php", { 
+          //MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO EN LA DIRECCION "../php/control_habitaciones.php"
+          $.post("../php/control_habitaciones.php", { 
             //Cada valor se separa por una ,
               id: id,
-              accion: 3,
+              accion: 10,
           }, function(mensaje) {
-            //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "control_clientes.php"
-            $("#borrarCliente").html(mensaje);
+            //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "control_habitaciones.php"
+            $("#update").html(mensaje);
           }); //FIN post
         }//FIN IF
       };//FIN function
+
+       //FUNCION QUE MUESTRA EL MODAL PARA EDITAR UNA NOTA
+      function modal_limpieza_edit(id){
+          //MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO EN LA DIRECCION "modal_editar_limpieza.php" PARA MOSTRAR EL MODAL
+          $.post("modal_editar_limpieza.php", {
+            //Cada valor se separa por una ,
+              id:id,
+            }, function(mensaje){
+                //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "modal_editar_limpieza.php"
+                $("#modal").html(mensaje);
+          });//FIN post
+      }//FIN function
+
+      //FUNCION QUE MUESTRA EL MODAL PARA  EDITAR UNA NOTA
+      function editar_limp(id){          
+        var descripcionLimp = $("input#descripcionLimp").val();
+
+        if (descripcionLimp == '') {
+          M.toast({html:"Porfavor ingrese una descripción al reporte de limpieza", classes: "rounded"});
+        }else{
+          //MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO EN LA DIRECCION "control_habitaciones.php" PARA MOSTRAR EL MODAL
+          $.post("../php/control_habitaciones.php", {
+            //Cada valor se separa por una ,
+              id: id,
+              valorDescripcion: descripcionLimp,
+              accion: 9,
+            }, function(mensaje){
+                //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "control_habitaciones.php"
+                $("#modal").html(mensaje);
+          });//FIN post
+        }//FIN else
+      }//FIN function
     </script>
   </head>
   <main>
   <body onload="buscar_clientes();">
     <div class="container"><br><br>
-      <!-- CREAMOS UN DIV EL CUAL TENGA id = "borrarCliente"  PARA QUE EN ESTA PARTE NOS MUESTRE LOS RESULTADOS EN TEXTO HTML DEL SCRIPT EN FUNCION  -->
-      <div id="borrarCliente"></div>
+      <!-- CREAMOS UN DIV EL CUAL TENGA id = "update"  PARA QUE EN ESTA PARTE NOS MUESTRE LOS RESULTADOS EN TEXTO HTML DEL SCRIPT EN FUNCION  -->
+      <div id="update"></div>
+      <!-- CREAMOS UN DIV EL CUAL TENGA id = "modal"  PARA QUE EN ESTA PARTE NOS MUESTRE LOS RESULTADOS EN TEXTO HTML DEL SCRIPT EN FUNCION  -->
+      <div id="modal"></div>
       <div class="row">
         <!--    //////    TITULO    ///////   -->
         <h3 class="hide-on-med-and-down col s12 m6 l6">Lista de Limpieza</h3>
-        <h5 class="hide-on-large-only col s12 m6 l6">Lista de Limpieza</h5>
+        <h5 class="hide-on-large-only col s12 m6 l6">Lista de Limpieza</h5><br><br>
+        <!-- BOTON QUE MANDA LLAMAR EL SCRIPT PARA QUE EL SCRIPR HAGA LO QUE LA FUNCION CONTENGA -->
+        <a href="../php/imprimir_limpieza.php" target="blank" class="waves-effect waves-light btn grey darken-4 right"><i class="material-icons left">picture_as_pdf</i>Imprimir</a>
       </div>
       <!--    //////    TABLA QUE MUESTRA LA INFORMACION DE LOS CLIENTES    ///////   -->
       <div class="row">
@@ -69,7 +105,7 @@
                     <td><?php echo $limpar['fecha']; ?></td>
                     <td><?php echo $user['firstname']; ?></td>
                     <td><?php echo ($limpar['estatus'] == 0)? '<span class="new badge red" data-badge-caption="Pendiente"></span>': ''; ?></td>
-                    <td><a onclick="verificar_eliminar(<?php echo $limpar['id']; ?>)" class="btn-small grey darken-4 waves-effect waves-light tooltipped" data-position="bottom" data-tooltip="Limpieza Realizada"><i class="material-icons">photo_filter</i></a></td>
+                    <td><a onclick="modal_limpieza_edit(<?php echo $limpar['id']; ?>)" class="btn-small green waves-effect waves-light tooltipped" data-position="bottom" data-tooltip="Editar"><i class="material-icons">edit</i></a>   <a onclick="update_limpieza(<?php echo $limpar['id']; ?>)" class="btn-small grey darken-4 waves-effect waves-light tooltipped" data-position="bottom" data-tooltip="Limpieza Realizada"><i class="material-icons">photo_filter</i></a></td>
                 </tr>
                 <?php
                 }//FIN while

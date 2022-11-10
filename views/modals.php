@@ -29,6 +29,9 @@
   function recargar_mantenimientos() {
     setTimeout("location.href='mantenimientos.php'", 1000);
   }
+  function recargar_limpieza() {
+    setTimeout("location.href='limpieza.php'", 800);
+  }
 </script>
 
 <!--Modal cortes-->
@@ -93,15 +96,15 @@
         <form class="row">
           <div class="row">
             <div class="input-field col s12 m6 l6">
-              <select class="browser-default">
-                <option value="" disabled selected>Selecciona una opcion</option>
-                <option value="1">Option 1</option>
-                <option value="2">Option 2</option>
-                <option value="3">Option 3</option>
+              <select class="browser-default" id="limpieza">
+                <option value="" selected>Selecciona una opcion</option>
+                <option value="CAMBIAR TODO">CAMBIAR TODO</option>
+                <option value="CAMBIO DE BLANCOS">CAMBIO DE BLANCOS</option>
+                <option value="TENDER CAMAS">TENDER CAMAS</option>
               </select>
             </div>
           </div>
-          <a onclick="crear_mto();" class="btn waves-effect waves-light grey darken-3 right">Agregar<i class="material-icons left">save</i></a>
+          <a onclick="crear_limpieza();" class="btn waves-effect waves-light grey darken-3 right">Agregar<i class="material-icons left">save</i></a>
           <a href="#" class="modal-action modal-close waves-effect waves-green btn red accent-2 right">Cancelar<i class="material-icons left">close</i></a>
         </form>
     </div>

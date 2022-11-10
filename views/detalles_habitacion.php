@@ -56,11 +56,11 @@
 
       //FUNCION QUE MUESTRA EL MODAL PARA  AGREGAR UNA NOTA
       function nueva_nota(id){          
-		var DescripcionNota = $("input#descripcionNota").val();
-		if (DescripcionNota == '') {
-			M.toast({html:"Porfavor ingrese una descripción a la nota", classes: "rounded"});
-		}else{
-			//MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO EN LA DIRECCION "control_reservaciones.php" PARA MOSTRAR EL MODAL
+				var DescripcionNota = $("input#descripcionNota").val();
+				if (DescripcionNota == '') {
+					M.toast({html:"Porfavor ingrese una descripción a la nota", classes: "rounded"});
+				}else{
+					//MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO EN LA DIRECCION "control_reservaciones.php" PARA MOSTRAR EL MODAL
 	        $.post("../php/control_reservaciones.php", {
 		       //Cada valor se separa por una ,
 		        id: id,
@@ -75,15 +75,32 @@
 
       function crear_mto() {
       	var DescripcionMto = $("textarea#descripcionMto").val();
-		if (DescripcionMto == '') {
-			M.toast({html:"Porfavor ingrese una descripción al mantenimiento.", classes: "rounded"});
-		}else{
-			//MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO EN LA DIRECCION "control_habitaciones.php" PARA MOSTRAR EL MODAL
+				if (DescripcionMto == '') {
+					M.toast({html:"Porfavor ingrese una descripción al mantenimiento.", classes: "rounded"});
+				}else{
+					//MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO EN LA DIRECCION "control_habitaciones.php" PARA MOSTRAR EL MODAL
 	        $.post("../php/control_habitaciones.php", {
 		       //Cada valor se separa por una ,
 		        id: <?php echo $id; ?>,
 		        descripcionMto: DescripcionMto,
 		        accion: 3,
+	          }, function(mensaje){
+	            //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "control_habitaciones.php"
+	            $("#modal").html(mensaje);
+	          });//FIN post
+        }//FIN else
+      }
+      function crear_limpieza() {
+      	var limpieza = $("select#limpieza").val();
+				if (limpieza == '') {
+					M.toast({html:"Porfavor seleccione una opcion.", classes: "rounded"});
+				}else{
+					//MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO EN LA DIRECCION "control_habitaciones.php" PARA MOSTRAR EL MODAL
+	        $.post("../php/control_habitaciones.php", {
+		       //Cada valor se separa por una ,
+		        id_habitacion: <?php echo $id; ?>,
+		        limpieza: limpieza,
+		        accion: 8,
 	          }, function(mensaje){
 	            //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "control_habitaciones.php"
 	            $("#modal").html(mensaje);
