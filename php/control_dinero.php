@@ -9,10 +9,9 @@ $id_user = $_SESSION['user_id'];// ID DEL USUARIO LOGEADO
 $Fecha_hoy = date('Y-m-d');// FECHA ACTUAL
 $Hora = date('H:i:s');
 
-//CON METODO POST TOMAMOS UN VALOR DEL 0 AL 3 PARA VER QUE ACCION HACER (Para Insertar = 0, Consultar = 1, Actualizar = 2, Borrar Clientes = 3, Borrar pagos = 4)
+//CON METODO POST TOMAMOS UN VALOR DEL 0 AL 3 PARA VER QUE ACCION HACER (insert salida = 0, corte = 1)
 $Accion = $conn->real_escape_string($_POST['accion']);
-
-//UN SWITCH EL CUAL DECIDIRA QUE ACCION REALIZA DEL CRUD (Para Insertar = 0, Consultar = 1, Actualizar = 2, Borrar Clientes = 3, Borrar pagos = 4)
+//UN SWITCH EL CUAL DECIDIRA QUE ACCION REALIZA DEL CRUD (insert salida = 0, corte = 1)
 switch ($Accion) {
     case 0:  ///////////////           IMPORTANTE               ///////////////
         // $Accion es igual a 0 realiza:
@@ -41,51 +40,81 @@ switch ($Accion) {
     case 1:///////////////           IMPORTANTE               ///////////////
         // $Accion es igual a 1 realiza:
 
-    	//CON POST RECIBIMOS UN TEXTO DEL BUSCADOR VACIO O NO DE "clientes_punto_venta.php"
-    	$Texto = $conn->real_escape_string($_POST['texto']);
+    	#RECIBIMOS EL LA VARIABLE valorClave CON EL METODO POST DEL DOCUMENTO corte_pagos.php DEL MODAL PARA CREAR EL CORTE
+		$Clave = $conn->real_escape_string($_POST['valorClave']);
+		#SEPARAMOS LA VARIABLE $Clave EN DOS PARTES ($ic) ES LA SEPARACION 
+		$Partes = explode('-', $Clave);
+		#SELECCIONAMOS DE LA TABLA config LA CONTRASEÑA 
+		$Pass_check = mysqli_fetch_array(mysqli_query($conn, "SELECT pass FROM config"));
+		//VERIFICAMOS SI LA CLAVE Y EL ID DEL USUARIO COINCIDEN
+		echo $Partes[0].'-'.$Partes[1];
+		if ($Partes[0] == $Pass_check['pass'] AND $Partes[1] == $id_user) {
+			//PROCEDEMOS A CREAR EL CORTE
+			$usuario = $conn->real_escape_string($_POST['valorUsuario']);
+			$entradas = $conn->real_escape_string($_POST['valorEntradas']);
+			$salidas = $conn->real_escape_string($_POST['valorSalidas']);
+			$banco = $conn->real_escape_string($_POST['valorBanco']);
+			$credito = $conn->real_escape_string($_POST['valorCredito']);
 
-    	//VERIFICAMOS SI CONTIENE ALGO DE TEXTO LA VARIABLE
-		if ($Texto != "") {
-			//MOSTRARA LOS CLIENTES QUE SE ESTAN BUSCANDO Y GUARDAMOS LA CONSULTA SQL EN UNA VARIABLE $sql......
-			$sql = "SELECT * FROM `clientes` WHERE  nombre LIKE '%$Texto%' OR id = '$Texto' OR rfc LIKE '%$Texto%' OR colonia LIKE '%$Texto%' OR localidad LIKE '%$Texto%' ORDER BY id";	
+	        #SELECCIONAMOS UN CORTE QUE YA TENGA LOS MISMOS VALORES
+	        $sql_check = mysqli_query($conn, "SELECT id_corte FROM cortes WHERE usuario = '$usuario' AND fecha = '$Fecha_hoy' AND entradas = '$entradas' AND salidas = '$salidas' AND banco = '$banco' AND credito =  '$credito' AND realizo = '$id_user'");
+	        $corte = 0;//DEFINIMOS EL CORTE EN 0 PARA NO TENER ERROR
+	        #VERIFICAMOS SI EXISTE YA UN CORTE CON ESTOS MISMO VALORES YA CREADO
+	        if (mysqli_num_rows($sql_check)>0) {
+	            #SI YA EXISTE UN CORTE TOMAMOS EL ID DE ESTE
+	            $ultimo = mysqli_fetch_array($sql_check);
+	            $corte = $ultimo['id_corte'];//TOMAMOS EL ID DEL CORTE
+	        }else{
+	            #SI NO EXISTE CREAMOS EL CORTE.....  /////////////       IMPORTANTE               /////////////
+	            if (mysqli_query($conn,"INSERT INTO cortes (usuario, fecha, hora, entradas, salidas, banco, credito, realizo) VALUES ($usuario, '$Fecha_hoy', '$Hora', '$entradas', '$salidas', '$banco', '$credito', $id_user)")) {
+	                #SELECCIONAMOS EL ULTIMO CORTE CREADO
+	                $ultimo =  mysqli_fetch_array(mysqli_query($conn, "SELECT MAX(id_corte) AS id FROM cortes WHERE usuario = $usuario AND realizo = $id_user"));           
+	                $corte = $ultimo['id'];//TOMAMOS EL ID DEL ULTIMO CORTE
+	            }// FIN IF CREAR CORTE
+	        }//FIN ELSE
+	        #VERIFICAMOS QUE EL ID DEL NO ESTE VACIO.
+	        if ($corte != 0) {  
+	            //////////////////////         MUY IMPORTANTE !!               //////////////////
+	            //// CREAMOS EL DETALLE DE EL CORTE CON TODOS LOS PAGOS DEL USUARIO CON CORTE EN 0
+	            $sql_pagos = mysqli_query($conn, "SELECT * FROM pagos WHERE id_user=$usuario AND corte = 0");
+	            // AGREGAMOS UNO A UNO LOS PAGOS AL DETALLE DEL CORTE
+	            if (mysqli_num_rows($sql_pagos)>0) {                
+	                while($pago = mysqli_fetch_array($sql_pagos)){
+	                    //insertar pagos de corte...
+	                    $id_pago = $pago['id_pago'];
+	                    mysqli_query($conn,"INSERT INTO detalles(id_corte, id_pago) VALUES ($corte, $id_pago )");
+	                }
+	                //// MODIFICAMOS TODOS LOS PAGOS A 1 QUE SIGNIFICA QUE SE LE HIZO CORTE
+	                mysqli_query($conn,"UPDATE pagos SET corte = 1 WHERE id_user = $usuario AND corte = 0");
+	            } // Fin IF PAGOS
+
+	            //// CREAMOS EL DETALLE DE EL CORTE CON TODOS LAS SALIDAS DEL USUARIO CON CORTE EN 0
+	            $sql_salidas = mysqli_query($conn, "SELECT * FROM salidas WHERE usuario=$usuario AND corte = 0");
+	            // AGREGAMOS UNO A UNO LAS SALIDAS AL DETALLE DEL CORTE
+	            if (mysqli_num_rows($sql_salidas)>0) {                
+	                while($salida = mysqli_fetch_array($sql_salidas)){
+	                    //insertar salida de corte...
+	                    $id_salida = $salida['id'];
+	                    mysqli_query($conn,"INSERT INTO detalles(id_corte, id_salida) VALUES ($corte, $id_salida )");
+	                }
+	                //// MODIFICAMOS TODAS LAS SALIDAS A 1 QUE SIGNIFICA QUE SE LE HIZO CORTE
+	                mysqli_query($conn,"UPDATE salidas SET corte = 1 WHERE usuario = $id_user AND corte = 0");
+	            }// FIN IF SALIDAS
+	            ?>
+	            <script>	                
+	                var a = document.createElement("a");
+	                    a.target = "_blank";
+	                    a.href = "../php/imprimir_corte.php?id="+<?php echo $corte; ?>;
+	                    a.click();
+	                //RECARGAMOS LA PAGINA cortes_pagos.php EN 1500 Milisegundos = 1.5 SEGUNDOS
+	                setTimeout("location.href='../views/cajas.php'", 1500);
+	            </script>
+	            <?php                  
+	        }
 		}else{
-			//ESTA CONSULTA SE HARA SIEMPRE QUE NO ALLA NADA EN EL BUSCADOR Y GUARDAMOS LA CONSULTA SQL EN UNA VARIABLE $sql...
-			$sql = "SELECT * FROM `clientes` limit 50";
-		}//FIN else $Texto VACIO O NO
-
-		// REALIZAMOS LA CONSULTA A LA BASE DE DATOS MYSQL Y GUARDAMOS EN FORMARTO ARRAY EN UNA VARIABLE $consulta
-		$consulta = mysqli_query($conn, $sql);		
-		$contenido = '';//CREAMOS UNA VARIABLE VACIA PARA IR LLENANDO CON LA INFORMACION EN FORMATO
-
-		//VERIFICAMOS QUE LA VARIABLE SI CONTENGA INFORMACION
-		if (mysqli_num_rows($consulta) == 0) {
-				echo '<script>M.toast({html:"No se encontraron clientes.", classes: "rounded"})</script>';
-			
-		} else {
-			//SI NO ESTA EN == 0 SI TIENE INFORMACION
-			//La variable $resultado contiene el array que se genera en la consulta, así que obtenemos los datos y los mostramos en un bucle
-			//RECORREMOS UNO A UNO LOS CLIENTES CON EL WHILE	
-			while($cliente = mysqli_fetch_array($consulta)) {
-				$id_user = $cliente['usuario'];
-				$user = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `users` WHERE user_id=$id_user"));
-				//Output
-				$contenido .= '			
-		          <tr>
-		            <td>'.$cliente['id'].'</td>
-		            <td>'.$cliente['nombre'].'</td>
-		            <td>'.$cliente['telefono'].'</td>
-		            <td>'.$cliente['rfc'].'</td>
-		            <td>'.$cliente['email'].'</td>
-		            <td>'.$user['firstname'].'</td>
-		            <td>'.$cliente['fecha'].'</td>
-		            <td><form method="post" action="../views/reservacion.php"><input id="cliente" name="cliente" type="hidden" value="'.$cliente['id'].'"><button class="btn-small green waves-effect waves-light"><i class="material-icons">event</i></button></form> </td>
-		            <td><form method="post" action="../views/detalles_cliente.php"><input id="id" name="id" type="hidden" value="'.$cliente['id'].'"><button class="btn-small waves-effect waves-light blue"><i class="material-icons">list</i></button></form></td>
-		            <td><form method="post" action="../views/editar_cliente.php"><input id="id" name="id" type="hidden" value="'.$cliente['id'].'"><button class="btn-small waves-effect waves-light grey darken-3"><i class="material-icons">edit</i></button></form></td>
-		            <td><a onclick="borrar_cliente('.$cliente['id'].')" class="btn-small red waves-effect waves-light"><i class="material-icons">delete</i></a></td>
-		          </tr>';
-			}//FIN while
-		}//FIN else
-		echo $contenido;// MOSTRAMOS LA INFORMACION HTML
+		    #SI LA CLAVE NO ES IGUAL A LA CONTRASEÑA SELECCIONADA DEL USUARIO MANDAR ALERTA
+		    echo '<script>M.toast({html:"Clave no admitida intente nuevamente...", classes: "rounded"})</script>';
+		}
         break;
     case 2:///////////////           IMPORTANTE               ///////////////
         // $Accion es igual a 2 realiza:

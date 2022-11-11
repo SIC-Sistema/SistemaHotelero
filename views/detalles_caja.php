@@ -31,12 +31,38 @@ if (isset($_POST['id_usuario']) == false) {
     $salidas = mysqli_fetch_array(mysqli_query($conn,"SELECT sum(cantidad) as total FROM `salidas` WHERE corte = 0 AND usuario = $user_id"));
     $banco = mysqli_fetch_array(mysqli_query($conn,"SELECT sum(cantidad) as total FROM `pagos` WHERE corte = 0 AND tipo_cambio = 'Banco' AND id_user = $user_id"));
     $credito = mysqli_fetch_array(mysqli_query($conn,"SELECT sum(cantidad) as total FROM `pagos` WHERE corte = 0 AND tipo_cambio = 'Credito' AND id_user = $user_id"));
-    ?>    
+    ?>  
+    <script>
+      //FUNCION QUE ENVIA LOS DATOS PARA VALIDAR DESPUES DE LLENADO DEL MODAL
+      function recargar_corte() {
+        var textoClave = $("input#clave").val(); 
+       
+        if (textoClave == "") {
+            M.toast({html:"El campo clave no puede ir vacío.", classes: "rounded"});
+        }else{
+          //MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO EN LA DIRECCION "control_dinero.php" PARA MOSTRAR EL MODAL
+          $.post("../php/control_dinero.php", {
+            //Cada valor se separa por una ,
+              valorClave: textoClave,
+              valorEntradas: <?php echo $entradads['total']; ?>,
+              valorSalidas: <?php echo $salidas['total']; ?>,
+              valorBanco: <?php echo $banco['total']; ?>,
+              valorCredito: <?php echo $credito['total']; ?>,
+              valorUsuario: <?php echo $user_id; ?>,
+              accion: 1,
+            }, function(mensaje) {
+              //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "control_dinero.php"
+               $("#resultado_corte").html(mensaje);
+          });
+        } //FIN ELSE  
+      } // FIN function
+    </script>  
   </head>
   <main>
   <body>
     <div class="container">
       <div class="row"><br>
+        <div id="resultado_corte"></div>
         <ul class="collection">
             <li class="collection-item avatar">
               <div class="hide-on-large-only"><br><br></div>
@@ -81,7 +107,7 @@ if (isset($_POST['id_usuario']) == false) {
             </li>
         </ul>
         <!--    //////    BOTON QUE RELIZARA EL CORTE DEL USUARIO    ///////   -->
-        <a onclick="corte(<?php echo $user_id;?>)" class="waves-effect waves-light btn grey darken-3 left right">Relizar corte<i class="material-icons prefix left">content_cut</i></a>
+        <a href="#corte" class="waves-effect modal-trigger waves-light btn grey darken-3 left right">Relizar corte<i class="material-icons prefix left">content_cut</i></a>
         <!--    //////    TITULO    ///////   -->
         <div class="row" >
           <h3 class="hide-on-med-and-down">Desglose:</h3>
@@ -292,7 +318,7 @@ if (isset($_POST['id_usuario']) == false) {
           </div> 
         </div>
         <!--    //////    BOTON QUE RELIZARA EL CORTE DEL USUARIO    ///////   -->
-        <a onclick="corte(<?php echo $user_id;?>)" class="waves-effect waves-light btn grey darken-3 left right">Relizar corte<i class="material-icons prefix left">content_cut</i></a>
+        <a href="#corte" class="waves-effect modal-trigger waves-light btn grey darken-3 left right">Relizar corte<i class="material-icons prefix left">content_cut</i></a>
       </div>      
     </div>
   </body>

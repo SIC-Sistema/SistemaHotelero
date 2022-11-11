@@ -21,14 +21,14 @@
         M.toast({html:"Por favor ingrese una Descripción.", classes: "rounded"});
       }else{
         //SI LOS IF NO SE CUMPLEN QUIERE DECIR QUE LA INFORMACION CUENTA CON TODO LO REQUERIDO
-        //MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO NE LA DIRECCION "../php/control_salidas.php"
-        $.post("../php/control_salidas.php", {
+        //MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO NE LA DIRECCION "../php/control_dinero.php"
+        $.post("../php/control_dinero.php", {
           //Cada valor se separa por una ,
             accion: 0,
             valorCantidad: textoCantidad,
             valorMotivo: textoMotivo,
           }, function(mensaje) {
-              //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "control_salidas.php"
+              //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "control_dinero.php"
               $("#resultado_insert").html(mensaje);
           }); 
       }//FIN else CONDICIONES
