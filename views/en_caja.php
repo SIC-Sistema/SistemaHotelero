@@ -14,6 +14,8 @@
   $Credito = mysqli_num_rows($sql_credito);
   $sql_salidas = mysqli_query($conn,"SELECT * FROM `salidas` WHERE corte = 0 AND usuario = $id_user");
   $salidas = mysqli_num_rows($sql_salidas);
+  $sql_cortes = mysqli_query($conn,"SELECT * FROM `cortes` WHERE corte = 0 AND realizo = $id_user");
+  $cortes = mysqli_num_rows($sql_cortes);
   ?>
 </head>
 <main>
@@ -224,6 +226,46 @@
                 </tbody>
             </table>
             <h6 class="right"><b>TOTAL SALIDAS . $<?php echo sprintf('%.2f', $Total); ?> </b></h6><br>
+            <?php 
+          } 
+        if ($cortes > 0) {
+        ?>
+          <ul class="collection">
+            <li class="collection-item grey"><h6><b> >>> CORTES: <span class="new badge red" data-badge-caption="salida(s)"><?php echo $cortes; ?></span></b></h6></li>
+          </ul>
+            <table>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>N°</th>
+                    <th>Usuario</th>
+                    <th>Fecha y Hora</th>
+                    <th>Entradas</th>
+                    <th>Salidas</th>
+                    <th>Banco</th>
+                    <th>Credito</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <?php 
+                  $aux = 0;
+                  while ($corte = mysqli_fetch_array($sql_cortes)) {  
+                    $aux ++;
+                    ?>
+                    <tr>
+                      <td><?php echo $aux; ?></td>
+                      <td><?php echo $corte['id_corte']; ?></td>
+                      <td><?php echo $corte['usuario']; ?></td>
+                      <td><?php echo $corte['fecha'].' '.$corte['hora']; ?></td>
+                      <td>$<?php echo sprintf('%.2f', $corte['entradas']); ?></td>
+                      <td>$<?php echo sprintf('%.2f', $corte['salidas']); ?></td>
+                      <td>$<?php echo sprintf('%.2f', $corte['banco']); ?></td>
+                      <td>$<?php echo sprintf('%.2f', $corte['credito']); ?></td>
+                    </tr>
+                    <?php 
+                  }?>
+                </tbody>
+            </table>
             <?php 
           }
         ?>

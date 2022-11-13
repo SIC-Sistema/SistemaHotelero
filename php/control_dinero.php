@@ -47,7 +47,6 @@ switch ($Accion) {
 		#SELECCIONAMOS DE LA TABLA config LA CONTRASEÑA 
 		$Pass_check = mysqli_fetch_array(mysqli_query($conn, "SELECT pass FROM config"));
 		//VERIFICAMOS SI LA CLAVE Y EL ID DEL USUARIO COINCIDEN
-		echo $Partes[0].'-'.$Partes[1];
 		if ($Partes[0] == $Pass_check['pass'] AND $Partes[1] == $id_user) {
 			//PROCEDEMOS A CREAR EL CORTE
 			$usuario = $conn->real_escape_string($_POST['valorUsuario']);

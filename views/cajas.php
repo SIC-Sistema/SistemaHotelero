@@ -58,6 +58,7 @@
                   $banco = mysqli_fetch_array(mysqli_query($conn,"SELECT SUM(cantidad) AS suma FROM pagos WHERE id_user=$id_user AND corte = 0 AND tipo_cambio='Banco'"));
                   $credito = mysqli_fetch_array(mysqli_query($conn,"SELECT SUM(cantidad) AS suma FROM pagos WHERE id_user=$id_user AND corte = 0 AND tipo_cambio='Credito'"));
                   $salidas = mysqli_fetch_array(mysqli_query($conn,"SELECT SUM(cantidad) AS suma FROM salidas WHERE corte = 0 AND usuario = $id_user"));
+                  $cortes = mysqli_fetch_array(mysqli_query($conn,"SELECT SUM(entradas) AS entradas, SUM(salidas) AS salidas, SUM(banco) AS banco, SUM(credito) AS credito FROM cortes WHERE corte = 0 AND realizo = $id_user"));
                   if ($salidas['suma'] == '') {
                     $salidas['suma'] = 0;
                   }
@@ -66,18 +67,18 @@
                     <td><?php echo $tmp['user_id']; ?></td>
                     <td><?php echo $tmp['firstname']; ?></td>
                     <td><?php echo $tmp['lastname']; ?></td>
-                    <td>$<?php echo sprintf('%.2f', $entradas['suma']); ?></td>
-                    <td>-$<?php echo sprintf('%.2f', $salidas['suma']); ?></td>
-                    <td>$<?php echo sprintf('%.2f', $entradas['suma']-$salidas['suma']); ?></td>
-                    <td>$<?php echo sprintf('%.2f', $banco['suma']); ?></td>
-                    <td>$<?php echo sprintf('%.2f', $credito['suma']); ?></td>
+                    <td>$<?php echo sprintf('%.2f', $entradas['suma']+$cortes['entradas']); ?></td>
+                    <td>-$<?php echo sprintf('%.2f', $salidas['suma']+$cortes['salidas']); ?></td>
+                    <td>$<?php echo sprintf('%.2f', ($entradas['suma']+$cortes['entradas'])-($salidas['suma']+$cortes['salidas'])); ?></td>
+                    <td>$<?php echo sprintf('%.2f', $banco['suma']+$cortes['banco']); ?></td>
+                    <td>$<?php echo sprintf('%.2f', $credito['suma']+$cortes['credito']); ?></td>
                     <td><form method="post" action="../views/detalles_caja.php"><input id="id_usuario" name="id_usuario" type="hidden" value="<?php echo $tmp['user_id']; ?>"><button class="btn-small waves-effect waves-light grey darken-4"><i class="material-icons">list</i></button></form></td>
                   </tr>
                   <?php
-                  $AllEfectivo += $entradas['suma'];
-                  $AllEfectivo -= $salidas['suma'];
-                  $AllBanco += $banco['suma'];
-                  $AllCredito += $credito['suma'];
+                  $AllEfectivo += $entradas['suma']+$cortes['entradas'];
+                  $AllEfectivo -= $salidas['suma']+$cortes['salidas'];
+                  $AllBanco += $banco['suma']+$cortes['banco'];
+                  $AllCredito += $credito['suma']+$cortes['credito'];
                 }//FIN WHILE
               }//FIN ELSE
             ?>   

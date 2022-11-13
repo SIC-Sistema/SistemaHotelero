@@ -31,6 +31,13 @@ if (isset($_POST['id_usuario']) == false) {
     $salidas = mysqli_fetch_array(mysqli_query($conn,"SELECT sum(cantidad) as total FROM `salidas` WHERE corte = 0 AND usuario = $user_id"));
     $banco = mysqli_fetch_array(mysqli_query($conn,"SELECT sum(cantidad) as total FROM `pagos` WHERE corte = 0 AND tipo_cambio = 'Banco' AND id_user = $user_id"));
     $credito = mysqli_fetch_array(mysqli_query($conn,"SELECT sum(cantidad) as total FROM `pagos` WHERE corte = 0 AND tipo_cambio = 'Credito' AND id_user = $user_id"));
+    $sql_cortes = mysqli_query($conn,"SELECT * FROM `cortes` WHERE corte = 0 AND realizo = $user_id");
+    $cortes_w = mysqli_num_rows($sql_cortes);
+    $cortes = mysqli_fetch_array(mysqli_query($conn,"SELECT SUM(entradas) AS entradas, SUM(salidas) AS salidas, SUM(banco) AS banco, SUM(credito) AS credito FROM cortes WHERE corte = 0 AND realizo = $user_id"));
+    $entradads['total'] = $entradads['total']+$cortes['entradas'];
+    $salidas['total'] = $salidas['total']+$cortes['salidas'];
+    $banco['total'] = $banco['total']+$cortes['banco'];
+    $credito['total'] = $credito['total']+$cortes['credito'];
     ?>  
     <script>
       //FUNCION QUE ENVIA LOS DATOS PARA VALIDAR DESPUES DE LLENADO DEL MODAL
@@ -44,10 +51,10 @@ if (isset($_POST['id_usuario']) == false) {
           $.post("../php/control_dinero.php", {
             //Cada valor se separa por una ,
               valorClave: textoClave,
-              valorEntradas: <?php echo $entradads['total']; ?>,
-              valorSalidas: <?php echo $salidas['total']; ?>,
-              valorBanco: <?php echo $banco['total']; ?>,
-              valorCredito: <?php echo $credito['total']; ?>,
+              valorEntradas: <?php echo ($entradads['total'] != '')? $entradads['total']:0; ?>,
+              valorSalidas: <?php echo ($salidas['total'] != '')? $salidas['total']:0; ?>,
+              valorBanco: <?php echo ($banco['total'] != '')? $banco['total']:0; ?>,
+              valorCredito: <?php echo ($credito['total'] != '')? $credito['total']:0; ?>,
               valorUsuario: <?php echo $user_id; ?>,
               accion: 1,
             }, function(mensaje) {
@@ -107,7 +114,9 @@ if (isset($_POST['id_usuario']) == false) {
             </li>
         </ul>
         <!--    //////    BOTON QUE RELIZARA EL CORTE DEL USUARIO    ///////   -->
-        <a href="#corte" class="waves-effect modal-trigger waves-light btn grey darken-3 left right">Relizar corte<i class="material-icons prefix left">content_cut</i></a>
+        <input type="hidden" id="corteTipo" value="1">
+        <a  class="waves-effect modal-trigger waves-light btn grey darken-3 left right">Relizar corte total<i class="material-icons prefix left">content_cut</i></a>
+        <a href="#corte" class="waves-effect modal-trigger waves-light btn grey darken-3 left right">Relizar corte pagos<i class="material-icons prefix left">content_cut</i></a>   
         <!--    //////    TITULO    ///////   -->
         <div class="row" >
           <h3 class="hide-on-med-and-down">Desglose:</h3>
@@ -314,11 +323,52 @@ if (isset($_POST['id_usuario']) == false) {
                 <h6 class="right"><b>TOTAL SALIDAS . $<?php echo sprintf('%.2f', $Total); ?> </b></h6><br>
                 <?php 
               }
+            if ($cortes_w > 0) {
+            ?>
+              <ul class="collection">
+                <li class="collection-item grey"><h6><b> >>> CORTES: <span class="new badge red" data-badge-caption="salida(s)"><?php echo $cortes_w; ?></span></b></h6></li>
+              </ul>
+                <table>
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>N°</th>
+                        <th>Usuario</th>
+                        <th>Fecha y Hora</th>
+                        <th>Entradas</th>
+                        <th>Salidas</th>
+                        <th>Banco</th>
+                        <th>Credito</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <?php 
+                      $aux = 0;
+                      while ($corte = mysqli_fetch_array($sql_cortes)) {  
+                        $aux ++;
+                        ?>
+                        <tr>
+                          <td><?php echo $aux; ?></td>
+                          <td><?php echo $corte['id_corte']; ?></td>
+                          <td><?php echo $corte['usuario']; ?></td>
+                          <td><?php echo $corte['fecha'].' '.$corte['hora']; ?></td>
+                          <td>$<?php echo sprintf('%.2f', $corte['entradas']); ?></td>
+                          <td>$<?php echo sprintf('%.2f', $corte['salidas']); ?></td>
+                          <td>$<?php echo sprintf('%.2f', $corte['banco']); ?></td>
+                          <td>$<?php echo sprintf('%.2f', $corte['credito']); ?></td>
+                        </tr>
+                        <?php 
+                      }?>
+                    </tbody>
+                </table>
+                <?php 
+              }
             ?>
           </div> 
         </div>
         <!--    //////    BOTON QUE RELIZARA EL CORTE DEL USUARIO    ///////   -->
-        <a href="#corte" class="waves-effect modal-trigger waves-light btn grey darken-3 left right">Relizar corte<i class="material-icons prefix left">content_cut</i></a>
+        <a  class="waves-effect modal-trigger waves-light btn grey darken-3 left right">Relizar corte total<i class="material-icons prefix left">content_cut</i></a> 
+        <a href="#corte" class="waves-effect modal-trigger waves-light btn grey darken-3 left right">Relizar corte pagos<i class="material-icons prefix left">content_cut</i></a>    
       </div>      
     </div>
   </body>
