@@ -275,10 +275,16 @@ switch ($Accion) {
 
         					if ($tipo_cambio == 'Credito') {
         						// CREAMOS LA DEUDA DE CREDITO AL CLIENTE
+        						$mysql= "INSERT INTO deudas(id_cliente, cantidad, fecha_deuda, descripcion, usuario) VALUES ($cliente, '$anticipo', '$Fecha_hoy',  '$Descripcion', $id_user)";        
+						        mysqli_query($conn,$mysql);
+						        $ultimo =  mysqli_fetch_array(mysqli_query($conn, "SELECT MAX(id_deuda) AS id FROM deudas WHERE id_cliente = $cliente"));            
+						        $id_deuda = $ultimo['id'];
+        					}else{
+        						$id_deuda = 0;
         					}
 
         					#--- CREAMOS EL SQL PARA LA INSERCION ---
-      						$sql = "INSERT INTO pagos (id_cliente, descripcion, cantidad, fecha, hora, tipo, id_user, corte, tipo_cambio) VALUES ($cliente, '$descripcion', '$anticipo', '$Fecha_hoy', '$Hora', 'Anticipo', $id_user, 0, '$tipo_cambio')";
+      						$sql = "INSERT INTO pagos (id_cliente, descripcion, cantidad, fecha, hora, tipo, id_user, corte, tipo_cambio, id_deuda) VALUES ($cliente, '$descripcion', '$anticipo', '$Fecha_hoy', '$Hora', 'Anticipo', $id_user, 0, '$tipo_cambio', $id_deuda)";
       						#--- SE INSERTA EL PAGO -----------
 					        if(mysqli_query($conn, $sql)){
 					        	echo '<script>M.toast({html:"El pago se dió de alta satisfcatoriamente.", classes: "rounded"})</script>';
@@ -561,10 +567,16 @@ switch ($Accion) {
 
         			if ($tipo_cambio == 'Credito') {
         				// CREAMOS LA DEUDA DE CREDITO AL CLIENTE
+        				$mysql= "INSERT INTO deudas(id_cliente, cantidad, fecha_deuda, descripcion, usuario) VALUES ($cliente, '$Abono', '$Fecha_hoy',  '$descripcion', $id_user)";        
+						mysqli_query($conn,$mysql);
+						$ultimo =  mysqli_fetch_array(mysqli_query($conn, "SELECT MAX(id_deuda) AS id FROM deudas WHERE id_cliente = $cliente"));            
+						$id_deuda = $ultimo['id'];
+        			}else{
+        				$id_deuda = 0;
         			}
 
         			#--- CREAMOS EL SQL PARA LA INSERCION ---
-      				$sql = "INSERT INTO pagos (id_cliente, descripcion, cantidad, fecha, hora, tipo, id_user, corte, tipo_cambio) VALUES ($cliente, '$descripcion', '$Abono', '$Fecha_hoy', '$Hora', 'Abono', $id_user, 0, '$tipo_cambio')";
+      				$sql = "INSERT INTO pagos (id_cliente, descripcion, cantidad, fecha, hora, tipo, id_user, corte, tipo_cambio, id_deuda) VALUES ($cliente, '$descripcion', '$Abono', '$Fecha_hoy', '$Hora', 'Abono', $id_user, 0, '$tipo_cambio', $id_deuda)";
       				#--- SE INSERTA EL PAGO -----------
 					if(mysqli_query($conn, $sql)){
 					    echo '<script>M.toast({html:"El pago se dió de alta satisfcatoriamente.", classes: "rounded"})</script>';
@@ -605,10 +617,16 @@ switch ($Accion) {
 
         		if ($tipo_cambio == 'Credito') {
         			// CREAMOS LA DEUDA DE CREDITO AL CLIENTE
+        			$mysql= "INSERT INTO deudas(id_cliente, cantidad, fecha_deuda, descripcion, usuario) VALUES ($cliente, '$Liquidacion', '$Fecha_hoy',  '$descripcion', $id_user)";        
+					mysqli_query($conn,$mysql);
+					$ultimo =  mysqli_fetch_array(mysqli_query($conn, "SELECT MAX(id_deuda) AS id FROM deudas WHERE id_cliente = $cliente"));            
+					$id_deuda = $ultimo['id'];
+        		}else{
+        			$id_deuda = 0;
         		}
 
         		#--- CREAMOS EL SQL PARA LA INSERCION ---
-      			$sql = "INSERT INTO pagos (id_cliente, descripcion, cantidad, fecha, hora, tipo, id_user, corte, tipo_cambio) VALUES ($cliente, '$descripcion', '$Liquidacion', '$Fecha_hoy', '$Hora', 'Liquidacion', $id_user, 0, '$tipo_cambio')";
+      			$sql = "INSERT INTO pagos (id_cliente, descripcion, cantidad, fecha, hora, tipo, id_user, corte, tipo_cambio, id_deuda) VALUES ($cliente, '$descripcion', '$Liquidacion', '$Fecha_hoy', '$Hora', 'Liquidacion', $id_user, 0, '$tipo_cambio', $id_deuda)";
       			#--- SE INSERTA EL PAGO -----------
 				if(mysqli_query($conn, $sql)){
 					echo '<script>M.toast({html:"El pago se dió de alta satisfcatoriamente.", classes: "rounded"})</script>';

@@ -87,7 +87,9 @@ switch ($Accion) {
 		            <td><form method="post" action="../views/reservacion.php"><input id="cliente" name="cliente" type="hidden" value="'.$cliente['id'].'"><button class="btn-small green waves-effect waves-light"><i class="material-icons">event</i></button></form> </td>
 		            <td><form method="post" action="../views/detalles_cliente.php"><input id="id" name="id" type="hidden" value="'.$cliente['id'].'"><button class="btn-small waves-effect waves-light blue"><i class="material-icons">list</i></button></form></td>
 		            <td><form method="post" action="../views/editar_cliente.php"><input id="id" name="id" type="hidden" value="'.$cliente['id'].'"><button class="btn-small waves-effect waves-light grey darken-3"><i class="material-icons">edit</i></button></form></td>
+		            <td><form method="post" action="../views/detalles_credito.php"><input id="id_cte" name="id_cte" type="hidden" value="'.$cliente['id'].'"><button class="btn-small waves-effect waves-light pink tooltipped" data-position="bottom" data-tooltip="Detalles"><i class="material-icons">credit_card</i></button></form></td>
 		            <td><a onclick="borrar_cliente('.$cliente['id'].')" class="btn-small red waves-effect waves-light"><i class="material-icons">delete</i></a></td>
+
 		          </tr>';
 			}//FIN while
 		}//FIN else

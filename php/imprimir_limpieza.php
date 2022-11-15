@@ -95,9 +95,9 @@ $pdf->SetTextColor(0, 0, 0);
 $pdf->SetFont('Helvetica', 'B', 12);
 $pdf->SetTextColor(0, 0, 0);
 $pdf->Cell(10,8,utf8_decode('N°'),1,0,'C');
-$pdf->Cell(50,8,utf8_decode('Habitación'),1,0,'C');
-$pdf->Cell(101,8,utf8_decode('Descripción'),1,0,'C');
-$pdf->Cell(30,8,utf8_decode('Fecha'),1,0,'C');
+$pdf->Cell(53,8,utf8_decode('Habitación'),1,0,'C');
+$pdf->Cell(108,8,utf8_decode('Descripción'),1,0,'C');
+$pdf->Cell(20,8,utf8_decode('Fecha'),1,0,'C');
 
 ////   CONTENIDO DE LA TABLA    /////
 $pdf->SetFont('Helvetica', '', 9);
@@ -125,13 +125,13 @@ while($actividad = mysqli_fetch_array($Actividades)){
     $pdf->MultiCell(10,8,utf8_decode($actividad['id']),1,'C',0);
     $pdf->SetY($pdf->GetY()-8);
     $pdf->SetX(25);
-    $pdf->MultiCell(50,8,utf8_decode($habitacion['id'].'. '.$habitacion['descripcion'].'('.$habitacion['piso'].' piso)'),1,'C',0);
+    $pdf->MultiCell(53,8,utf8_decode($habitacion['id'].'. '.$habitacion['descripcion'].'('.$habitacion['piso'].' piso)'),1,'C',0);
     $pdf->SetY($pdf->GetY()-8);
-    $pdf->SetX(75);
-    $pdf->MultiCell(101,8,utf8_decode($actividad['descripcion']),1,'C',0);   
+    $pdf->SetX(78);
+    $pdf->MultiCell(108,8,utf8_decode($actividad['descripcion']),1,'C',0);   
     $pdf->SetY($pdf->GetY()-8);
-    $pdf->SetX(176);
-    $pdf->MultiCell(30,8,utf8_decode($actividad['fecha']),1,'C',0);
+    $pdf->SetX(186);
+    $pdf->MultiCell(20,8,utf8_decode($actividad['fecha']),1,'C',0);
     $aux ++;
 }//FIN WHILE CATALOGO
 

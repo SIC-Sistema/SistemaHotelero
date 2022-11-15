@@ -76,6 +76,7 @@
               <th>Reserv.</th>
               <th>Detalles</th>
               <th>Editar</th>
+              <th>Credito</th>
               <th>Borrar</th>
             </tr>
           </thead>

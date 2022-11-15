@@ -51,6 +51,7 @@ $check_out = mysqli_fetch_array(mysqli_query($conn,"SELECT count(*) FROM `reserv
 					<li><a href = "usuarios.php" class="black-text"><i class="material-icons">people</i>Usuarios </a></li> 
 					<li><a href = "en_caja.php" class="black-text"><i class="material-icons">inbox</i>En Caja </a></li> 
 					<li><a href = "cajas.php" class="black-text"><i class="material-icons">list</i>Cajas </a></li> 
+					<li><a href = "credito.php" class="black-text"><i class="material-icons">credit_card</i>Credito </a></li> 
 				</ul>
  				<li><a class='dropdown-button' data-target='dropdown4'><b><?php echo $_SESSION['user_name'];?> </b><i class="material-icons right">arrow_drop_down</i></a></li>
 				<ul id='dropdown4' class='dropdown-content'>				    
@@ -124,6 +125,7 @@ $check_out = mysqli_fetch_array(mysqli_query($conn,"SELECT count(*) FROM `reserv
 		      				<li><a href="usuarios.php"><i class="material-icons">people</i>Usuarios</a></li>
 							<li><a href = "en_caja.php"><i class="material-icons">inbox</i>En Caja </a></li> 
 							<li><a href = "cajas.php"><i class="material-icons">list</i>Cajas </a></li> 
+							<li><a href = "credito.php"><i class="material-icons">credit_card</i>Credito </a></li> 
 						  </ul>				      
 					    </span>
 		      		</div>    			

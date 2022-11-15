@@ -81,7 +81,7 @@
               <th>Fecha</th>
               <th>Registro</th>
               <th>Estatus</th>
-              <th>Accion</th>
+              <th class="center">Acción </th>
             </tr>
           </thead>
           <tbody>

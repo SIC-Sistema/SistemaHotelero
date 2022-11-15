@@ -43,6 +43,7 @@ if (isset($_POST['id_usuario']) == false) {
       //FUNCION QUE ENVIA LOS DATOS PARA VALIDAR DESPUES DE LLENADO DEL MODAL
       function recargar_corte() {
         var textoClave = $("input#clave").val(); 
+          var tipo = $("input#corteTipo").val(); 
        
         if (textoClave == "") {
             M.toast({html:"El campo clave no puede ir vacío.", classes: "rounded"});
@@ -57,12 +58,18 @@ if (isset($_POST['id_usuario']) == false) {
               valorCredito: <?php echo ($credito['total'] != '')? $credito['total']:0; ?>,
               valorUsuario: <?php echo $user_id; ?>,
               accion: 1,
+              tipo: tipo,
             }, function(mensaje) {
               //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "control_dinero.php"
                $("#resultado_corte").html(mensaje);
           });
         } //FIN ELSE  
       } // FIN function
+      //FUNCION Calcula el Cambio
+        function corteTipo(n){
+          //RECIBIMOS LOS VALORES DE LOS INPUTS AFECTADOS
+          document.getElementById("corteTipo").value = n;
+        }// FIN function
     </script>  
   </head>
   <main>
@@ -114,9 +121,18 @@ if (isset($_POST['id_usuario']) == false) {
             </li>
         </ul>
         <!--    //////    BOTON QUE RELIZARA EL CORTE DEL USUARIO    ///////   -->
-        <input type="hidden" id="corteTipo" value="1">
-        <a  class="waves-effect modal-trigger waves-light btn grey darken-3 left right">Relizar corte total<i class="material-icons prefix left">content_cut</i></a>
-        <a href="#corte" class="waves-effect modal-trigger waves-light btn grey darken-3 left right">Relizar corte pagos<i class="material-icons prefix left">content_cut</i></a>   
+        <input type="hidden" id="corteTipo" value="0">
+        <?php
+        $us = $_SESSION['user_id'];
+        $user = mysqli_fetch_array(mysqli_query($conn,"SELECT * FROM users WHERE user_id=$us"));
+
+        if ($user['cortes'] == 1) {
+        ?>
+          <a href="#corte" onclick="corteTipo(2);" class="waves-effect modal-trigger waves-light btn grey darken-3 left right">Relizar corte total<i class="material-icons prefix left">content_cut</i></a>
+        <?php
+        }
+        ?>
+        <a href="#corte" onclick="corteTipo(1);" class="waves-effect modal-trigger waves-light btn grey darken-3 left right">Relizar corte pagos<i class="material-icons prefix left">content_cut</i></a>   
         <!--    //////    TITULO    ///////   -->
         <div class="row" >
           <h3 class="hide-on-med-and-down">Desglose:</h3>
@@ -326,7 +342,7 @@ if (isset($_POST['id_usuario']) == false) {
             if ($cortes_w > 0) {
             ?>
               <ul class="collection">
-                <li class="collection-item grey"><h6><b> >>> CORTES: <span class="new badge red" data-badge-caption="salida(s)"><?php echo $cortes_w; ?></span></b></h6></li>
+                <li class="collection-item grey"><h6><b> >>> CORTES: <span class="new badge red" data-badge-caption="corte(s)"><?php echo $cortes_w; ?></span></b></h6></li>
               </ul>
                 <table>
                     <thead>
@@ -345,12 +361,14 @@ if (isset($_POST['id_usuario']) == false) {
                       <?php 
                       $aux = 0;
                       while ($corte = mysqli_fetch_array($sql_cortes)) {  
+                        $id = $corte['usuario'];
+                        $user = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `users` WHERE user_id = $id"));
                         $aux ++;
                         ?>
                         <tr>
                           <td><?php echo $aux; ?></td>
                           <td><?php echo $corte['id_corte']; ?></td>
-                          <td><?php echo $corte['usuario']; ?></td>
+                          <td><?php echo $user['firstname']; ?></td>
                           <td><?php echo $corte['fecha'].' '.$corte['hora']; ?></td>
                           <td>$<?php echo sprintf('%.2f', $corte['entradas']); ?></td>
                           <td>$<?php echo sprintf('%.2f', $corte['salidas']); ?></td>
@@ -367,8 +385,14 @@ if (isset($_POST['id_usuario']) == false) {
           </div> 
         </div>
         <!--    //////    BOTON QUE RELIZARA EL CORTE DEL USUARIO    ///////   -->
-        <a  class="waves-effect modal-trigger waves-light btn grey darken-3 left right">Relizar corte total<i class="material-icons prefix left">content_cut</i></a> 
-        <a href="#corte" class="waves-effect modal-trigger waves-light btn grey darken-3 left right">Relizar corte pagos<i class="material-icons prefix left">content_cut</i></a>    
+        <?php
+        if ($user['cortes'] == 1) {
+        ?>
+          <a href="#corte" onclick="corteTipo(2);" class="waves-effect modal-trigger waves-light btn grey darken-3 left right">Relizar corte total<i class="material-icons prefix left">content_cut</i></a>
+        <?php
+        }
+        ?>
+        <a href="#corte" onclick="corteTipo(1);" class="waves-effect modal-trigger waves-light btn grey darken-3 left right">Relizar corte pagos<i class="material-icons prefix left">content_cut</i></a>   
       </div>      
     </div>
   </body>

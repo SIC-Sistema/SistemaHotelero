@@ -56,10 +56,11 @@ switch ($Accion) {
 			$credito = $conn->real_escape_string($_POST['valorCredito']);
 
 	        #SELECCIONAMOS UN CORTE QUE YA TENGA LOS MISMOS VALORES
-	        $sql_check = mysqli_query($conn, "SELECT id_corte FROM cortes WHERE usuario = '$usuario' AND fecha = '$Fecha_hoy' AND entradas = '$entradas' AND salidas = '$salidas' AND banco = '$banco' AND credito =  '$credito' AND realizo = '$id_user'");
+	        $sql_check = mysqli_query($conn, "SELECT id_corte FROM cortes WHERE usuario = '$usuario' AND fecha = '$Fecha_hoy' AND entradas = '$entradas' AND salidas = '$salidas' AND banco = '$banco' AND credito =  '$credito' AND realizo = '$id_user' AND corte = 0");
 	        $corte = 0;//DEFINIMOS EL CORTE EN 0 PARA NO TENER ERROR
 	        #VERIFICAMOS SI EXISTE YA UN CORTE CON ESTOS MISMO VALORES YA CREADO
-	        if (mysqli_num_rows($sql_check)>0) {
+			$tipo = $conn->real_escape_string($_POST['tipo']);
+	        if (mysqli_num_rows($sql_check)>0 AND $tipo != 2) {
 	            #SI YA EXISTE UN CORTE TOMAMOS EL ID DE ESTE
 	            $ultimo = mysqli_fetch_array($sql_check);
 	            $corte = $ultimo['id_corte'];//TOMAMOS EL ID DEL CORTE
@@ -81,7 +82,9 @@ switch ($Accion) {
 	                while($pago = mysqli_fetch_array($sql_pagos)){
 	                    //insertar pagos de corte...
 	                    $id_pago = $pago['id_pago'];
-	                    mysqli_query($conn,"INSERT INTO detalles(id_corte, id_pago) VALUES ($corte, $id_pago )");
+	                    if(mysqli_query($conn,"INSERT INTO `detalles_corte` (`id_corte`, `id_pago`) VALUES ($corte, $id_pago )")){
+	                    		echo "SIMON pagos<br>";
+	                    }
 	                }
 	                //// MODIFICAMOS TODOS LOS PAGOS A 1 QUE SIGNIFICA QUE SE LE HIZO CORTE
 	                mysqli_query($conn,"UPDATE pagos SET corte = 1 WHERE id_user = $usuario AND corte = 0");
@@ -94,11 +97,30 @@ switch ($Accion) {
 	                while($salida = mysqli_fetch_array($sql_salidas)){
 	                    //insertar salida de corte...
 	                    $id_salida = $salida['id'];
-	                    mysqli_query($conn,"INSERT INTO detalles(id_corte, id_salida) VALUES ($corte, $id_salida )");
+	                    if(mysqli_query($conn,"INSERT INTO `detalles_corte` (`id_corte`, `id_salida`) VALUES ($corte, $id_salida )")){
+	                    	echo "SIMON salida<br>";
+	                    }
 	                }
 	                //// MODIFICAMOS TODAS LAS SALIDAS A 1 QUE SIGNIFICA QUE SE LE HIZO CORTE
-	                mysqli_query($conn,"UPDATE salidas SET corte = 1 WHERE usuario = $id_user AND corte = 0");
+	                mysqli_query($conn,"UPDATE salidas SET corte = 1 WHERE usuario = $usuario AND corte = 0");
 	            }// FIN IF SALIDAS
+
+	            if ($tipo == 2 AND $usuario == $id_user) {
+	            	//// CREAMOS EL DETALLE DE EL CORTE CON TODOS LAS SALIDAS DEL USUARIO CON CORTE EN 0
+		            $sql_cort = mysqli_query($conn, "SELECT * FROM cortes WHERE realizo=$id_user AND corte = 0");
+		            // AGREGAMOS UNO A UNO LAS SALIDAS AL DETALLE DEL CORTE
+		            if (mysqli_num_rows($sql_cort)>0) {                
+		                while($cort = mysqli_fetch_array($sql_cort)){
+		                    //insertar corte de corte...
+		                    $id_corte = $cort['id_corte'];
+		                    if ($corte != $id_corte){
+		                    	mysqli_query($conn,"INSERT INTO `detalles_corte` (`id_corte`, `corte`) VALUES ($corte, $id_corte )");
+		                    }//FIN IF
+		                }//FIN WHILE
+		                //// MODIFICAMOS TODAS LAS SALIDAS A 1 QUE SIGNIFICA QUE SE LE HIZO CORTE
+		                mysqli_query($conn,"UPDATE cortes SET corte = 1 WHERE realizo = $id_user AND corte = 0");
+		            }// FIN IF SALIDAS
+	            }
 	            ?>
 	            <script>	                
 	                var a = document.createElement("a");
