@@ -61,17 +61,12 @@ $user_id = $_SESSION['user_id'];
 <body>
 	<div class="container" id="mostrar_abonos">
   <?php 
-  $sql = mysqli_query($conn,"SELECT * FROM clientes WHERE id_cliente=$id_cte");
-  if (mysqli_num_rows($sql)<=0) {
-    $sql = mysqli_query($conn,"SELECT * FROM especiales WHERE id_cliente=$id_cte");
-  } 
-  $datos = mysqli_fetch_array($sql);
-  $id_comunidad = $datos['lugar'];
-  $comunidad = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM comunidades WHERE id_comunidad = $id_comunidad"));
+  $sql = mysqli_query($conn,"SELECT * FROM clientes WHERE id = $id_cte");
+  $cliente = mysqli_fetch_array($sql);
 
   // SACAMOS LA SUMA DE TODAS LAS DEUDAS Y ABONOS ....
-  $deuda = mysqli_fetch_array(mysqli_query($conn, "SELECT SUM(cantidad) AS suma FROM deudas WHERE id_cliente = $no_cliente"));
-  $abono = mysqli_fetch_array(mysqli_query($conn, "SELECT SUM(cantidad) AS suma FROM pagos WHERE id_cliente = $no_cliente AND tipo = 'Abono'"));
+  $deuda = mysqli_fetch_array(mysqli_query($conn, "SELECT SUM(cantidad) AS suma FROM deudas WHERE id_cliente = $id_cte"));
+  $abono = mysqli_fetch_array(mysqli_query($conn, "SELECT SUM(cantidad) AS suma FROM pagos WHERE id_cliente = $id_cte AND tipo = 'Abono Credito' AND id_deuda != NULL"));
   //COMPARAMOS PARA VER SI LOS VALORES ESTAN VACOIOS::
   if ($deuda['suma'] == "") {
     $deuda['suma'] = 0;
@@ -93,16 +88,29 @@ if ($Saldo < 0) {
 			<ul class="collection">
             <li class="collection-item avatar">
               <img src="../img/cliente.png" alt="" class="circle">
-              <span class="title"><b>No. Cliente: </b><?php echo $no_cliente; ?></span>
-              <p><b>Nombre(s): </b><?php echo $datos['nombre']; ?><br>
-                 <b>Telefono: </b><?php echo $datos['telefono']; ?><br>
-                 <b>Comunidad: </b><?php echo $comunidad['nombre']; ?><br>
-                 <b>Dirección: </b><?php echo $datos['direccion']; ?><br>
-                 <b>Referencia: </b><?php echo $datos['referencia']; ?><br>
-                 <b>IP: </b><a href="http://<?php echo $datos['ip']; ?>"><?php echo $datos['ip']; ?></a>
-                 <br><br><hr>
-                 <b>SALDO: </b> <span class="new badge <?php echo $color ?>" id="mostrar_deuda" data-badge-caption="">$<?php echo $Saldo; ?><br>
-              </p>
+              <span class="title"><b>No. Cliente: </b><?php echo $id_cte; ?></span>
+              <p class="row col s12"><b>
+                <div class="col s12 m4">
+                  <div class="col s12"><b class="indigo-text">N° CLIENTE: </b><?php echo $id_cte;?></div>
+                  <div class="col s12"><b class="indigo-text">NOMBRE: </b><?php echo $cliente['nombre'];?></div>              
+                  <div class="col s12"><b class="indigo-text">RFC: </b><?php echo $cliente['rfc'];?></div>              
+                  <div class="col s12"><b class="indigo-text">TELEFONO: </b><?php echo $cliente['telefono'];?></div>                
+                </div>
+                <div class="col s12 m4">
+                  <div class="col s12"><b class="indigo-text">EMAIL: </b><?php echo $cliente['email'];?></div>              
+                  <div class="col s12"><b class="indigo-text">LIMPIEZA: </b><?php echo $cliente['limpieza'];?></div>              
+                  <div class="col s12"><b class="indigo-text">CODIGO POSTAL: </b><?php echo $cliente['cp'];?></div>               
+                </div>
+                <div class="col s12 m4">       
+                  <div class="col s12"><b class="indigo-text">DIRECCION: </b><?php echo $cliente['direccion'];?></div>              
+                  <div class="col s12"><b class="indigo-text">COLONIA: </b><?php echo $cliente['colonia'];?></div>              
+                  <div class="col s12"><b class="indigo-text">LOCALIDAD: </b><?php echo $cliente['localidad'];?></div>              
+                </div>
+                <hr class="col s12">
+                <div class="col s12">       
+                  <b>SALDO: </b> <span class="new badge <?php echo $color ?>" id="mostrar_deuda" data-badge-caption="">$<?php echo $Saldo; ?></span><br>          
+                </div>
+              </b></p>
             </li>
         </ul>		
 		</div>
@@ -126,27 +134,18 @@ if ($Saldo < 0) {
             <label for="descripcion">Descripción: </label>
           </div>
         </div>
-        <?php 
-        $Ser = (in_array($user_id, array(10, 101, 49, 105, 107)))? '': 'disabled="disabled"';
-        $Ser2 = (in_array($user_id, array(10, 101, 49, 107)))? '': 'disabled="disabled"';   
-        ?>
-        <div class="col s6 m3 l1">
+        <div class="col s6 m2">
           <p>
             <br>
-            <input type="checkbox" id="banco" <?php echo $Ser;?>/>
-            <label for="banco">Banco</label>
+            <label>
+              <input type="checkbox" id="bancoA" />
+              <span for="bancoA">Banco</span>
+            </label>
           </p>
         </div>
-        <div class="col s6 m3 l1">
-          <p>
-            <br>
-            <input type="checkbox" id="SAN" <?php echo $Ser2;?>/>
-            <label for="SAN">SAN</label>
-          </p>
-        </div>
-        <input id="id_cliente" value="<?php echo htmlentities($datos['id_cliente']);?>" type="hidden">
+        <input id="id_cliente" value="<?php echo htmlentities($id_cte);?>" type="hidden">
       </form>
-      <a onclick="insert_abono();" class="waves-effect waves-light btn pink right"><i class="material-icons right">send</i>Registrar Abono</a>
+      <a onclick="insert_abono();" class="waves-effect waves-light btn grey darken-4 right"><i class="material-icons right">send</i>Registrar Abono</a>
       <br>
     </div>
     <div class="row">
@@ -165,25 +164,25 @@ if ($Saldo < 0) {
           </thead>
           <tbody>
             <?php
-              $deudas = mysqli_query($conn, "SELECT * FROM deudas WHERE id_cliente = $no_cliente");
-              $aux = mysqli_num_rows($deudas);
-              if ($aux > 0) {
-                while ($resultados = mysqli_fetch_array($deudas)) {
-                  $id_user = $resultados['usuario'];
-                  $user = mysqli_fetch_array(mysqli_query($conn, "SELECT user_name FROM users WHERE user_id = '$id_user'"));
-            ?>
-            <tr>
-              <td><b><?php echo $resultados['id_deuda'];?></b></td>         
-              <td>$<?php echo $resultados['cantidad'];?></td>
-              <td><?php echo $resultados['fecha_deuda'];?></td>
-              <td><?php echo $resultados['descripcion'];?></td>
-              <td><?php echo $user['user_name'];?></td>
-              <td><?php echo ($resultados['liquidada'] == 1)?'<span class="new badge green" data-badge-caption=""></span>':'<span class="new badge red" data-badge-caption=""></span>';?></td>
-            </tr>
-            <?php 
-             }//fin while
+            $deudas = mysqli_query($conn, "SELECT * FROM deudas WHERE id_cliente = $id_cte");
+            $aux = mysqli_num_rows($deudas);
+            if ($aux > 0) {
+              while ($resultados = mysqli_fetch_array($deudas)) {
+                $id_user = $resultados['usuario'];
+                $user = mysqli_fetch_array(mysqli_query($conn, "SELECT user_name FROM users WHERE user_id = '$id_user'"));
+                ?>
+                <tr>
+                  <td><b><?php echo $resultados['id_deuda'];?></b></td>         
+                  <td>$<?php echo $resultados['cantidad'];?></td>
+                  <td><?php echo $resultados['fecha_deuda'];?></td>
+                  <td><?php echo $resultados['descripcion'];?></td>
+                  <td><?php echo $user['user_name'];?></td>
+                  <td><?php echo ($resultados['liquidada'] == 1)?'<span class="new badge green" data-badge-caption=""></span>':'<span class="new badge red" data-badge-caption=""></span>';?></td>
+                </tr>
+                <?php 
+              }//fin while
             }else{
-              echo "<center><b><h3>Este cliente aún no ha registrado Deudas</h3></b></center>";
+              echo "<center><b><h4>Este cliente aún no ha registrado Deudas</h4></b></center>";
             }
             ?>
           </tbody>
@@ -203,31 +202,31 @@ if ($Saldo < 0) {
           </thead>
           <tbody>
            <?php
-              $abonos = mysqli_query($conn, "SELECT * FROM pagos WHERE id_cliente = $no_cliente AND tipo = 'Abono'");
-              $aux = mysqli_num_rows($abonos);
-              if ($aux > 0) {
-                while ($resultados = mysqli_fetch_array($abonos)) {
-                  $id_user = $resultados['id_user'];
-                  $user = mysqli_fetch_array(mysqli_query($conn, "SELECT user_name FROM users WHERE user_id = '$id_user'"));
-            ?>
-            <tr>
-              <td><b><?php echo $resultados['id_pago'];?></b></td>         
-              <td>$<?php echo $resultados['cantidad'];?></td>
-              <td><?php echo $resultados['fecha'];?></td>
-              <td><?php echo $resultados['descripcion'];?></td>
-              <td><?php echo $user['user_name'];?></td>
-            </tr>
-            <?php 
-             }//fin while
+            $abonos = mysqli_query($conn, "SELECT * FROM pagos WHERE id_cliente = $id_cte AND tipo = 'Abono Credito' AND id_deuda != NULL");
+            $aux = mysqli_num_rows($abonos);
+            if ($aux > 0) {
+              while ($resultados = mysqli_fetch_array($abonos)) {
+                $id_user = $resultados['id_user'];
+                $user = mysqli_fetch_array(mysqli_query($conn, "SELECT user_name FROM users WHERE user_id = '$id_user'"));
+                ?>
+                <tr>
+                  <td><b><?php echo $resultados['id_pago'];?></b></td>         
+                  <td>$<?php echo $resultados['cantidad'];?></td>
+                  <td><?php echo $resultados['fecha'];?></td>
+                  <td><?php echo $resultados['descripcion'];?></td>
+                  <td><?php echo $user['user_name'];?></td>
+                </tr>
+                <?php 
+              }//fin while
             }else{
-              echo "<center><b><h3>Este cliente aún no ha registrado Abonos</h3></b></center>";
+              echo "<center><b><h4>Este cliente aún no ha registrado Abonos</h4></b></center>";
             }
             ?>
           </tbody>
         </table>
       </div>
     </div>
-    <div class="row">
+    <div class="row"><br>
       <h3 class="hide-on-med-and-down">ESTADO DE CUENTA:</h3>
       <h5 class="hide-on-large-only">ESTADO DE CUENTA:</h5>
     </div>
@@ -241,7 +240,7 @@ if ($Saldo < 0) {
             <input id="fecha_a_estado" type="date" >
         </div>  
         <div><br>
-          <button class="btn waves-light waves-effect right pink" onclick="estado_X_fecha(<?php echo $no_cliente; ?>);">ESTADO CUENTA<i class="material-icons prefix right">print</i></button>
+          <button class="btn waves-light waves-effect right grey darken-3" onclick="estado_X_fecha(<?php echo $no_cliente; ?>);">ESTADO CUENTA<i class="material-icons prefix right">print</i></button>
         </div>
     </div><br><br><br><br>
     <div id="mostrar_resultado"></div>
