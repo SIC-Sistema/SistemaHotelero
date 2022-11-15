@@ -35,8 +35,8 @@ class PDF extends FPDF{
     $pdf->SetY($pdf->GetY()+4);
     $pdf->SetX(6);
     $pdf->SetFont('Helvetica','B', 10);    
-    $corte = substr(str_repeat(0, 5).$Venta, - 6);
-    $pdf->MultiCell(69,4,utf8_decode(date_format(new \DateTime($Fecha_hoy.' '.$Hora), "d/m/Y H:i" ).'             FOLIO: '.$corte),0,'C',0);
+    $pago = substr(str_repeat(0, 5).$id_p, - 6);
+    $pdf->MultiCell(69,4,utf8_decode(date_format(new \DateTime($Fecha_hoy.' '.$Hora), "d/m/Y H:i" ).'             FOLIO: '.$pago),0,'C',0);
     $pdf->SetY($pdf->GetY()+1);
     $pdf->SetX(6);
     $pdf->SetFont('Helvetica','', 8);
