@@ -50,8 +50,9 @@
                       <td><?php echo $deuda['descripcion']; ?></td>
                       <td><?php echo $deuda['fecha_deuda']; ?></td>
                       <td><?php echo $user['firstname']; ?></td>
-                      <td>$<?php echo sprintf('%.2f', $deuda['cantidad']); ?></td>                      
-                      <td><form method="post" action="../views/detalles_credito.php"><input id="id_cte" name="id_cte" type="hidden" value="<?php echo $deuda['id_cliente']; ?>"><button class="btn-small waves-effect waves-light grey darken-4 tooltipped" data-position="bottom" data-tooltip="Detalles"><i class="material-icons">list</i></button></form></td>
+                      <td>$<?php echo sprintf('%.2f', $deuda['cantidad']); ?></td>
+                      <td><a href =  "../views/detalles_credito.php?id_cte=<?php echo $deuda['id_cliente']; ?>" class="btn-small waves-effect waves-light grey darken-4 tooltipped" data-position="bottom" data-tooltip="Detalles"><i class="material-icons">list</i></a></td>
+
                     </tr>
                     <?php 
                   }

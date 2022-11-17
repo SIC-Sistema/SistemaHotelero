@@ -287,7 +287,17 @@ switch ($Accion) {
       						$sql = "INSERT INTO pagos (id_cliente, descripcion, cantidad, fecha, hora, tipo, id_user, corte, tipo_cambio, id_deuda) VALUES ($cliente, '$descripcion', '$anticipo', '$Fecha_hoy', '$Hora', 'Anticipo', $id_user, 0, '$tipo_cambio', $id_deuda)";
       						#--- SE INSERTA EL PAGO -----------
 					        if(mysqli_query($conn, $sql)){
+					        	$ultimo =  mysqli_fetch_array(mysqli_query($conn, "SELECT MAX(id_pago) AS id FROM pagos WHERE id_cliente = $cliente AND id_user = $id_user"));            
+        						$id_pago = $ultimo['id'];
 					        	echo '<script>M.toast({html:"El pago se dió de alta satisfcatoriamente.", classes: "rounded"})</script>';
+					        	?>
+							    <script>
+							      var a = document.createElement("a");
+							        a.target = "_blank";
+							        a.href = "../php/imprimir.php?id="+<?php echo $id_pago; ?>;
+							        a.click();
+							    </script>
+							    <?php
 							}// FIN if pago
 						}// FIN IF anticipo
             			echo '<script>checkIn();</script>';
@@ -579,8 +589,18 @@ switch ($Accion) {
       				$sql = "INSERT INTO pagos (id_cliente, descripcion, cantidad, fecha, hora, tipo, id_user, corte, tipo_cambio, id_deuda) VALUES ($cliente, '$descripcion', '$Abono', '$Fecha_hoy', '$Hora', 'Abono', $id_user, 0, '$tipo_cambio', $id_deuda)";
       				#--- SE INSERTA EL PAGO -----------
 					if(mysqli_query($conn, $sql)){
-					    echo '<script>M.toast({html:"El pago se dió de alta satisfcatoriamente.", classes: "rounded"})</script>';
 					    mysqli_query($conn, "UPDATE `reservaciones` SET anticipo = anticipo+$Abono WHERE id = '$id'");
+					    $ultimo =  mysqli_fetch_array(mysqli_query($conn, "SELECT MAX(id_pago) AS id FROM pagos WHERE id_cliente = $cliente AND id_user = $id_user"));            
+        				$id_pago = $ultimo['id'];
+					    echo '<script>M.toast({html:"El pago se dió de alta satisfcatoriamente.", classes: "rounded"})</script>';
+					    ?>
+						<script>
+							var a = document.createElement("a");
+							    a.target = "_blank";
+							    a.href = "../php/imprimir.php?id="+<?php echo $id_pago; ?>;
+							    a.click();
+						</script>
+						<?php
 					}// FIN if pago
         		}// FIN if abono
 				echo '<script>checkIn()</script>';// REDIRECCIONAMOS (FUNCION ESTA EN ARCHIVO modals.php)
@@ -619,7 +639,7 @@ switch ($Accion) {
         			// CREAMOS LA DEUDA DE CREDITO AL CLIENTE
         			$mysql= "INSERT INTO deudas(id_cliente, cantidad, fecha_deuda, descripcion, usuario) VALUES ($cliente, '$Liquidacion', '$Fecha_hoy',  '$descripcion', $id_user)";        
 					mysqli_query($conn,$mysql);
-					$ultimo =  mysqli_fetch_array(mysqli_query($conn, "SELECT MAX(id_deuda) AS id FROM deudas WHERE id_cliente = $cliente"));            
+					$ultimo =  mysqli_fetch_array(mysqli_query($conn, "SELECT MAX(id_deuda) AS id FROM deudas WHERE id_cliente = $cliente AND id_user = $id_user"));            
 					$id_deuda = $ultimo['id'];
         		}else{
         			$id_deuda = 0;
@@ -629,7 +649,17 @@ switch ($Accion) {
       			$sql = "INSERT INTO pagos (id_cliente, descripcion, cantidad, fecha, hora, tipo, id_user, corte, tipo_cambio, id_deuda) VALUES ($cliente, '$descripcion', '$Liquidacion', '$Fecha_hoy', '$Hora', 'Liquidacion', $id_user, 0, '$tipo_cambio', $id_deuda)";
       			#--- SE INSERTA EL PAGO -----------
 				if(mysqli_query($conn, $sql)){
+					$ultimo =  mysqli_fetch_array(mysqli_query($conn, "SELECT MAX(id_pago) AS id FROM pagos WHERE id_cliente = $cliente"));            
+        			$id_pago = $ultimo['id'];
 					echo '<script>M.toast({html:"El pago se dió de alta satisfcatoriamente.", classes: "rounded"})</script>';
+					?>
+					<script>
+						var a = document.createElement("a");
+							a.target = "_blank";
+							a.href = "../php/imprimir.php?id="+<?php echo $id_pago; ?>;
+							a.click();
+					</script>
+					<?php
 				}// FIN if pago
         	}// FIN if abono
 			echo '<script>checkout()</script>';// REDIRECCIONAMOS (FUNCION ESTA EN ARCHIVO modals.php)

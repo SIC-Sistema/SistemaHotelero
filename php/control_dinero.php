@@ -9,9 +9,9 @@ $id_user = $_SESSION['user_id'];// ID DEL USUARIO LOGEADO
 $Fecha_hoy = date('Y-m-d');// FECHA ACTUAL
 $Hora = date('H:i:s');
 
-//CON METODO POST TOMAMOS UN VALOR DEL 0 AL 3 PARA VER QUE ACCION HACER (insert salida = 0, corte = 1)
+//CON METODO POST TOMAMOS UN VALOR DEL 0 AL 3 PARA VER QUE ACCION HACER (insert salida = 0, corte = 1, insert abono = 2)
 $Accion = $conn->real_escape_string($_POST['accion']);
-//UN SWITCH EL CUAL DECIDIRA QUE ACCION REALIZA DEL CRUD (insert salida = 0, corte = 1)
+//UN SWITCH EL CUAL DECIDIRA QUE ACCION REALIZA DEL CRUD (insert salida = 0, corte = 1, insert abono = 2)
 switch ($Accion) {
     case 0:  ///////////////           IMPORTANTE               ///////////////
         // $Accion es igual a 0 realiza:
@@ -140,38 +140,78 @@ switch ($Accion) {
     case 2:///////////////           IMPORTANTE               ///////////////
         // $Accion es igual a 2 realiza:
 
-    	//Obtenemos la informacion del Usuario
-    	$User = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `users` WHERE user_id = $id_user"));
+    	//OBTENEMOS LA INFORMACION PARA HACER EL ABONO detalles_credito.php
+    	$Tipo_Campio = $conn->real_escape_string($_POST['valorTipo_Campio']);
+		$Cantidad = $conn->real_escape_string($_POST['valorCantidad']);
+		$Descripcion = $conn->real_escape_string($_POST['valorDescripcion']);
+		$IdCliente = $conn->real_escape_string($_POST['valorIdCliente']);
     	//SE VERIFICA SI EL USUARIO LOGEADO TIENE PERMISO DE EDITAR CLIENTES
-    	if ($User['clientes'] == 1) {
+    	if(mysqli_num_rows(mysqli_query($conn, "SELECT * FROM pagos WHERE id_cliente = $IdCliente AND descripcion = '$Descripcion' AND cantidad='$Cantidad' AND fecha='$Fecha_hoy'"))>0){
+			echo '<script>M.toast({html:"Ya se encuentra un abono registrado con los mismos valores el día de hoy.", classes: "rounded"})</script>';
+		}else{ 
+			//INSERTAMOS EL PAGO TIPO ABONO CREDITO
+			$sql = "INSERT INTO pagos (id_cliente, cantidad, fecha, hora, descripcion , tipo_cambio, id_user, tipo, corte) VALUES ($IdCliente, '$Cantidad', '$Fecha_hoy', '$Hora', '$Descripcion', '$Tipo_Campio', '$id_user', 'Abono Credito', 0)";
+			if(mysqli_query($conn, $sql)){
+				$Deuda_check = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM deudas WHERE id_cliente = $IdCliente AND liquidada=0 limit 1"));
+     
+			    // SACAMOS LA SUMA DE TODAS LAS DEUDAS QUE ESTAN LIQUIDADDAS Y TODOS LOS ABONOS ....
+			    $deuda = mysqli_fetch_array(mysqli_query($conn, "SELECT SUM(cantidad) AS suma FROM deudas WHERE id_cliente = $IdCliente AND liquidada = 1"));
+			    $abono = mysqli_fetch_array(mysqli_query($conn, "SELECT SUM(cantidad) AS suma FROM pagos WHERE id_cliente = $IdCliente AND tipo = 'Abono Credito'"));
+			    $deuda['suma'] = ($deuda['suma'] == "")? 0 : $deuda['suma'];
+			    $abono['suma'] = ($abono['suma'] == "")? 0 : $abono['suma'];
+			    
+			    $Resta = $abono['suma']-$deuda['suma'];// SACAMO LA DIFERENCIA PARA VER CUANTAS DEUDAS ALCANZA A LIQUIDAR CON ESTA CANTIDAD
 
-	    	//CON POST RECIBIMOS TODAS LAS VARIABLES DEL FORMULARIO POR EL SCRIPT "editar_cliente.php" QUE NESECITAMOS PARA ACTUALIZAR
-	    	$id = $conn->real_escape_string($_POST['id']);
-	    	$Nombre = $conn->real_escape_string($_POST['valorNombre']);
-			$Telefono = $conn->real_escape_string($_POST['valorTelefono']);
-			$Email = $conn->real_escape_string($_POST['valorEmail']);
-			$RFC = $conn->real_escape_string($_POST['valorRFC']);
-			$Direccion = $conn->real_escape_string($_POST['valorDireccion']);
-			$Colonia = $conn->real_escape_string($_POST['valorColonia']);
-			$Localidad = $conn->real_escape_string($_POST['valorLocalidad']);
-			$CP = $conn->real_escape_string($_POST['valorCP']);
-			$Limpieza = $conn->real_escape_string($_POST['valorLimpieza']);
+			    $Entra = False;// SI ENTRA = false no ejecuta el while y no cambia nunguna deuda a liquidada = 1
+			    //VERIFICAMOS QUE LA DEUDA A COMPRAR TENGA ALGUN VALOR MAYOR A 0
+			    if ($Deuda_check['cantidad'] <=0) {
+			      $Entra = False;
+			    }else if ($Deuda_check['cantidad'] <= $Resta) {//AHORA VERIFICAMOS SI LA DEUDA SELECCIONADA ES MENOR O IGUAL A LA CANTIDAD DE RESTA
+			      // SI ES MENOS O IGUAL QUIERE DECIR QUE LA DEUDA ALCANZA A SER LIQUIDADA Y LE DAMOS ENTRADA = true PARA QUE ENTRE AL WHILE
+			      $Entra = True;  
+			    }
+			    $id_deuda = $Deuda_check['id_deuda'];// SACAMOS EL ID DE LA DEUDA SELECCIONADA
+			    while ($Entra) {
+			      //VERIFICAMOS QUE SE CAMBIE EL ESTATUS DE LA DEUDA
+			      if (mysqli_query($conn, "UPDATE deudas SET liquidada = 1 WHERE id_deuda = $id_deuda")) {
+			        echo '<script>M.toast({html:"Deuda liquidada.", classes: "rounded"})</script>';
+			      }  
+			      //COMO SE CAMBIO EL ESTATUS DE LA DEUDA VOLVEMOS A SACAR LA SUMA DE LAS DEUDAS LIQUIDADAS Y MODIFICAR LA CANTIDAD $Resta
+			      $deuda = mysqli_fetch_array(mysqli_query($conn, "SELECT SUM(cantidad) AS suma FROM deudas WHERE id_cliente = $IdCliente AND liquidada = 1"));
+			      $deuda['suma'] = ($deuda['suma'] == "")? 0 : $deuda['suma'];
 
-			//VERIFICAMOS QUE NO HALLA UN CLIENTE CON LOS MISMOS DATOS
-			if(mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `clientes` WHERE (telefono = '$Telefono' OR rfc='$RFC' OR email='$Email') AND id != $id"))>0){
-		 		echo '<script >M.toast({html:"El RFC, Telefono o Email ya se encuentra registrados en la BD.", classes: "rounded"})</script>';
-		 	}else{
-				//CREAMO LA SENTENCIA SQL PARA HACER LA ACTUALIZACION DE LA INFORMACION DEL CLIENTE Y LA GUARDAMOS EN UNA VARIABLE
-				$sql = "UPDATE `clientes` SET nombre = '$Nombre', telefono = '$Telefono', email = '$Email', rfc = '$RFC', direccion = '$Direccion', colonia = '$Colonia', localidad = '$Localidad', cp = '$CP', limpieza = '$Limpieza' WHERE id = '$id'";
-				//VERIFICAMOS QUE LA SENTECIA FUE EJECUTADA CON EXITO!
-				if(mysqli_query($conn, $sql)){
-					echo '<script >M.toast({html:"El cliente se actualizo con exito.", classes: "rounded"})</script>';	
-					echo '<script>recargar_clientes()</script>';// REDIRECCIONAMOS (FUNCION ESTA EN ARCHIVO modals.php)
-				}else{
-					echo '<script >M.toast({html:"Ocurrio un error...", classes: "rounded"})</script>';	
-				}//FIN else DE ERROR
-			}// FIN else Validacion
-		}//FIN IF permiso
+			      $Resta = $abono['suma']-$deuda['suma'];
+			      //SELECCIONAMOS OTRA DEUDA
+			      $Deuda_check = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM deudas WHERE id_cliente = $IdCliente AND liquidada=0 limit 1"));
+
+			      $Entra = False;// SI EL VALOR ES FALSE EL WHILE TERMINA 
+			      //VERIFICAMOS QUE LA DEUDA A COMPRAR TENGA ALGUN VALOR MAYOR A 0
+			      if ($Deuda_check['cantidad'] <=0) {
+			        $Entra = False;
+			      }else if ($Deuda_check['cantidad'] <= $Resta) {//AHORA VERIFICAMOS SI LA DEUDA SELECCIONADA ES MENOR O IGUAL A LA CANTIDAD DE RESTA
+			        // SI ES MENOS O IGUAL QUIERE DECIR QUE LA DEUDA ALCANZA A SER LIQUIDADA Y LE DAMOS ENTRADA = true PARA QUE CONTINUE EL WHILE
+			        $Entra = True;  
+			      } 
+			      $id_deuda = $Deuda_check['id_deuda'];// SACAMOS EL ID DE LA OTRA DEUDA SELECCIONADA
+			    }//FIN WHILE
+				echo '<script>M.toast({html:"El abono se dió de alta satisfcatoriamente.", classes: "rounded"})</script>';	
+				$ultimo =  mysqli_fetch_array(mysqli_query($conn, "SELECT MAX(id_pago) AS id FROM pagos WHERE id_cliente = $IdCliente AND id_user = $id_user"));            
+        		$id_pago = $ultimo['id'];
+				echo '<script>M.toast({html:"El pago se dió de alta satisfcatoriamente.", classes: "rounded"})</script>';
+				?>
+				<script>
+				  var a = document.createElement("a");
+					a.target = "_blank";
+					a.href = "../php/imprimir.php?id="+<?php echo $id_pago; ?>;
+					a.click();
+				
+			      var a = document.createElement("a");
+			        a.href = "../views/detalles_credito.php?id_cte="+<?php echo $IdCliente; ?>;
+			        a.click();
+			    </script>
+			    <?php    		
+			}// FIN IF  INSERT
+		}//FIN esle validacion
         break;
     case 3:
         // $Accion es igual a 3 realiza:

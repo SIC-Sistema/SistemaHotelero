@@ -6,48 +6,41 @@
   include('fredyNav.php');
   ?>
   <script>
-    function estado_X_fecha(id_cliente){
-      var textoDe = $("input#fecha_de_estado").val();
-      var textoA = $("input#fecha_a_estado").val();
-      if (textoDe == "" || textoA == ""){
-        M.toast({html:"Ingrese un rango de fechas.", classes: "rounded"});
-      }else {
-        var a = document.createElement("a");
-        a.target = "_blank";
-        a.href = "../php/estado_x_fecha.php?valorID="+id_cliente+"&valorDe="+textoDe+"&valorA="+textoA;
-        a.click();
-      }
-    };
+    //FUNCION QUE ENVIA LA INFORMACION PARA INSERTAR EL ABONO
     function insert_abono(){    
       var textoCantidad = $("input#cantidad").val();
       var textoDescripcion = $("input#descripcion").val();
       var textoIdCliente = $("input#id_cliente").val();
 
-      if(document.getElementById('banco').checked==true){
+      if(document.getElementById('bancoA').checked==true){
         textoTipo_Campio = "Banco";
-      }else if(document.getElementById('SAN').checked==true){
-        textoTipo_Campio = "SAN";
       }else{
         textoTipo_Campio = "Efectivo";
       }
 
       if (textoCantidad == "" || textoCantidad ==0) {
         M.toast({html:"El campo Cantidad se encuentra vacío o en 0.", classes: "rounded"});
+      }else if (textoDescripcion == "") {
+        M.toast({html:"El campo Descripción esta vacio.", classes: "rounded"});
       }else{
-        $.post("../php/insert_abono.php", { 
+        //MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO EN LA DIRECCION "../php/control_dinero.php"
+        $.post("../php/control_dinero.php", { 
+          //Cada valor se separa por una ,
             valorTipo_Campio: textoTipo_Campio,
             valorCantidad: textoCantidad,
             valorDescripcion: textoDescripcion,
             valorIdCliente: textoIdCliente,
+            accion: 2,
         }, function(mensaje) {
+          //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "control_dinero.php"
             $("#mostrar_abonos").html(mensaje);   
         });
-      }
-    }
+      }// FIN else
+    }//FIN function
   </script>
 </head>
 <?php
-if (isset($_POST['id_cte']) == false) {
+if (isset($_GET['id_cte']) == false) {
   ?>
   <script>    
     M.toast({html: "Regresando a clientes.", classes: "rounded"})
@@ -55,31 +48,29 @@ if (isset($_POST['id_cte']) == false) {
   </script>
   <?php
 }else{
-$id_cte = $_POST['id_cte'];
+$id_cte = $_GET['id_cte'];
 $user_id = $_SESSION['user_id'];
 ?>
 <body>
-	<div class="container" id="mostrar_abonos">
+	<div class="container" >
   <?php 
   $sql = mysqli_query($conn,"SELECT * FROM clientes WHERE id = $id_cte");
   $cliente = mysqli_fetch_array($sql);
 
   // SACAMOS LA SUMA DE TODAS LAS DEUDAS Y ABONOS ....
   $deuda = mysqli_fetch_array(mysqli_query($conn, "SELECT SUM(cantidad) AS suma FROM deudas WHERE id_cliente = $id_cte"));
-  $abono = mysqli_fetch_array(mysqli_query($conn, "SELECT SUM(cantidad) AS suma FROM pagos WHERE id_cliente = $id_cte AND tipo = 'Abono Credito' AND id_deuda != NULL"));
+  $abono = mysqli_fetch_array(mysqli_query($conn, "SELECT SUM(cantidad) AS suma FROM pagos WHERE id_cliente = $id_cte AND tipo = 'Abono Credito'"));
   //COMPARAMOS PARA VER SI LOS VALORES ESTAN VACOIOS::
-  if ($deuda['suma'] == "") {
-    $deuda['suma'] = 0;
-  }elseif ($abono['suma'] == "") {
-    $abono['suma'] = 0;
-  }
+  $deuda['suma'] = ($deuda['suma'] == "")? 0 : $deuda['suma'];
+  $abono['suma'] = ($abono['suma'] == "")? 0 : $abono['suma'];
   //SE RESTAN DEUDAS DE ABONOS Y SI EL SALDO ES NEGATIVO SE CAMBIA DE COLOR
-$Saldo = $abono['suma']-$deuda['suma'];
-$color = 'green';
-if ($Saldo < 0) {
-  $color = 'red darken-2';
-}
+  $Saldo = $abono['suma']-$deuda['suma'];
+  $color = 'green';
+  if ($Saldo < 0) {
+    $color = 'red darken-2';
+  }
   ?>
+    <div id="mostrar_abonos"></div>
 		<div class="row">
 			<h2 class="hide-on-med-and-down">Credito de Cliente:</h2>
  			<h4 class="hide-on-large-only">Credito de Cliente:</h4>
@@ -169,14 +160,14 @@ if ($Saldo < 0) {
             if ($aux > 0) {
               while ($resultados = mysqli_fetch_array($deudas)) {
                 $id_user = $resultados['usuario'];
-                $user = mysqli_fetch_array(mysqli_query($conn, "SELECT user_name FROM users WHERE user_id = '$id_user'"));
+                $user = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM users WHERE user_id = '$id_user'"));
                 ?>
                 <tr>
                   <td><b><?php echo $resultados['id_deuda'];?></b></td>         
                   <td>$<?php echo $resultados['cantidad'];?></td>
                   <td><?php echo $resultados['fecha_deuda'];?></td>
                   <td><?php echo $resultados['descripcion'];?></td>
-                  <td><?php echo $user['user_name'];?></td>
+                  <td><?php echo $user['firstname'];?></td>
                   <td><?php echo ($resultados['liquidada'] == 1)?'<span class="new badge green" data-badge-caption=""></span>':'<span class="new badge red" data-badge-caption=""></span>';?></td>
                 </tr>
                 <?php 
@@ -202,19 +193,19 @@ if ($Saldo < 0) {
           </thead>
           <tbody>
            <?php
-            $abonos = mysqli_query($conn, "SELECT * FROM pagos WHERE id_cliente = $id_cte AND tipo = 'Abono Credito' AND id_deuda != NULL");
+            $abonos = mysqli_query($conn, "SELECT * FROM pagos WHERE id_cliente = $id_cte AND tipo = 'Abono Credito'");
             $aux = mysqli_num_rows($abonos);
             if ($aux > 0) {
               while ($resultados = mysqli_fetch_array($abonos)) {
                 $id_user = $resultados['id_user'];
-                $user = mysqli_fetch_array(mysqli_query($conn, "SELECT user_name FROM users WHERE user_id = '$id_user'"));
+                $user = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM users WHERE user_id = '$id_user'"));
                 ?>
                 <tr>
                   <td><b><?php echo $resultados['id_pago'];?></b></td>         
                   <td>$<?php echo $resultados['cantidad'];?></td>
                   <td><?php echo $resultados['fecha'];?></td>
                   <td><?php echo $resultados['descripcion'];?></td>
-                  <td><?php echo $user['user_name'];?></td>
+                  <td><?php echo $user['firstname'];?></td>
                 </tr>
                 <?php 
               }//fin while
