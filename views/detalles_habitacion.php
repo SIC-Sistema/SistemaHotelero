@@ -181,54 +181,55 @@
 	          <p><div>
 	            <table class="bordered centered highlight">
 	              <thead>
-	                <th>N°</th>
-		              <th>Cliente</th>
-		              <th>Responsable</th>
-		              <th>Fecha Entrada</th>
-		              <th>Fecha Salida</th>
-		              <th>Observacion</th>
-		              <th>Total</th>
-		              <th>Estatus</th>
-		              <th>Registro</th>
-		              <th>Fecha Registro</th>
+	              	<tr>
+		                <th>N°</th>
+			              <th>Cliente</th>
+			              <th>Responsable</th>
+			              <th>Fecha Entrada</th>
+			              <th>Fecha Salida</th>
+			              <th>Observacion</th>
+			              <th>Total</th>
+			              <th>Estatus</th>
+			              <th>Registro</th>
+			              <th>Fecha Registro</th>
 	                </tr>
 	              </thead>
 	              <tbody>
 	              	<?php
-					// REALIZAMOS LA CONSULTA A LA BASE DE DATOS MYSQL Y GUARDAMOS EN FORMARTO ARRAY EN UNA VARIABLE $consulta
-					$consulta = mysqli_query($conn, "SELECT * FROM `reservaciones` WHERE id_habitacion = $id");
-					//VERIFICAMOS QUE LA VARIABLE SI CONTENGA INFORMACION
-					if (mysqli_num_rows($consulta) == 0) {
-						echo '<h4>No se encontraron reservaciones.</h4>';
-					} else {
-						while ($reservacion = mysqli_fetch_array($consulta)) {
-							$id_user = $reservacion['usuario'];
-							$user = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `users` WHERE user_id=$id_user"));
-							$id_cliente = $reservacion['id_cliente'];
-							$cliente = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `clientes` WHERE id=$id_cliente"));
-							if($reservacion['estatus'] == 3){
-								$estatus = '<span class="new badge red" data-badge-caption="Cancelada"></span>';
-							}elseif ($reservacion['estatus'] == 2) {
-								$estatus = '<span class="new badge black" data-badge-caption="Terminada"></span>';
-							}else{
-								$estatus = ($reservacion['estatus'] == 1)? '<span class="new badge blue" data-badge-caption="Ocupada"></span>': '<span class="new badge green" data-badge-caption="Pendiente"></span>';
-							}
-							?>
-							<tr>
-							    <td><?php echo $reservacion['id']; ?></td>
-							    <td><?php echo $cliente['id'].'. '.$cliente['nombre']; ?></td>
-							    <td><?php echo $reservacion['nombre']; ?></td>
-							    <td><?php echo $reservacion['fecha_entrada']; ?></td>
-							    <td><?php echo $reservacion['fecha_salida']; ?></td>
-							    <td><?php echo $reservacion['observacion']; ?></td>
-							    <td>$<?php echo sprintf('%.2f', $reservacion['total']); ?></td>
-							    <td><?php echo $estatus; ?></td>
-							    <td><?php echo $user['firstname']; ?></td>
-							    <td><?php echo $reservacion['fecha_registro']; ?></td>
-							</tr>
-							<?php
-					    }//FIN while
-					}//FIN ELSE
+									// REALIZAMOS LA CONSULTA A LA BASE DE DATOS MYSQL Y GUARDAMOS EN FORMARTO ARRAY EN UNA VARIABLE $consulta
+									$consulta = mysqli_query($conn, "SELECT * FROM `reservaciones` WHERE id_habitacion = $id");
+									//VERIFICAMOS QUE LA VARIABLE SI CONTENGA INFORMACION
+									if (mysqli_num_rows($consulta) == 0) {
+										echo '<h4>No se encontraron reservaciones.</h4>';
+									} else {
+										while ($reservacion = mysqli_fetch_array($consulta)) {
+											$id_user = $reservacion['usuario'];
+											$user = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `users` WHERE user_id=$id_user"));
+											$id_cliente = $reservacion['id_cliente'];
+											$cliente = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `clientes` WHERE id=$id_cliente"));
+											if($reservacion['estatus'] == 3){
+												$estatus = '<span class="new badge red" data-badge-caption="Cancelada"></span>';
+											}elseif ($reservacion['estatus'] == 2) {
+												$estatus = '<span class="new badge black" data-badge-caption="Terminada"></span>';
+											}else{
+												$estatus = ($reservacion['estatus'] == 1)? '<span class="new badge blue" data-badge-caption="Ocupada"></span>': '<span class="new badge green" data-badge-caption="Pendiente"></span>';
+											}
+											?>
+											<tr>
+											    <td><?php echo $reservacion['id']; ?></td>
+											    <td><?php echo $cliente['id'].'. '.$cliente['nombre']; ?></td>
+											    <td><?php echo $reservacion['nombre']; ?></td>
+											    <td><?php echo $reservacion['fecha_entrada']; ?></td>
+											    <td><?php echo $reservacion['fecha_salida']; ?></td>
+											    <td><?php echo $reservacion['observacion']; ?></td>
+											    <td>$<?php echo sprintf('%.2f', $reservacion['total']); ?></td>
+											    <td><?php echo $estatus; ?></td>
+											    <td><?php echo $user['firstname']; ?></td>
+											    <td><?php echo $reservacion['fecha_registro']; ?></td>
+											</tr>
+											<?php
+									    }//FIN while
+									}//FIN ELSE
 	                ?>	                
 	              </tbody>
 	            </table>

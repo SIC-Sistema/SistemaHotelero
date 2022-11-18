@@ -9,9 +9,9 @@ $id_user = $_SESSION['user_id'];// ID DEL USUARIO LOGEADO
 $Fecha_hoy = date('Y-m-d');// FECHA ACTUAL
 $Hora = date('H:i:s');
 
-//CON METODO POST TOMAMOS UN VALOR DEL 0 AL 3 PARA VER QUE ACCION HACER (insert salida = 0, corte = 1, insert abono = 2)
+//CON METODO POST TOMAMOS UN VALOR DEL 0 AL 3 PARA VER QUE ACCION HACER (insert salida = 0, corte = 1, insert abono = 2, buscar cortes = 3)
 $Accion = $conn->real_escape_string($_POST['accion']);
-//UN SWITCH EL CUAL DECIDIRA QUE ACCION REALIZA DEL CRUD (insert salida = 0, corte = 1, insert abono = 2)
+//UN SWITCH EL CUAL DECIDIRA QUE ACCION REALIZA DEL CRUD (insert salida = 0, corte = 1, insert abono = 2, buscar cortes = 3)
 switch ($Accion) {
     case 0:  ///////////////           IMPORTANTE               ///////////////
         // $Accion es igual a 0 realiza:
@@ -215,77 +215,85 @@ switch ($Accion) {
         break;
     case 3:
         // $Accion es igual a 3 realiza:
-    	//CON POST RECIBIMOS LA VARIABLE DEL BOTON POR EL SCRIPT DE "clientes.php" QUE NESECITAMOS PARA BORRAR
-    	$id = $conn->real_escape_string($_POST['id']);
+    	//CON POST RECIBIMOS LA VARIABLE DEL BOTON POR EL SCRIPT DE "historial_cortes.php" QUE NESECITAMOS PARA BORRAR
+    	$ValorDe = $conn->real_escape_string($_POST['valorDe']);
+		$ValorA = $conn->real_escape_string($_POST['valorA']);
+
     	//Obtenemos la informacion del Usuario
     	$User = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `users` WHERE user_id = $id_user"));
     	//SE VERIFICA SI EL USUARIO LOGEADO TIENE PERMISO DE BORRAR CLIENTES
-    	if ($User['clientes'] == 1) {
-    		#SELECCIONAMOS LA INFORMACION A BORRAR
-    		$cliente = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `clientes` WHERE id = $id"));
-    		#CREAMOS EL SQL DE LA INSERCION A LA TABLA  `pv_borrar_cliente` PARA NO PERDER INFORMACION
-			$sql = "INSERT INTO `pv_borrar_cliente` (id_cliente, nombre, telefono, direccion, colonia, cp, rfc, email, localidad, registro, borro, fecha_borro) 
-				VALUES($id, '".$cliente['nombre']."', '".$cliente['telefono']."', '".$cliente['direccion']."', '".$cliente['colonia']."', '".$cliente['cp']."', '".$cliente['rfc']."', '".$cliente['email']."', '".$cliente['localidad']."', '".$cliente['usuario']."', '$id_user','$Fecha_hoy')";
-			//VERIFICAMOS QUE LA SENTECIA FUE EJECUTADA CON EXITO!
-			if(mysqli_query($conn, $sql)){
-				//SI DE CREA LA INSERCION PROCEDEMOS A BORRRAR DE LA TABLA `clientes`
-	    		#VERIFICAMOS QUE SE BORRE CORRECTAMENTE EL CLIENTE DE `clientes`
-				if(mysqli_query($conn, "DELETE FROM `clientes` WHERE `clientes`.`id` = $id")){
-				  #SI ES ELIMINADO MANDAR MSJ CON ALERTA
-				  echo '<script >M.toast({html:"Cliente borrado con exito.", classes: "rounded"})</script>';
-				  echo '<script>recargar_clientes()</script>';// REDIRECCIONAMOS (FUNCION ESTA EN ARCHIVO modals.php)
+    	if ($User['cortes'] == 1) {
+    		?>
+	    	<table class="bordered highlight responsive-table">
+				<thead>
+					<tr>
+						<th>Id Corte</th>
+						<th>Usuarios</th>				        
+				        <th>Entradas</th>
+			            <th>Salidas</th>
+			            <th>Efectivo</th>
+			            <th>Banco</th>
+			            <th>Credito</th>
+			            <th>Realizo</th>
+			            <th>Mtos</th>
+			            <th>Detalles</th>
+					</tr>
+				</thead>
+				<tbody>
+				<?php
+				$resultado_cortes = mysqli_query($conn, "SELECT * FROM cortes WHERE fecha>='$ValorDe' AND fecha<='$ValorA' ORDER BY usuario DESC");
+				$aux = mysqli_num_rows($resultado_cortes);
+				if($aux>0){
+					$totalmovimientos = 0;
+					$totalefectivo= 0;
+					$totalbanco = 0;
+					$totalcredito = 0;
+					while($cortes = mysqli_fetch_array($resultado_cortes)){
+						$id_corte =$cortes['id_corte'];
+						$movimientos = mysqli_fetch_array(mysqli_query($conn,"SELECT count(*) FROM detalles_corte WHERE id_corte = $id_corte"));
+						$id_usuario = $cortes['usuario'];
+						$usuario = mysqli_fetch_array(mysqli_query($conn,"SELECT * FROM users WHERE user_id = $id_usuario"));
+						$id_realizo = $cortes['realizo'];
+						$realizo = mysqli_fetch_array(mysqli_query($conn,"SELECT * FROM users WHERE user_id = $id_realizo"));
+						?>
+						  <tr>
+						    <td><b><?php echo $id_corte;?></b></td>
+						    <td><?php echo $usuario['firstname'] ?></td>
+						    <td>$<?php echo sprintf('%.2f', $cortes['entradas']);?></td>
+						    <td>$<?php echo sprintf('%.2f', $cortes['salidas']); ?></td>
+						    <td>$<?php echo sprintf('%.2f', $cortes['entradas']-$cortes['salidas']); ?></td>
+						    <td><?php echo sprintf('%.2f', $cortes['banco']);?></td>
+						    <td><?php echo sprintf('%.2f', $cortes['credito']);?></td>
+						    <td><?php echo $realizo['firstname'];?></td>
+						    <td><?php echo $movimientos['count(*)'];?></td>
+						    <td><form method="post" action="../views/detalle_corte_cut.php"><input id="id_corte" name="id_corte" type="hidden" value="<?php echo $cortes['id_corte']; ?>"><button class="btn-small btn-tiny waves-effect waves-light grey darken-4"><i class="material-icons">credit_card</i></button></form></td>
+						  </tr>
+						  <?php
+						  $totalefectivo += $cortes['entradas']-$cortes['salidas'];
+						  $totalbanco += $cortes['banco'];
+						  $totalcredito += $cortes['credito'];
+						  $totalmovimientos += $movimientos['count(*)'];
+						  $aux--;
+					}//FIN WHILE
+					?>
+					  <tr>
+					  	<td colspan="4" class="center"><h5>TOTAL:</h5></td>
+					  	<td><h5>$<?php echo sprintf('%.2f', $totalefectivo); ?></h5></td>
+					  	<td><h5>$<?php echo sprintf('%.2f', $totalbanco); ?></h5></td>
+					  	<td><h5>$<?php echo sprintf('%.2f', $totalcredito); ?></h5></td>
+					  	<td><h5>TOTAL:</h5></td>
+					  	<td><h5><?php echo $totalmovimientos;?></h5></td>
+					  	<td></td>
+					  </tr>
+					<?php
 				}else{
-				  #SI NO ES BORRADO MANDAR UN MSJ CON ALERTA
-				  echo "<script >M.toast({html: 'Ha ocurrido un error.', classes: 'rounded'});/script>";
-				}
-			}
-	    }else{
-			echo '<script >M.toast({html:"Permiso denegado.", classes: "rounded"});
-			M.toast({html:"Comunicate con un administrador.", classes: "rounded"});</script>';
-	    }   
-    	break;
-    case 4:
-        // $Accion es igual a 4 realiza:
-    	//CON POST RECIBIMOS LA VARIABLE DEL BOTON POR EL SCRIPT DE "clientes.php" QUE NESECITAMOS PARA BORRAR
-    	$id = $conn->real_escape_string($_POST['id']);
-    	//Obtenemos la informacion del Usuario
-    	$User = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `users` WHERE user_id = $id_user"));
-    	//SE VERIFICA SI EL USUARIO LOGEADO TIENE PERMISO DE BORRAR INGRESOS/EGRESOS
-    	if ($User['borrar'] == 1) {
-    		$motivo = $conn->real_escape_string($_POST['motivo']);
-    		#SELECCIONAMOS LA INFORMACION A BORRAR
-    		$pago = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `pagos` WHERE id_pago = $id"));
-    		#CREAMOS EL SQL DE LA INSERCION A LA TABLA  `pagos_borrados` PARA NO PERDER INFORMACION
-			$sql = "INSERT INTO `pagos_borrados` (cliente, cantidad, descripcion, realizo, tipo_cambio, fecha_hora_registro, motivo, borro, fecha_borrado) 
-				VALUES('".$pago['id_cliente']."', '".$pago['cantidad']."', '".$pago['descripcion']." (".$pago['tipo'].")', '".$pago['id_user']."', '".$pago['tipo_cambio']."', '".$pago['fecha']." ".$pago['hora']."', '".$motivo."', '$id_user','$Fecha_hoy')";
-			//VERIFICAMOS QUE LA SENTECIA FUE EJECUTADA CON EXITO!
-			if(mysqli_query($conn, $sql)){
-				//SI DE CREA LA INSERCION PROCEDEMOS A BORRRAR DE LA TABLA `pagos`
-	    		#VERIFICAMOS QUE SE BORRE CORRECTAMENTE EL PAGO DE `pagos`
-				if(mysqli_query($conn, "DELETE FROM `pagos` WHERE `pagos`.`id_pago` = $id")){
-				  #SI ES ELIMINADO MANDAR MSJ CON ALERTA
-				  echo '<script >M.toast({html:"Pago/Ingreso borrado con exito.", classes: "rounded"})</script>';
-    			  $redireciona = $conn->real_escape_string($_POST['redireciona']);
-    			  if ($redireciona == 0) {
-    			  	echo '<script>recargar_clientes()</script>';// REDIRECCIONAMOS (FUNCION ESTA EN ARCHIVO modals.php)
-    			  }else{
-    			  	?>
-			        <script>
-			          var a = document.createElement("a");
-			            a.href = "../views/detalles_cuenta.php?id="+<?php echo $redireciona; ?>;
-			            a.click();
-			        </script>
-			        <?php
-    			  }
-				}else{
-				  #SI NO ES BORRADO MANDAR UN MSJ CON ALERTA
-				  echo "<script >M.toast({html: 'Ha ocurrido un error.', classes: 'rounded'});/script>";
-				}
-			}
-	    }else{
-			echo '<script >M.toast({html:"Permiso denegado.", classes: "rounded"});
-			M.toast({html:"Comunicate con un administrador.", classes: "rounded"});</script>';
-	    }   
+				  echo "<center><b><h5>No se encontraron cortes para estas fechas</h5></b></center>";
+				}// FIN WHILE
+				?>	
+				</tbody>
+			</table><br><br>
+			<?php
+		}// FIN IF CORTES
     	break;
 }// FIN switch
 mysqli_close($conn);
