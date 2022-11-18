@@ -129,16 +129,8 @@
 			        msj = "Por favor ingrese un Email.";
 			      }else if (!validar_email(textoEmail)) {
 			        msj = "Por favor ingrese un Email correcto.";
-			      }else if(textoRFC.length < 12){
-			       	msj = 'El RFC tiene que tener al menos 12 dijitos.';
 			      }else if(textoDireccion == ""){
 			       	msj = 'El campo Dirección se encuentra vacío.';
-			      }else if(textoColonia == ""){
-			       	msj = 'El campo Colonia se encuentra vacío.';
-			      }else if(textoLocalidad == ""){
-			       	msj = 'El campo Localidad se encuentra vacío.';
-			      }else if(textoCP == ""){
-			       	msj = 'El campo Codigo Postal se encuentra vacío.';
 			      }else{
 			      	clienteEntra = false;
 			      }
