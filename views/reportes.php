@@ -85,22 +85,22 @@ if ($User['area'] != 'Administrador') {
         </div>
         <!-- ----------------------------  FORMULARIO 2 Tabs  ---------------------------------------->
         <div  id="test-swipe-2" class="col s12">
-          <div class="row" id="resultado_reportes5">
+          <div class="row">
             <div class="row"><br><br>
               <div class="col s12 l5 m5">
-                  <label for="fecha_de2">De:</label>
-                  <input id="fecha_de2" type="date">    
+                  <label for="fecha_de5">De:</label>
+                  <input id="fecha_de5" type="date">    
               </div>
               <div class="col s12 l5 m5">
-                  <label for="fecha_a2">A:</label>
-                  <input id="fecha_a2"  type="date">
+                  <label for="fecha_a5">A:</label>
+                  <input id="fecha_a5"  type="date">
               </div>
               <br><br><br>
               <div>
-                  <button class="btn waves-light waves-effect right grey darken-3" onclick="buscar_reportes(4);"><i class="material-icons prefix left">search</i>BUSCAR</button>
+                  <button class="btn waves-light waves-effect right grey darken-3" onclick="buscar_reportes(5);"><i class="material-icons prefix left">search</i>BUSCAR</button>
               </div>
             </div>
-              <table class="bordered centered highlight">
+              <table class="bordered centered highlight" id="resultado_reportes5">
                 <thead>
                   <tr>
                     <th>N°</th>
@@ -120,22 +120,22 @@ if ($User['area'] != 'Administrador') {
         </div>
         <!-- ----------------------------  FORMULARIO 2 Tabs  ---------------------------------------->
         <div  id="test-swipe-3" class="col s12">
-          <div class="row" id="resultado_reportes6">
+          <div class="row">
             <div class="row"><br><br>
               <div class="col s12 l5 m5">
-                  <label for="fecha_de3">De:</label>
-                  <input id="fecha_de3" type="date">    
+                  <label for="fecha_de6">De:</label>
+                  <input id="fecha_de6" type="date">    
               </div>
               <div class="col s12 l5 m5">
-                  <label for="fecha_a3">A:</label>
-                  <input id="fecha_a3"  type="date">
+                  <label for="fecha_a6">A:</label>
+                  <input id="fecha_a6"  type="date">
               </div>
               <br><br><br>
               <div>
                 <button class="btn waves-light waves-effect right grey darken-3" onclick="reportes_buscar(6);"><i class="material-icons prefix left">search</i>BUSCAR</button>
               </div>
             </div>
-              <table class="bordered centered highlight">
+              <table class="bordered centered highlight" id="resultado_reportes6">
                 <thead>
                   <tr>
                     <th>N° 3</th>
