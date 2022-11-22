@@ -16,29 +16,31 @@ if ($User['area'] != 'Administrador') {
   </script>
 <?php }  ?>
 <script>
-  function buscar_cortes() {
-      var textoDe = $("input#fecha_de").val();
-      var textoA = $("input#fecha_a").val();
+  function buscar_reportes(n) {
+      var textoDe = $("input#fecha_de"+n).val();
+      var textoA = $("input#fecha_a"+n).val();
+    M.toast({html: "NO TIENES ACCESO!..."+textoA, classes: "rounded"});
+
         $.post("../php/control_dinero.php", {
             valorDe: textoDe,
             valorA: textoA,
-            accion: 3,
+            accion: n,
           }, function(mensaje) {
-              $("#resultado_cortes").html(mensaje);
+              $("#resultado_reportes"+n).html(mensaje);
           }); 
   };
 </script>
 </head>
-<body>
+<body onload="buscar_reportes(4);">
   <div class="container"><br><br>
     <h4>Historial:</h4><br>
       <div class="row">
       <!-- ----------------------------  TABs o MENU  ---------------------------------------->
         <div class="col s12">
           <ul id="tabs-swipe-demo" class="tabs">
-            <li class="tab col s4"><a class="active black-text" href="#test-swipe-1">ENTRADAS</a></li>
-            <li class="tab col s4"><a class="black-text" href="#test-swipe-2">SALIDAS</a></li>
-            <li class="tab col s4"><a class="black-text" href="#test-swipe-3">GANANCIAS</a></li>
+            <li class="tab col s4" ><a class="active black-text" href="#test-swipe-1" onclick="buscar_reportes(4);">ENTRADAS</a></li>
+            <li class="tab col s4"><a class="black-text" href="#test-swipe-2" onclick="buscar_reportes(5);">SALIDAS</a></li>
+            <li class="tab col s4"><a class="black-text" href="#test-swipe-3" onclick="buscar_reportes(6);">GANANCIAS</a></li>
           </ul>
         </div>
         <!-- ----------------------------  FORMULARIO 1 Tabs  ---------------------------------------->
@@ -46,19 +48,19 @@ if ($User['area'] != 'Administrador') {
           <div class="row">
             <div class="row"><br><br>
               <div class="col s12 l5 m5">
-                  <label for="fecha_de1">De:</label>
-                  <input id="fecha_de1" type="date">    
+                  <label for="fecha_de4">De:</label>
+                  <input id="fecha_de4" type="date">    
               </div>
               <div class="col s12 l5 m5">
-                  <label for="fecha_a1">A:</label>
-                  <input id="fecha_a1"  type="date">
+                  <label for="fecha_a4">A:</label>
+                  <input id="fecha_a4"  type="date">
               </div>
               <br><br><br>
               <div>
-                  <button class="btn waves-light waves-effect right grey darken-3" onclick="reportes_buscar(1);"><i class="material-icons prefix left">search</i>BUSCAR</button>
+                  <button class="btn waves-light waves-effect right grey darken-3" onclick="buscar_reportes(4);"><i class="material-icons prefix left">search</i>BUSCAR</button>
               </div>
             </div>
-            <p><div>
+            <div  id="resultado_reportes4">
               <table class="bordered centered highlight">
                 <thead>
                   <tr>
@@ -78,12 +80,12 @@ if ($User['area'] != 'Administrador') {
                                
                 </tbody>
               </table>
-            </div></p>
+            </div>
           </div>
         </div>
         <!-- ----------------------------  FORMULARIO 2 Tabs  ---------------------------------------->
         <div  id="test-swipe-2" class="col s12">
-          <div class="row">
+          <div class="row" id="resultado_reportes5">
             <div class="row"><br><br>
               <div class="col s12 l5 m5">
                   <label for="fecha_de2">De:</label>
@@ -95,7 +97,7 @@ if ($User['area'] != 'Administrador') {
               </div>
               <br><br><br>
               <div>
-                  <button class="btn waves-light waves-effect right grey darken-3" onclick="reportes_buscar(2);"><i class="material-icons prefix left">search</i>BUSCAR</button>
+                  <button class="btn waves-light waves-effect right grey darken-3" onclick="buscar_reportes(4);"><i class="material-icons prefix left">search</i>BUSCAR</button>
               </div>
             </div>
               <table class="bordered centered highlight">
@@ -118,7 +120,7 @@ if ($User['area'] != 'Administrador') {
         </div>
         <!-- ----------------------------  FORMULARIO 2 Tabs  ---------------------------------------->
         <div  id="test-swipe-3" class="col s12">
-          <div class="row">
+          <div class="row" id="resultado_reportes6">
             <div class="row"><br><br>
               <div class="col s12 l5 m5">
                   <label for="fecha_de3">De:</label>
@@ -130,7 +132,7 @@ if ($User['area'] != 'Administrador') {
               </div>
               <br><br><br>
               <div>
-                  <button class="btn waves-light waves-effect right grey darken-3" onclick="reportes_buscar(3);"><i class="material-icons prefix left">search</i>BUSCAR</button>
+                <button class="btn waves-light waves-effect right grey darken-3" onclick="reportes_buscar(6);"><i class="material-icons prefix left">search</i>BUSCAR</button>
               </div>
             </div>
               <table class="bordered centered highlight">
