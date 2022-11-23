@@ -15,11 +15,10 @@ if ($User['area'] != 'Administrador') {
     setTimeout("location.href='home.php'", 1000);
   </script>
 <?php }  ?>
-<script>
-  function buscar_reportes(n) {
+  <script>
+    function buscar_reportes(n) {
       var textoDe = $("input#fecha_de"+n).val();
       var textoA = $("input#fecha_a"+n).val();
-    M.toast({html: "NO TIENES ACCESO!..."+textoA, classes: "rounded"});
 
         $.post("../php/control_dinero.php", {
             valorDe: textoDe,
@@ -28,8 +27,8 @@ if ($User['area'] != 'Administrador') {
           }, function(mensaje) {
               $("#resultado_reportes"+n).html(mensaje);
           }); 
-  };
-</script>
+    };
+  </script>
 </head>
 <body onload="buscar_reportes(4);">
   <div class="container"><br><br>
@@ -61,7 +60,7 @@ if ($User['area'] != 'Administrador') {
               </div>
             </div>
             <div  id="resultado_reportes4">
-              <table class="bordered centered highlight">
+              <table>
                 <thead>
                   <tr>
                     <th>N°</th>
@@ -100,22 +99,7 @@ if ($User['area'] != 'Administrador') {
                   <button class="btn waves-light waves-effect right grey darken-3" onclick="buscar_reportes(5);"><i class="material-icons prefix left">search</i>BUSCAR</button>
               </div>
             </div>
-              <table class="bordered centered highlight" id="resultado_reportes5">
-                <thead>
-                  <tr>
-                    <th>N°</th>
-                    <th>Descripción</th>
-                    <th>Fecha</th>
-                    <th>Registro</th> 
-                    <th>Estatus</th> 
-                    <th>Solución</th>
-                    <th>Fecha Atendido</th>
-                    <th>Atendio</th> 
-                  </tr>
-                </thead>
-                <tbody>
-                </tbody>
-              </table>
+            <div id="resultado_reportes5"></div>
           </div>
         </div>
         <!-- ----------------------------  FORMULARIO 2 Tabs  ---------------------------------------->
@@ -132,25 +116,10 @@ if ($User['area'] != 'Administrador') {
               </div>
               <br><br><br>
               <div>
-                <button class="btn waves-light waves-effect right grey darken-3" onclick="reportes_buscar(6);"><i class="material-icons prefix left">search</i>BUSCAR</button>
+                <button class="btn waves-light waves-effect right grey darken-3" onclick="buscar_reportes(6);"><i class="material-icons prefix left">search</i>BUSCAR</button>
               </div>
             </div>
-              <table class="bordered centered highlight" id="resultado_reportes6">
-                <thead>
-                  <tr>
-                    <th>N° 3</th>
-                    <th>Descripción</th>
-                    <th>Fecha</th>
-                    <th>Registro</th> 
-                    <th>Estatus</th> 
-                    <th>Solución</th>
-                    <th>Fecha Atendido</th>
-                    <th>Atendio</th> 
-                  </tr>
-                </thead>
-                <tbody> 
-                </tbody>
-              </table>
+            <div id="resultado_reportes6"></div>
           </div>
         </div>
       </div> 
