@@ -1,0 +1,403 @@
+<?php
+//VERIFICAMOS QUE SI NOS ENVIE POR POST EL ID DEL ARTICULO
+if (isset($_POST['id_corte']) == false) {
+  ?>
+  <script>    
+    M.toast({html: "Regresando a historial.", classes: "rounded"});
+    setTimeout("location.href='historial_cortes.php'", 800);
+  </script>
+  <?php
+}else{
+?>
+  <html>
+  <head>
+    <title>San Roman | Detalles de Corte</title>
+    <?php 
+    //INCLUIMOS EL ARCHIVO QUE CONTIENE LA BARRA DE NAVEGACION TAMBIEN TIENE (scripts, conexion, is_logged, modals)
+    include('fredyNav.php');
+    //REALIZAMOS LA CONSULTA PARA SACAR LA INFORMACION DEL USUARIO Y EL CORTE
+    $id_corte = $_POST['id_corte'];
+    $corte = mysqli_fetch_array(mysqli_query($conn,"SELECT * FROM cortes WHERE id_corte=$id_corte"));
+    $user_id = $corte['usuario'];
+    $datos = mysqli_fetch_array(mysqli_query($conn,"SELECT * FROM users WHERE user_id=$user_id"));
+    $realizo_id = $corte['realizo'];
+    $realizo = mysqli_fetch_array(mysqli_query($conn,"SELECT * FROM users WHERE user_id=$realizo_id"));
+
+    $sql_efectivo = mysqli_query($conn,"SELECT * FROM `detalles_corte` INNER JOIN `pagos` ON `detalles_corte`.`id_pago`=`pagos`.`id_pago` WHERE id_corte = $id_corte AND tipo_cambio = 'Efectivo' AND `pagos`.corte = 1");
+    $Efectivo_w = mysqli_num_rows($sql_efectivo);
+    $sql_banco = mysqli_query($conn,"SELECT * FROM `detalles_corte` INNER JOIN `pagos` ON `detalles_corte`.`id_pago`=`pagos`.`id_pago` WHERE id_corte = $id_corte AND tipo_cambio = 'Banco'  AND `pagos`.corte = 1");
+    $Banco_w = mysqli_num_rows($sql_banco);
+    $sql_credito = mysqli_query($conn,"SELECT * FROM `detalles_corte` INNER JOIN `pagos` ON `detalles_corte`.`id_pago`=`pagos`.`id_pago` WHERE id_corte = $id_corte AND tipo_cambio = 'Credito'  AND `pagos`.corte = 1");
+    $Credito_w = mysqli_num_rows($sql_credito);
+    $sql_salidas = mysqli_query($conn,"SELECT * FROM `detalles_corte` INNER JOIN `salidas` ON `detalles_corte`.`id_salida`=`salidas`.`id` WHERE id_corte = $id_corte AND id_salida > 0  AND `salidas`.corte = 1");
+    $salidas_w = mysqli_num_rows($sql_salidas);
+    $sql_cortes = mysqli_query($conn,"SELECT * FROM `detalles_corte` INNER JOIN `cortes` ON `detalles_corte`.`corte`=`cortes`.`id_corte` WHERE `detalles_corte`.id_corte = $id_corte AND `detalles_corte`.corte > 0  AND `cortes`.corte = 1");
+    $cortes_w = mysqli_num_rows($sql_cortes);
+
+    $entradads['total'] = $corte['entradas'];
+    $salidas['total'] = $corte['salidas'];
+    $banco['total'] = $corte['banco'];
+    $credito['total'] = $corte['credito'];
+    ?>  
+    <script>
+      //FUNCION QUE ENVIA LOS DATOS PARA VALIDAR DESPUES DE LLENADO DEL MODAL
+      function recargar_corte() {
+        var textoClave = $("input#clave").val(); 
+          var tipo = $("input#corteTipo").val(); 
+       
+        if (textoClave == "") {
+            M.toast({html:"El campo clave no puede ir vacío.", classes: "rounded"});
+        }else{
+          //MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO EN LA DIRECCION "control_dinero.php" PARA MOSTRAR EL MODAL
+          $.post("../php/control_dinero.php", {
+            //Cada valor se separa por una ,
+              valorClave: textoClave,
+              valorEntradas: <?php echo ($entradads['total'] != '')? $entradads['total']:0; ?>,
+              valorSalidas: <?php echo ($salidas['total'] != '')? $salidas['total']:0; ?>,
+              valorBanco: <?php echo ($banco['total'] != '')? $banco['total']:0; ?>,
+              valorCredito: <?php echo ($credito['total'] != '')? $credito['total']:0; ?>,
+              valorUsuario: <?php echo $user_id; ?>,
+              accion: 1,
+              tipo: tipo,
+            }, function(mensaje) {
+              //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "control_dinero.php"
+               $("#resultado_corte").html(mensaje);
+          });
+        } //FIN ELSE  
+      } // FIN function
+      //FUNCION Calcula el Cambio
+        function corteTipo(n){
+          //RECIBIMOS LOS VALORES DE LOS INPUTS AFECTADOS
+          document.getElementById("corteTipo").value = n;
+        }// FIN function
+    </script>  
+  </head>
+  <main>
+  <body>
+    <div class="container">
+      <div class="row"><br>
+        <div id="resultado_corte"></div>
+        <div class="row">
+          <h3>CORTE N° <?php echo $id_corte;?></h3>
+        </div>
+        <ul class="collection">
+            <li class="collection-item avatar">
+              <div class="hide-on-large-only"><br><br></div>
+              <img src="../img/cliente.png" alt="" class="circle">
+              <span class="title"><b>DETALLES DEL USUARIO</b></span><br><br>
+              <p class="row col s12"><b>
+                <div class="col s12 m4">
+                  <div class="col s12"><b class="indigo-text">N° USUARIO: </b><?php echo $user_id;?></div>               
+                </div>
+                <div class="col s12 m4">
+                  <div class="col s12"><b class="indigo-text">NOMBRE: </b><?php echo $datos['firstname'].' '.$datos['lastname'];?></div>    
+                </div>
+                <div class="col s12 m4">       
+                  <div class="col s12"><b class="indigo-text">USUARIO: </b><?php echo $datos['user_name'];?></div>               
+                </div>
+              </b></p><br><br>
+            </li>
+        </ul>
+        <ul class="collection">
+            <li class="collection-item avatar">
+              <div class="hide-on-large-only"><br><br></div>
+              <img src="../img/cliente.png" alt="" class="circle">
+              <span class="title"><b>DETALLES DE QUIEN REALIZO</b></span><br><br>
+              <p class="row col s12"><b>
+                <div class="col s12 m4">
+                  <div class="col s12"><b class="indigo-text">N° USUARIO: </b><?php echo $realizo_id;?></div>               
+                </div>
+                <div class="col s12 m4">
+                  <div class="col s12"><b class="indigo-text">NOMBRE: </b><?php echo $realizo['firstname'].' '.$realizo['lastname'];?></div>    
+                </div>
+                <div class="col s12 m4">       
+                  <div class="col s12"><b class="indigo-text">USUARIO: </b><?php echo $realizo['user_name'];?></div>               
+                </div>
+              </b></p><br><br>
+            </li>
+        </ul>
+        <ul class="collection">
+            <li class="collection-item avatar">
+              <div class="hide-on-large-only"><br><br></div>
+              <span class="title"><b>RESUMEN: </b></span><br><br>
+              <div class="col s6 m3">
+                <b class="right">Entradas: </b><br>               
+                <b class="right">Salidas: </b><br>
+              </div>
+              <div class="col s6 m9">
+                $<?php echo sprintf('%.2f',$entradads['total']);?><br>
+                $<?php echo sprintf('%.2f',$salidas['total']);?><br>
+              </div>                
+              <br><br><hr>   
+              <div class="col s6 m3">
+                <b class="indigo-text right">TOTAL EFECTIVO: </b><br>               
+                <b class="indigo-text right">TOTAL A BANCO: </b><br>               
+                <b class="indigo-text right">TOTAL CREDITO: </b><br>   
+              </div>  
+              <div class="col s6 m9">
+                $<?php echo sprintf('%.2f',$entradads['total']-$salidas['total']);?><br>               
+                $<?php echo sprintf('%.2f',$banco['total']);?><br>               
+                $<?php echo sprintf('%.2f',$credito['total']);?><br>   
+              </div>        
+            </li>
+        </ul>
+        <!--    //////    TITULO    ///////   -->
+        <div class="row" >
+          <h3 class="hide-on-med-and-down">Desglose:</h3>
+          <h5 class="hide-on-large-only">Desglose:</h5>
+          <a href="../php/imprimir_corte.php?id=<?php echo $id_corte; ?>" target="blank" class="waves-effect waves-light btn grey darken-3 left right">REIMPRIMIR CORTE<i class="material-icons prefix left">print</i></a> 
+        </div>
+        <div class="row">
+          <div class="row">
+            <ul class="collection">
+              <li class="collection-item grey"><h6><b> >>> ENTRADAS: <span class="new badge green" data-badge-caption="entrada(s)"><?php echo $Efectivo_w+$Credito_w+$Banco_w; ?></span></b></h6></li>
+            </ul>
+            <ul class="collapsible">
+              <li>
+                <div class="collapsible-header">
+                  <i class="material-icons">local_atm</i>
+                  EFECTIVO
+                  <span class="new badge pink" data-badge-caption="pago(s)"><?php echo $Efectivo_w; ?></span>
+                </div>
+                <div class="collapsible-body">
+                  <?php 
+                  if ($Efectivo_w > 0) {
+                  ?>
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>N°</th>
+                          <th>Cliente</th>
+                          <th>Tipo</th>
+                          <th>Descripción</th>
+                          <th>Fecha y Hora</th>
+                          <th>Cantidad</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <?php 
+                        $aux = 0;
+                        $Total = 0;
+                        while ($pago = mysqli_fetch_array($sql_efectivo)) {
+                          $aux ++;
+                          $id_cliente = $pago['id_cliente'];
+                          $cliente = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `clientes` WHERE id = $id_cliente"));
+                          ?>
+                          <tr>
+                            <td><?php echo $aux; ?></td>
+                            <td><?php echo $pago['id_pago']; ?></td>
+                            <td><?php echo $cliente['nombre']; ?></td>
+                            <td><?php echo $pago['tipo']; ?></td>
+                            <td><?php echo $pago['descripcion']; ?></td>
+                            <td><?php echo $pago['fecha'].' '.$pago['hora']; ?></td>
+                            <td>$<?php echo sprintf('%.2f', $pago['cantidad']); ?></td>
+                          </tr>
+                          <?php 
+                          $Total += $pago['cantidad'];
+                        }
+                        ?>
+                      </tbody>
+                    </table>
+                    <h6 class="right"><b>TOTAL EFECTIVO . $<?php echo sprintf('%.2f', $Total); ?> </b></h6><br>
+                  <?php 
+                  }
+                  ?>
+                </div>
+              </li> 
+              <li>
+                <div class="collapsible-header">
+                  <i class="material-icons">credit_card</i>
+                  A BANCO
+                  <span class="new badge pink" data-badge-caption="pago(s)"><?php echo $Banco_w; ?></span>
+                </div>
+                <div class="collapsible-body">
+                  <?php 
+                  if ($Banco_w > 0) {
+                  ?>
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>N°</th>
+                          <th>Cliente</th>
+                          <th>Tipo</th>
+                          <th>Descripción</th>
+                          <th>Fecha y Hora</th>
+                          <th>Cantidad</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <?php 
+                        $aux = 0;
+                        $Total = 0;
+                        while ($pago = mysqli_fetch_array($sql_banco)) {
+                          $aux ++;
+                          $id_cliente = $pago['id_cliente'];
+                          $cliente = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `clientes` WHERE id = $id_cliente"));
+                          ?>
+                          <tr>
+                            <td><?php echo $aux; ?></td>
+                            <td><?php echo $pago['id_pago']; ?></td>
+                            <td><?php echo $cliente['nombre']; ?></td>
+                            <td><?php echo $pago['tipo']; ?></td>
+                            <td><?php echo $pago['descripcion']; ?></td>
+                            <td><?php echo $pago['fecha'].' '.$pago['hora']; ?></td>
+                            <td>$<?php echo sprintf('%.2f', $pago['cantidad']); ?></td>
+                          </tr>
+                          <?php 
+                          $Total += $pago['cantidad'];
+                        }
+                        ?>
+                      </tbody>
+                    </table>
+                    <h6 class="right"><b>TOTAL A BANCO . $<?php echo sprintf('%.2f', $Total); ?> </b></h6><br>
+                  <?php 
+                  }
+                  ?>
+                </div>
+              </li> 
+              <li>
+                <div class="collapsible-header">
+                  <i class="material-icons">featured_play_list</i>
+                  A CREDITO
+                  <span class="new badge pink" data-badge-caption="pago(s)"><?php echo $Credito_w; ?></span>
+                </div>
+                <div class="collapsible-body">
+                  <?php 
+                  if ($Credito_w > 0) {
+                  ?>
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>N°</th>
+                          <th>Cliente</th>
+                          <th>Tipo</th>
+                          <th>Descripción</th>
+                          <th>Fecha y Hora</th>
+                          <th>Cantidad</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <?php 
+                        $aux = 0;
+                        $Total = 0;
+                        while ($pago = mysqli_fetch_array($sql_credito)) {
+                          $aux ++;
+                          $id_cliente = $pago['id_cliente'];
+                          $cliente = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `clientes` WHERE id = $id_cliente"));
+                          ?>
+                          <tr>
+                            <td><?php echo $aux; ?></td>
+                            <td><?php echo $pago['id_pago']; ?></td>
+                            <td><?php echo $cliente['nombre']; ?></td>
+                            <td><?php echo $pago['tipo']; ?></td>
+                            <td><?php echo $pago['descripcion']; ?></td>
+                            <td><?php echo $pago['fecha'].' '.$pago['hora']; ?></td>
+                            <td>$<?php echo sprintf('%.2f', $pago['cantidad']); ?></td>
+                          </tr>
+                          <?php 
+                          $Total += $pago['cantidad'];
+                        }
+                        ?>
+                      </tbody>
+                    </table>
+                    <h6 class="right"><b>TOTAL A CREDITO . $<?php echo sprintf('%.2f', $Total); ?> </b></h6><br>
+                  <?php 
+                  }
+                  ?>
+                </div>
+              </li>          
+            </ul>
+            <ul class="collection">
+              <li class="collection-item grey"><h6><b> >>> SALIDAS: <span class="new badge red" data-badge-caption="salida(s)"><?php echo $salidas_w; ?></span></b></h6></li>
+            </ul>
+            <?php 
+              if ($salidas_w > 0) {
+                ?>
+                <table>
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>N°</th>
+                        <th>Motivo</th>
+                        <th>Fecha y Hora</th>
+                        <th>Cantidad</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <?php 
+                      $aux = 0;
+                      $Total = 0;
+                      while ($salida = mysqli_fetch_array($sql_salidas)) {  
+                        $aux ++;
+                        ?>
+                        <tr>
+                          <td><?php echo $aux; ?></td>
+                          <td><?php echo $salida['id']; ?></td>
+                          <td><?php echo $salida['motivo']; ?></td>
+                          <td><?php echo $salida['fecha'].' '.$salida['hora']; ?></td>
+                          <td>$<?php echo sprintf('%.2f', $salida['cantidad']); ?></td>
+                        </tr>
+                        <?php 
+                        $Total += $salida['cantidad'];
+                      }?>
+                    </tbody>
+                </table>
+                <h6 class="right"><b>TOTAL SALIDAS . $<?php echo sprintf('%.2f', $Total); ?> </b></h6><br>
+                <?php 
+              }
+            if ($cortes_w > 0) {
+            ?>
+              <ul class="collection">
+                <li class="collection-item grey"><h6><b> >>> CORTES: <span class="new badge red" data-badge-caption="corte(s)"><?php echo $cortes_w; ?></span></b></h6></li>
+              </ul>
+                <table>
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>N°</th>
+                        <th>Usuario</th>
+                        <th>Fecha y Hora</th>
+                        <th>Entradas</th>
+                        <th>Salidas</th>
+                        <th>Banco</th>
+                        <th>Credito</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <?php 
+                      $aux = 0;
+                      while ($corte = mysqli_fetch_array($sql_cortes)) {  
+                        $id = $corte['usuario'];
+                        $user = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `users` WHERE user_id = $id"));
+                        $aux ++;
+                        ?>
+                        <tr>
+                          <td><?php echo $aux; ?></td>
+                          <td><?php echo $corte['id_corte']; ?></td>
+                          <td><?php echo $user['firstname']; ?></td>
+                          <td><?php echo $corte['fecha'].' '.$corte['hora']; ?></td>
+                          <td>$<?php echo sprintf('%.2f', $corte['entradas']); ?></td>
+                          <td>$<?php echo sprintf('%.2f', $corte['salidas']); ?></td>
+                          <td>$<?php echo sprintf('%.2f', $corte['banco']); ?></td>
+                          <td>$<?php echo sprintf('%.2f', $corte['credito']); ?></td>
+                        </tr>
+                        <?php 
+                      }?>
+                    </tbody>
+                </table>
+                <?php 
+              }
+            ?>
+          </div> 
+        </div>         
+      </div>      
+    </div>
+  </body>
+  </main>
+  </html>
+<?php
+}// FIN else POST
+?>
