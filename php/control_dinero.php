@@ -31,6 +31,16 @@ switch ($Accion) {
 			if(mysqli_query($conn, $sql)){
 				echo '<script >M.toast({html:"La salida se dió de alta satisfactoriamente.", classes: "rounded"})</script>';	
 				echo '<script>en_caja()</script>';// REDIRECCIONAMOS (FUNCION ESTA EN ARCHIVO modals.php)
+				$ultimo =  mysqli_fetch_array(mysqli_query($conn, "SELECT MAX(id) AS id FROM salidas WHERE usuario = $id_user"));            
+        		$id = $ultimo['id'];
+				?>
+	            <script>	                
+	                var a = document.createElement("a");
+	                    a.target = "_blank";
+	                    a.href = "../php/ticket_salida.php?id="+<?php echo $id; ?>;
+	                    a.click();
+	            </script>
+	            <?php    
 			}else{
 				echo '<script >M.toast({html:"Ocurrio un error...", classes: "rounded"})</script>';	
 			}//FIN else DE ERROR
