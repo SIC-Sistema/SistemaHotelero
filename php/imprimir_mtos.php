@@ -44,7 +44,7 @@ $pdf=new PDF('P','mm','letter', true);
 $pdf->SetAutoPageBreak(true, 35);
 $pdf->AliasNbPages();
 $pdf->SetMargins(15, 35, 10);
-$pdf->setTitle(utf8_decode('San Roman | Limpieza '));// TITULO BARRA NAVEGACION
+$pdf->setTitle(utf8_decode('San Roman | Mantenimientos '));// TITULO BARRA NAVEGACION
 $pdf->AddPage('portrait', 'letter');
 
 $pdf->SetFont('Helvetica','B', 12);
@@ -85,7 +85,7 @@ $pdf->SetY($pdf->GetY()+6);
 ////   TABLA A MOSTRAR    //////
 $pdf->SetTextColor(255, 255, 255);
 $pdf->SetFont('Helvetica', 'B', 13);
-$pdf->MultiCell(0,11,utf8_decode('Actividades:'),0,'C',1);
+$pdf->MultiCell(0,11,utf8_decode('MANTENIMIENTOS:'),0,'C',1);
 $pdf->SetY($pdf->GetY());
 $pdf->SetTextColor(0, 0, 0);
 $pdf->SetFont('Helvetica', 'B', 12);
@@ -107,7 +107,7 @@ $aux = 1;
 //AQUÍ SE MUESTRA EL CONTENIDO DE LA TABLA ------->
 
 //VARIABLE $actividade PARA TRAER TODO EL CONTENIDO DE LA TABLA DEL ALMACEN DEL USUARIO
-$Actividades = mysqli_query($conn,"SELECT * FROM `limpieza` WHERE estatus = 0");
+$Actividades = mysqli_query($conn,"SELECT * FROM `mantenimientos` WHERE estatus = 0");
 
 // SOLO RECORRE LAS Actividades DE LIMPIEZA
 while($actividad = mysqli_fetch_array($Actividades)){ 

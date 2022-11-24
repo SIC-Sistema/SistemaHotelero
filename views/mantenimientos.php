@@ -96,6 +96,7 @@
           </div>
         </form>
       </div>
+      <a href="../php/imprimir_mtos.php" target="blank" class="waves-effect waves-light btn grey darken-4 right"><i class="material-icons left">picture_as_pdf</i>Imprimir</a>
       <!--    //////    TABLA QUE MUESTRA LA INFORMACION DE LOS CLIENTES    ///////   -->
       <div class="row">
         <table class="bordered highlight responsive-table">
