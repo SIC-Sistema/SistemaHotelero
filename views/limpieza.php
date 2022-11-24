@@ -8,13 +8,14 @@
     <title>San Roman | Limpieza</title>
     <script>
       //FUNCION QUE BORRA EL CLIENTES (SE ACTIVA AL INICIAR EL BOTON BORRAR)
-      function update_limpieza(id){
+      function update_limpieza(id, habitacion){
         var answer = confirm("Deseas terminar limpieza de la habitación N°"+id+"?");
         if (answer) {
           //MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO EN LA DIRECCION "../php/control_habitaciones.php"
           $.post("../php/control_habitaciones.php", { 
             //Cada valor se separa por una ,
               id: id,
+              habitacion: habitacion,
               accion: 10,
           }, function(mensaje) {
             //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "control_habitaciones.php"
@@ -105,7 +106,7 @@
                     <td><?php echo $limpar['fecha']; ?></td>
                     <td><?php echo $user['firstname']; ?></td>
                     <td><?php echo ($limpar['estatus'] == 0)? '<span class="new badge red" data-badge-caption="Pendiente"></span>': ''; ?></td>
-                    <td><a onclick="modal_limpieza_edit(<?php echo $limpar['id']; ?>)" class="btn-small green waves-effect waves-light tooltipped" data-position="bottom" data-tooltip="Editar"><i class="material-icons">edit</i></a>   <a onclick="update_limpieza(<?php echo $limpar['id']; ?>)" class="btn-small grey darken-4 waves-effect waves-light tooltipped" data-position="bottom" data-tooltip="Limpieza Realizada"><i class="material-icons">photo_filter</i></a></td>
+                    <td><a onclick="modal_limpieza_edit(<?php echo $limpar['id']; ?>)" class="btn-small green waves-effect waves-light tooltipped" data-position="bottom" data-tooltip="Editar"><i class="material-icons">edit</i></a>   <a onclick="update_limpieza(<?php echo $limpar['id']; ?>, <?php echo $habitacion['id']; ?>)" class="btn-small grey darken-4 waves-effect waves-light tooltipped" data-position="bottom" data-tooltip="Limpieza Realizada"><i class="material-icons">photo_filter</i></a></td>
                 </tr>
                 <?php
                 }//FIN while

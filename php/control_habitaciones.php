@@ -269,19 +269,28 @@ switch ($Accion) {
         }else{
              echo '<script >M.toast({html:"Ha ocurrido un error...", classes: "rounded"})</script>'; 
         }
+        break;
     case 10:///////////////           IMPORTANTE               ///////////////
         // $Accion es igual a 10 realiza:
 
         //CON POST RECIBIMOS TODAS LAS VARIABLES DEL FORMULARIO QUE NESECITAMOS PARA ACTUALIZAR
         $id = $conn->real_escape_string($_POST['id']);     
+        $habitacion = $conn->real_escape_string($_POST['habitacion']);     
+        //VERIFICAMOS SI HAY UNA RESERVACIION DE LA HABITACION OCUPADA Y PONEMOS  estatus  = 1 SI NO CAMBIAMOS LA HABITACION A ESTATUS estatus = 0
+         if (mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `reservaciones` WHERE id_habitacion = $habitacion AND estatus = 1"))>0) {
+            mysqli_query($conn, "UPDATE `habitaciones` SET estatus = 1 WHERE id = '$habitacion'");
 
+        }else{
+            mysqli_query($conn, "UPDATE `habitaciones` SET estatus = 0 WHERE id = '$habitacion'");
+        }
         $sql = "UPDATE `limpieza` SET  estatus = 1 WHERE id = $id";
         if (mysqli_query($conn, $sql)) {
-            echo '<script>M.toast({html:"Reporte actualizado correctamente", classes: "rounded"})</script>';
+            echo '<script>M.toast({html:"Reporte terminado correctamente", classes: "rounded"})</script>';
             echo '<script>recargar_limpieza()</script>';// REDIRECCIONAMOS (FUNCION ESTA EN ARCHIVO modals.php)
         }else{
              echo '<script >M.toast({html:"Ha ocurrido un error...", classes: "rounded"})</script>'; 
         }
+        break;
 }// FIN switch
 mysqli_close($conn);
     
