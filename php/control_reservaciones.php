@@ -1,3 +1,5 @@
+
+
 <?php
 //ARCHIVO QUE CONTIENE LA VARIABLE CON LA CONEXION A LA BASE DE DATOS
 include('../php/conexion.php');
@@ -258,7 +260,7 @@ switch ($Accion) {
         		$anticipo = $conn->real_escape_string($_POST['valorAnticipo']);
 
         		//VERIFICAMOS QUE NO HALLA UNA RESERVACION CON LOS MISMOS DATOS
-				if(mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `reservaciones` WHERE (id_cliente = $cliente AND id_habitacion = $habitacion AND fecha_entrada = '$Entrada' AND fecha_salida = '$Salida')"))>0){
+				if(mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `reservaciones` WHERE (id_cliente = $cliente AND id_habitacion = $habitacion AND fecha_entrada = '$Entrada' AND fecha_salida = '$Salida') AND estatus != 3"))>0){
 			 		echo '<script >M.toast({html:"Ya se encuentra una reservacion con los mismos datos registrados.", classes: "rounded"})</script>';
 			 	}else{
 			 		// SI NO HAY NUNGUNO IGUAL CREAMOS LA SENTECIA SQL  CON LA INFORMACION REQUERIDA Y LA ASIGNAMOS A UNA VARIABLE
