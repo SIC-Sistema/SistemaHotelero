@@ -129,8 +129,6 @@
 			        msj = "Por favor ingrese un Email.";
 			      }else if (!validar_email(textoEmail)) {
 			        msj = "Por favor ingrese un Email correcto.";
-			      }else if(textoDireccion == ""){
-			       	msj = 'El campo Dirección se encuentra vacío.';
 			      }else{
 			      	clienteEntra = false;
 			      }
