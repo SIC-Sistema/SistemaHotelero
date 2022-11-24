@@ -224,7 +224,7 @@ switch ($Accion) {
         $estatus = $conn->real_escape_string($_POST['estatus']);
         $solucion = $conn->real_escape_string($_POST['solucion']);
 
-        $sql = "UPDATE `mantenimientos` SET  estatus = $estatus, solucion = '$solucion' WHERE id = $id_mto";
+        $sql = "UPDATE `mantenimientos` SET  estatus = $estatus, solucion = '$solucion', fecha_atendio = '$Fecha_hoy', atendio = '$id_user' WHERE id = $id_mto";
         if (mysqli_query($conn, $sql)) {
             echo '<script>M.toast({html:"Mantenimineto actualizado correctamente", classes: "rounded"})</script>';
             echo '<script>recargar_mantenimientos()</script>';// REDIRECCIONAMOS (FUNCION ESTA EN ARCHIVO modals.php)
