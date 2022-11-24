@@ -277,8 +277,8 @@
 		              <span class="title"><b>DETALLES DE HABITACION</b></span><br><br>
 		              <div class="col s12"><br>
 		              		<b class="indigo-text col s12 m5"><br>HABITACION: </b>
-		              		<div class="col s12 m6">
-					            <select id="habitacion" name="habitacion" class="validate" onchange="mostrarHabitacion();">              
+		              		<div class="col s12 m6"><br>
+					            <select id="habitacion" name="habitacion" class=" browser-default validate" onchange="mostrarHabitacion();">              
 					              <!--OPTION PARA QUE LA SELECCION QUEDE POR DEFECTO-->
 					              <?php
 			              			if (isset($_POST['habitacion'])){
@@ -305,7 +305,7 @@
 					        </div>
 		              </div>
 		              <div class="row" id="infoHabitacion"><b>		              	
-		              	<div class="col s12"><br><br>
+		              	<div class="col s12"><br>
 		              		<b class="indigo-text col s12 m5">ESTADO: </b>		              		
 		              	</div>      
 		              	<div class="col s12"><br>
