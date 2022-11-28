@@ -680,7 +680,7 @@ switch ($Accion) {
         $Salida = $conn->real_escape_string($_POST['salida']);// CON EL METODO POST RESIBIMOS LA NUEVA FECHA SALIDA
         $dias = (strtotime($Salida) - strtotime($Entrada)) / 86400;
 
-          // CALCULAMOS EL COSTO SEGUN EL PRECIO DE LA HABITACION POR DIA Y LOS DIAS DE ESTANCIA
+        // CALCULAMOS EL COSTO SEGUN EL PRECIO DE LA HABITACION POR DIA Y LOS DIAS DE ESTANCIA
         $id_habitacion = $reservacion['id_habitacion'];
         $habitacion = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `habitaciones` WHERE id=$id_habitacion"));
         $total = $dias*$habitacion['precio'];
