@@ -13,7 +13,6 @@ $Hora = date('H:i:s');
 
 //CON METODO POST TOMAMOS UN VALOR DEL 0 AL 12 PARA VER QUE ACCION HACER (busca Habit = 0, busca cliente = 1, muestra cliente = 2, insert reservacion = 3, busca check-in = 4, cancelar reservacion = 5, insert nota = 6, buscar cuentas = 7, update nota = 8, borrar nota = 9, busca check-out = 10, realiza check-in = 11, realiza check-out = 12)
 $Accion = $conn->real_escape_string($_POST['accion']);
-
 //UN SWITCH EL CUAL DECIDIRA QUE ACCION REALIZA DEL CRUD (busca Habit = 0, busca cliente = 1, muestra cliente = 2, insert reservacion = 3, busca check-in = 4, cancelar reservacion = 5, insert nota = 6, buscar cuentas = 7, update nota = 8, borrar nota = 9, busca check-out = 10, realiza check-in = 11, realiza check-out = 12)
 //echo "hola aqui estoy";
 switch ($Accion) {
@@ -667,6 +666,40 @@ switch ($Accion) {
 			echo '<script>checkout()</script>';// REDIRECCIONAMOS (FUNCION ESTA EN ARCHIVO modals.php)
 		}else{
 			echo '<script >M.toast({html:"Ocurrio un error en check-out...", classes: "rounded"})</script>';	
+		}//FIN else DE ERROR			
+    	break;
+    case 13:///////////////           IMPORTANTE               ///////////////
+        // $Accion es igual a 13 realiza:
+
+    	//CON POST RECIBIMOS EL ID DE LA RESERVACION  "detalles_habitacion.php" o"detalles_cliente.php"
+        $id = $conn->real_escape_string($_POST['id']);
+        $reservacion = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `reservaciones` WHERE id=$id"));
+
+        //SACAREMOS LOS DIAS DE LA ESTANCIA CON LA DIFERENCIA ENTRE FECHAS
+        $Entrada = $reservacion['fecha_entrada'];// SACAMOS LA ENTRADA DE LA RESERVACION SELECCIONADA
+        $Salida = $conn->real_escape_string($_POST['salida']);// CON EL METODO POST RESIBIMOS LA NUEVA FECHA SALIDA
+        $dias = (strtotime($Salida) - strtotime($Entrada)) / 86400;
+
+          // CALCULAMOS EL COSTO SEGUN EL PRECIO DE LA HABITACION POR DIA Y LOS DIAS DE ESTANCIA
+        $id_habitacion = $reservacion['id_habitacion'];
+        $habitacion = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `habitaciones` WHERE id=$id_habitacion"));
+        $total = $dias*$habitacion['precio'];
+
+		//CREAMO LA SENTENCIA SQL PARA HACER LA ACTUALIZACION DE LA INFORMACION DE LA RESERVACION
+		$sql = "UPDATE `reservaciones` SET fecha_salida = '$Salida', total = '$total' WHERE id = '$id'";
+		//VERIFICAMOS QUE LA SENTECIA FUE EJECUTADA CON EXITO!
+		if(mysqli_query($conn, $sql)){		
+			echo '<script >M.toast({html:"Fecha actualizada con exito.", classes: "rounded"})</script>';
+        	$Ruta = $conn->real_escape_string($_POST['ruta']);// A DONDE SE DIRIGIRA
+			?>
+			<script>
+				var a = document.createElement("a");
+					a.href = "../views/"+<?php echo $Ruta; ?>;
+					a.click();
+			</script>
+			<?php	
+		}else{
+			echo '<script >M.toast({html:"Ocurrio un error ...", classes: "rounded"})</script>';	
 		}//FIN else DE ERROR			
     	break;
 }// FIN switch

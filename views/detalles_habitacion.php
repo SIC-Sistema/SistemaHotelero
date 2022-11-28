@@ -107,6 +107,33 @@
 	          });//FIN post
         }//FIN else
       }
+      //FUNCION QUE MUESTRA EL MODAL HACER CHECK OUT
+      function modal_salida(id){
+          //MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO EN LA DIRECCION "modal_salida.php" PARA MOSTRAR EL MODAL
+          $.post("modal_salida.php", {
+            //Cada valor se separa por una ,
+              id:id,
+            }, function(mensaje){
+                //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "modal_salida.php"
+                $("#modal").html(mensaje);
+          });//FIN post
+      }//FIN function
+      //FUNCION QUE MUESTRA EL MODAL HACER CHECK OUT
+	      function update_fecha_salida(id){
+          var FechaSalida = $("input#fecha_salida").val();
+
+	          //MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO EN LA DIRECCION "../php/control_reservaciones.php" PARA MOSTRAR EL MODAL
+	          $.post("../php/control_reservaciones.php", {
+	            //Cada valor se separa por una ,
+	              id:id,
+	              salida: FechaSalida,
+	              ruta: 'detalles_habitacion.php?id='+<?php echo $id; ?>,
+	              accion: 13,
+	            }, function(mensaje){
+	                //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "../php/control_reservaciones.php"
+	                $("#modal").html(mensaje);
+	          });//FIN post
+	      }//FIN function
 	</script>
 </head>
 <body>
@@ -192,6 +219,7 @@
 			              <th>Estatus</th>
 			              <th>Registro</th>
 			              <th>Fecha Registro</th>
+			              <th>Accion</th>
 	                </tr>
 	              </thead>
 	              <tbody>
@@ -226,6 +254,7 @@
 											    <td><?php echo $estatus; ?></td>
 											    <td><?php echo $user['firstname']; ?></td>
 											    <td><?php echo $reservacion['fecha_registro']; ?></td>
+											    <td><a onclick="modal_salida(<?php echo $reservacion['id']; ?>)" class="btn-small blue waves-effect waves-light tooltipped" data-position="bottom" data-tooltip="Cambiar Salida"><i class="material-icons prefix">exit_to_app</i></a></td>
 											</tr>
 											<?php
 									    }//FIN while
