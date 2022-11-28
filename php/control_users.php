@@ -131,9 +131,10 @@ switch ($Accion) {
     	$Facturar = $conn->real_escape_string($_POST["Facturar"]);
     	$Reportes = $conn->real_escape_string($_POST["Reportes"]);
     	$Cancelar = $conn->real_escape_string($_POST["Cancelar"]);
+    	$Cortes = $conn->real_escape_string($_POST["Cortes"]);
     	$Area = $conn->real_escape_string($_POST["Area"]);
     	//CREAMOS LA SENTENCIA SQL PARA HACER LA ACTUALIZACION DE LOS PERMISOS DEL USUARIO Y LA GUARDAMOS EN UNA VARIABLE
-		$sql = "UPDATE users SET area='$Area', usuarios='$Usuario', clientes='$Clientes', habitaciones='$Habitaciones', reportes='$Reportes', borrar='$Borrar', cancelar='$Cancelar', facturar='$Facturar' WHERE user_id='$id'";
+		$sql = "UPDATE users SET area='$Area', usuarios='$Usuario', clientes='$Clientes', habitaciones='$Habitaciones', reportes='$Reportes', borrar='$Borrar', cancelar='$Cancelar', facturar='$Facturar', cortes = '$Cortes' WHERE user_id='$id'";
 		//VERIFICAMOS QUE SE EJECUTE LA SENTENCIA EN MYSQL 
 		if(mysqli_query($conn, $sql)){
 			echo '<script>M.toast({html:"Permisos actualizados correctamente.", classes: "rounded"})</script>';

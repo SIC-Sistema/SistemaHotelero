@@ -47,6 +47,9 @@ if (isset($_POST['id']) == false) {
           if(document.getElementById('cancelar').checked==true){
             Cancelar = 1;
           }else { Cancelar = 0; }
+          if(document.getElementById('cortes').checked==true){
+            Cortes = 1;
+          }else { Cortes = 0; }
 
             //MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO NE LA DIRECCION "../php/control_users.php"
             $.post("../php/control_users.php", { 
@@ -60,6 +63,7 @@ if (isset($_POST['id']) == false) {
                 Facturar: Facturar,               
                 Reportes: Reportes,               
                 Cancelar: Cancelar,               
+                Cortes: Cortes,               
                 Area: textoArea,               
             }, function(mensaje) {
               //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "control_users.php"
@@ -175,6 +179,15 @@ if (isset($_POST['id']) == false) {
                 </label>
               </p>
             </div>  
+            <div class="col s6 m3 l3">
+              <p>
+                <br>
+                <label>
+                  <input  type="checkbox" <?php echo ($datos['cortes']  == 1)?"checked":"";?> id="cortes"/>
+                  <span for="cortes">Cortes</span>
+                </label>
+              </p>
+            </div> 
         </div>
           
         <!--BOTON DE GURARDAR PERMISOS-->
