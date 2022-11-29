@@ -37,8 +37,6 @@
         M.toast({html:"Por favor ingrese un Email.", classes: "rounded"});
       }else if (!validar_email(textoEmail)) {
         M.toast({html:"Por favor ingrese un Email correcto.", classes: "rounded"});
-      }else if(textoRFC.length < 12){
-        M.toast({html: 'El RFC tiene que tener al menos 12 dijitos.', classes: 'rounded'});
       }else{
         //SI LOS IF NO SE CUMPLEN QUIERE DECIR QUE LA INFORMACION CUENTA CON TODO LO REQUERIDO
         //MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO NE LA DIRECCION "../php/control_clientes.php"
