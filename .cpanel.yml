@@ -1,4 +1,0 @@
-deployment:
-  tasks:
-    - export DEPLOYPATH=/home1/hotels10/public_html/
-    - /bin/cp -R /home1/hotels10/public_html/Sistema $DEPLOYPATH

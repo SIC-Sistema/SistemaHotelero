@@ -34,6 +34,7 @@ $check_out = mysqli_fetch_array(mysqli_query($conn,"SELECT count(*) FROM `reserv
 				<li><a class='dropdown-button' data-target='dropdown1'><i class="material-icons left">input</i><b>Recepción</b> <span class="new badge pink" data-badge-caption=""><?php echo $check_in['count(*)']+$check_out['count(*)'];?></span><i class="material-icons right">arrow_drop_down</i></a></li>
 				<ul id='dropdown1' class='dropdown-content'>
 					<li><a href = "reservacion.php" class="black-text"><i class="material-icons">date_range</i>Reservar </a></li>
+				    <li><a href = "empresas.php" class="black-text"><i class="material-icons">location_city</i>Empresas </a></li>
 				    <li><a href = "clientes.php" class="black-text"><i class="material-icons">people</i>Clientes </a></li>
 					<li><a href = "habitaciones.php" class="black-text"><i class="material-icons">hotel</i>Habitaciones </a></li>
 				    <li><a href = "check_in.php" class="black-text"><i class="material-icons">assignment_turned_in</i>Check In <span class="new badge pink" data-badge-caption=""><?php echo $check_in['count(*)'];?></span></a></li>
@@ -90,6 +91,7 @@ $check_out = mysqli_fetch_array(mysqli_query($conn,"SELECT count(*) FROM `reserv
 		      		    <span>
 		      			  <ul>
 							<li><a href = "reservacion.php"><i class="material-icons">date_range</i>Reservar </a></li>
+				    		<li><a href = "empresas.php"><i class="material-icons">location_city</i>Empresas </a></li>
 						    <li><a href = "clientes.php"><i class="material-icons">people</i>Clientes </a></li>
 							<li><a href = "habitaciones.php"><i class="material-icons">hotel</i>Habitaciones </a></li>
 						    <li><a href = "check_in.php"><i class="material-icons">assignment_turned_in</i>Check In <span class="new badge pink" data-badge-caption=""><?php echo $check_in['count(*)'];?></span></a></li>

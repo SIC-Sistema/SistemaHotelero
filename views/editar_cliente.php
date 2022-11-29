@@ -18,6 +18,12 @@ if (isset($_POST['id']) == false) {
     $id = $_POST['id'];// POR EL METODO POST RECIBIMOS EL ID DEL CLIENTE
     //REALIZAMOS LA CONSULTA PARA SACAR LA INFORMACION DEL CLIENTE Y ASIGNAMOS EL ARRAY A UNA VARIABLE $datos
     $datos = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `clientes` WHERE id=$id"));
+    $id_empresa = $datos['empresa'];
+    if ($id_empresa == 0) {
+      $emp['razon_social'] = 'N/A';
+    }else{
+      $emp = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `empresas` WHERE id=$id_empresa"));
+    }
     ?>
     <script>
       //FUNCION QUE AL USAR VALIDA LA VARIABLE QUE LLEVE UN FORMATO DE CORREO 
@@ -31,7 +37,7 @@ if (isset($_POST['id']) == false) {
 
         //PRIMERO VAMOS Y BUSCAMOS EN ESTE MISMO ARCHIVO LA INFORMCION REQUERIDA Y LA ASIGNAMOS A UNA VARIABLE
         var textoNombre = $("input#nombre").val();//ej:LA VARIABLE "textoNombre" GUARDAREMOS LA INFORMACION QUE ESTE EN EL INPUT QUE TENGA EL id = "nombre"
-        var textoTelefono = $("input#telefono").val();// ej: TRAE LE INFORMACION DEL INPUT FILA  (id="telefono")
+        var textoTelefono = $("input#telefono").val();// ej: TRAE LE INFORMACION DEL INPUT FILA 95 (id="telefono")
         var textoEmail = $("input#email").val();
         var textoRFC = $("input#rfc").val();
         var textoDireccion = $("input#direccion").val();
@@ -39,6 +45,7 @@ if (isset($_POST['id']) == false) {
         var textoLocalidad = $("input#localidad").val();
         var textoCP = $("input#cp").val();
         var textoLimpieza = $("input#limpieza").val();
+        var textoEmpresa = $("select#empresa").val();
 
         // CREAMOS CONDICIONES QUE SI SE CUMPLEN MANDARA MENSAJES DE ALERTA EN FORMA DE TOAST
         //SI SE CUMPLEN LOS IF QUIERE DECIR QUE NO PASA LOS REQUISITOS MINIMOS DE LLENADO...
@@ -50,23 +57,12 @@ if (isset($_POST['id']) == false) {
           M.toast({html:"Por favor ingrese un Email.", classes: "rounded"});
         }else if (!validar_email(textoEmail)) {
           M.toast({html:"Por favor ingrese un Email correcto.", classes: "rounded"});
-        }else if(textoRFC.length < 12){
-          M.toast({html: 'El RFC tiene que tener al menos 12 dijitos.', classes: 'rounded'});
-        }else if(textoDireccion == ""){
-          M.toast({html: 'El campo Dirección se encuentra vacío.', classes: 'rounded'});
-        }else if(textoColonia == ""){
-          M.toast({html: 'El campo Colonia se encuentra vacío.', classes: 'rounded'});
-        }else if(textoLocalidad == ""){
-          M.toast({html: 'El campo Localidad se encuentra vacío.', classes: 'rounded'});
-        }else if(textoCP == ""){
-          M.toast({html: 'El campo Codigo Postal se encuentra vacío.', classes: 'rounded'});
         }else{
           //SI LOS IF NO SE CUMPLEN QUIERE DECIR QUE LA INFORMACION CUENTA CON TODO LO REQUERIDO
           //MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO NE LA DIRECCION "../php/control_clientes.php"
           $.post("../php/control_clientes.php", {
             //Cada valor se separa por una ,
               accion: 2,
-              id: id,
               valorNombre: textoNombre,
               valorTelefono: textoTelefono,
               valorEmail: textoEmail,
@@ -76,6 +72,8 @@ if (isset($_POST['id']) == false) {
               valorLocalidad: textoLocalidad,
               valorCP: textoCP,
               valorLimpieza: textoLimpieza,
+              valorEmpresa: textoEmpresa,
+              id: id,
             }, function(mensaje) {
                 //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "control_clientes.php"
                 $("#resultado_update").html(mensaje);
@@ -150,6 +148,28 @@ if (isset($_POST['id']) == false) {
               <i class="material-icons prefix">location_on</i>
               <input id="cp" type="number" class="validate" data-length="6" required value="<?php echo $datos['cp']; ?>">
               <label for="cp">Codigo Postal:</label>
+            </div>
+            <div class="input-field">
+              <select id="empresa" name="empresa" class="browser-default">              
+                <!--OPTION PARA QUE LA SELECCION QUEDE POR DEFECTO-->
+                <option value="<?php echo $id_empresa; ?>" select>N° <?php echo $id_empresa.' - '.$emp['razon_social'];?>:</option>
+                <option value="0">N/A</option>
+                <?php
+                  $consulta = mysqli_query($conn,"SELECT * FROM empresas"); 
+                    //VERIFICAMOS QUE LA VARIABLE SI CONTENGA INFORMACION
+                    if (mysqli_num_rows($consulta) == 0) {
+                      echo '<script>M.toast({html:"No se encontraron empresas.", classes: "rounded"})</script>';
+                    } else {
+                       //RECORREMOS UNO A UNO LOS ARTICULOS CON EL WHILE
+                       while($empresa = mysqli_fetch_array($consulta)) {
+                        //Output
+                        ?>
+                          <option value="<?php echo $empresa['id'];?>">N° <?php echo $empresa['id'].' - '.$empresa['razon_social'];?></option>
+                        <?php
+                     }//FIN while
+                  }//FIN else
+                ?>
+              </select>
             </div>
           </div>
         </form>

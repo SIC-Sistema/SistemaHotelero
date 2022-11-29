@@ -32,6 +32,9 @@
   function recargar_limpieza() {
     setTimeout("location.href='limpieza.php'", 800);
   }
+  function recargar_empresas() {
+    setTimeout("location.href='../views/empresas.php'", 800);
+  }
 </script>
 
 <!--Modal cortes-->

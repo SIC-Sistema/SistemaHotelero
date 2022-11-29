@@ -26,14 +26,15 @@ switch ($Accion) {
 		$Localidad = $conn->real_escape_string($_POST['valorLocalidad']);
 		$CP = $conn->real_escape_string($_POST['valorCP']);
 		$Limpieza = $conn->real_escape_string($_POST['valorLimpieza']);
+		$Empresa = $conn->real_escape_string($_POST['valorEmpresa']);
 
 		//VERIFICAMOS QUE NO HALLA UN CLIENTE CON LOS MISMOS DATOS
 		if(mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `clientes` WHERE(nombre='$Nombre' AND direccion='$Direccion' AND colonia='$Colonia' AND cp='$CP') OR rfc='$RFC' OR email='$Email'"))>0){
 	 		echo '<script >M.toast({html:"Ya se encuentra un cliente con los mismos datos registrados.", classes: "rounded"})</script>';
 	 	}else{
 	 		// SI NO HAY NUNGUNO IGUAL CREAMOS LA SENTECIA SQL  CON LA INFORMACION REQUERIDA Y LA ASIGNAMOS A UNA VARIABLE
-	 		$sql = "INSERT INTO `clientes` (nombre, telefono, direccion, colonia, cp, rfc, email, localidad, limpieza, usuario, fecha) 
-				VALUES('$Nombre', '$Telefono', '$Direccion', '$Colonia', '$CP', '$RFC', '$Email', '$Localidad', '$Limpieza', '$id_user','$Fecha_hoy')";
+	 		$sql = "INSERT INTO `clientes` (nombre, telefono, direccion, colonia, cp, rfc, email, localidad, limpieza, usuario, fecha, empresa) 
+				VALUES('$Nombre', '$Telefono', '$Direccion', '$Colonia', '$CP', '$RFC', '$Email', '$Localidad', '$Limpieza', '$id_user','$Fecha_hoy','$Empresa')";
 			//VERIFICAMOS QUE LA SENTECIA FUE EJECUTADA CON EXITO!
 			if(mysqli_query($conn, $sql)){
 				echo '<script >M.toast({html:"El cliente se dió de alta satisfactoriamente.", classes: "rounded"})</script>';	
@@ -52,11 +53,25 @@ switch ($Accion) {
 
     	//VERIFICAMOS SI CONTIENE ALGO DE TEXTO LA VARIABLE
 		if ($Texto != "") {
-			//MOSTRARA LOS CLIENTES QUE SE ESTAN BUSCANDO Y GUARDAMOS LA CONSULTA SQL EN UNA VARIABLE $sql......
-			$sql = "SELECT * FROM `clientes` WHERE  nombre LIKE '%$Texto%' OR id = '$Texto' OR rfc LIKE '%$Texto%' OR colonia LIKE '%$Texto%' OR localidad LIKE '%$Texto%' ORDER BY id";	
+			$Emp = explode("-", $Texto);
+			if (count($Emp)>1) {			//PRIMERO VERA SI ESTAMOS BUSCANDO UNA EMPRESA EN ESTE IF Y MOSTRARA TODOS LOS CLIENTES DE ESA EMPRESA
+				$razon = $Emp[1];
+				$consulta = mysqli_query($conn, "SELECT * FROM empresas WHERE razon_social LIKE '%$razon%' LIMIT 1");
+				if (mysqli_num_rows($consulta) == 0) {
+					echo '<script>M.toast({html: "No se encontraron empresas.", classes: "rounded"})</script>';
+					$sql = "SELECT * FROM users WHERE user_id = 20000000";
+				}else{
+					$empresa = mysqli_fetch_array($consulta);
+					$id_empresa = $empresa['id'];
+					$sql = "SELECT * FROM clientes WHERE empresa = '$id_empresa'  ORDER BY id_cliente";
+				}
+			}else{
+				//MOSTRARA LOS CLIENTES QUE SE ESTAN BUSCANDO Y GUARDAMOS LA CONSULTA SQL EN UNA VARIABLE $sql......
+				$sql = "SELECT * FROM `clientes` WHERE  nombre LIKE '%$Texto%' OR id = '$Texto' OR rfc LIKE '%$Texto%' ORDER BY id";
+			}				
 		}else{
 			//ESTA CONSULTA SE HARA SIEMPRE QUE NO ALLA NADA EN EL BUSCADOR Y GUARDAMOS LA CONSULTA SQL EN UNA VARIABLE $sql...
-			$sql = "SELECT * FROM `clientes` limit 50";
+			$sql = "SELECT * FROM `clientes` limit 150";
 		}//FIN else $Texto VACIO O NO
 
 		// REALIZAMOS LA CONSULTA A LA BASE DE DATOS MYSQL Y GUARDAMOS EN FORMARTO ARRAY EN UNA VARIABLE $consulta
@@ -65,8 +80,7 @@ switch ($Accion) {
 
 		//VERIFICAMOS QUE LA VARIABLE SI CONTENGA INFORMACION
 		if (mysqli_num_rows($consulta) == 0) {
-				echo '<script>M.toast({html:"No se encontraron clientes.", classes: "rounded"})</script>';
-			
+			echo '<script>M.toast({html:"No se encontraron clientes.", classes: "rounded"})</script>';			
 		} else {
 			//SI NO ESTA EN == 0 SI TIENE INFORMACION
 			//La variable $resultado contiene el array que se genera en la consulta, así que obtenemos los datos y los mostramos en un bucle
@@ -74,6 +88,12 @@ switch ($Accion) {
 			while($cliente = mysqli_fetch_array($consulta)) {
 				$id_user = $cliente['usuario'];
 				$user = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `users` WHERE user_id=$id_user"));
+				$id_empresa = $cliente['empresa'];
+				if ($id_empresa == 0) {
+					$empresa['razon_social'] = 'N/A';
+				}else{
+					$empresa = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `empresas` WHERE id=$id_empresa"));
+				}
 				//Output
 				$contenido .= '			
 		          <tr>
@@ -82,6 +102,7 @@ switch ($Accion) {
 		            <td>'.$cliente['telefono'].'</td>
 		            <td>'.$cliente['rfc'].'</td>
 		            <td>'.$cliente['email'].'</td>
+		            <td>'.$empresa['razon_social'].'</td>
 		            <td>'.$user['firstname'].'</td>
 		            <td>'.$cliente['fecha'].'</td>
 		            <td><form method="post" action="../views/reservacion.php"><input id="cliente" name="cliente" type="hidden" value="'.$cliente['id'].'"><button class="btn-small green waves-effect waves-light"><i class="material-icons">event</i></button></form> </td>
@@ -114,13 +135,14 @@ switch ($Accion) {
 			$Localidad = $conn->real_escape_string($_POST['valorLocalidad']);
 			$CP = $conn->real_escape_string($_POST['valorCP']);
 			$Limpieza = $conn->real_escape_string($_POST['valorLimpieza']);
+			$Empresa = $conn->real_escape_string($_POST['valorEmpresa']);
 
 			//VERIFICAMOS QUE NO HALLA UN CLIENTE CON LOS MISMOS DATOS
-			if(mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `clientes` WHERE (telefono = '$Telefono' OR rfc='$RFC' OR email='$Email') AND id != $id"))>0){
+			if(mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `clientes` WHERE (telefono = '$Telefono' OR email='$Email') AND id != $id"))>0){
 		 		echo '<script >M.toast({html:"El RFC, Telefono o Email ya se encuentra registrados en la BD.", classes: "rounded"})</script>';
 		 	}else{
 				//CREAMO LA SENTENCIA SQL PARA HACER LA ACTUALIZACION DE LA INFORMACION DEL CLIENTE Y LA GUARDAMOS EN UNA VARIABLE
-				$sql = "UPDATE `clientes` SET nombre = '$Nombre', telefono = '$Telefono', email = '$Email', rfc = '$RFC', direccion = '$Direccion', colonia = '$Colonia', localidad = '$Localidad', cp = '$CP', limpieza = '$Limpieza' WHERE id = '$id'";
+				$sql = "UPDATE `clientes` SET nombre = '$Nombre', telefono = '$Telefono', email = '$Email', rfc = '$RFC', direccion = '$Direccion', colonia = '$Colonia', localidad = '$Localidad', cp = '$CP', limpieza = '$Limpieza', empresa = '$Empresa' WHERE id = '$id'";
 				//VERIFICAMOS QUE LA SENTECIA FUE EJECUTADA CON EXITO!
 				if(mysqli_query($conn, $sql)){
 					echo '<script >M.toast({html:"El cliente se actualizo con exito.", classes: "rounded"})</script>';	

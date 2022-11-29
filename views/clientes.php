@@ -56,7 +56,7 @@
             <div class="input-field col s12">
               <i class="material-icons prefix">search</i>
               <input id="busqueda" name="busqueda" type="text" class="validate" onkeyup="buscar_clientes();">
-              <label for="busqueda">Buscar(N° Cliente, Nombre, RFC, Colonia, Localidad)</label>
+              <label for="busqueda">Buscar(N° Cliente, Nombre, RFC, E-Razon Social)</label>
             </div>
           </div>
         </form>
@@ -71,6 +71,7 @@
               <th>Telefono</th>
               <th>RFC</th>
               <th>E-mail</th>
+              <th>Empresa</th>
               <th>Registro</th>
               <th>Fecha</th>
               <th>Reserv.</th>
