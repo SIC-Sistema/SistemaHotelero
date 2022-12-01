@@ -6,11 +6,20 @@
   include('fredyNav.php');
   ?>
   <script>
+     function showContent() {
+          element2 = document.getElementById("content2");
+          if (document.getElementById('bancoA').checked==true) {
+              element2.style.display='block';
+          } else {
+              element2.style.display='none';
+          }    
+      };
     //FUNCION QUE ENVIA LA INFORMACION PARA INSERTAR EL ABONO
     function insert_abono(){    
       var textoCantidad = $("input#cantidad").val();
       var textoDescripcion = $("input#descripcion").val();
       var textoIdCliente = $("input#id_cliente").val();
+      var referenciaB = $("input#referenciaB").val();
 
       if(document.getElementById('bancoA').checked==true){
         textoTipo_Campio = "Banco";
@@ -22,11 +31,14 @@
         M.toast({html:"El campo Cantidad se encuentra vacío o en 0.", classes: "rounded"});
       }else if (textoDescripcion == "") {
         M.toast({html:"El campo Descripción esta vacio.", classes: "rounded"});
+      }else if ((document.getElementById('bancoA').checked==true) && referenciaB == "") {
+        M.toast({html: 'Los pagos en banco deben de llevar una referencia.', classes: 'rounded'});
       }else{
         //MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO EN LA DIRECCION "../php/control_dinero.php"
         $.post("../php/control_dinero.php", { 
           //Cada valor se separa por una ,
             valorTipo_Campio: textoTipo_Campio,
+            referenciaB: referenciaB,
             valorCantidad: textoCantidad,
             valorDescripcion: textoDescripcion,
             valorIdCliente: textoIdCliente,
@@ -118,7 +130,7 @@ $user_id = $_SESSION['user_id'];
             <label for="cantidad">Cantidad:</label>
           </div>
         </div>
-        <div class="row col s12 m7 l6">
+        <div class="row col s12 m7 l5">
           <div class="input-field">
             <i class="material-icons prefix">description</i>
             <input id="descripcion" type="text" class="validate" data-length="100" required>
@@ -129,10 +141,16 @@ $user_id = $_SESSION['user_id'];
           <p>
             <br>
             <label>
-              <input type="checkbox" id="bancoA" />
+              <input type="checkbox" id="bancoA" onchange="javascript:showContent()"/>
               <span for="bancoA">Banco</span>
             </label>
           </p>
+        </div>
+        <div class="col s6 m2 " id="content2" style="display: none;">
+          <div class="input-field">
+              <input id="referenciaB" type="text" class="validate" required>
+              <label for="referenciaB">Referencia:</label>
+          </div>
         </div>
         <input id="id_cliente" value="<?php echo htmlentities($id_cte);?>" type="hidden">
       </form>

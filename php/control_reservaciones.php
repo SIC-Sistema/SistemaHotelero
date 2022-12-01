@@ -290,6 +290,10 @@ switch ($Accion) {
 					        if(mysqli_query($conn, $sql)){
 					        	$ultimo =  mysqli_fetch_array(mysqli_query($conn, "SELECT MAX(id_pago) AS id FROM pagos WHERE id_cliente = $cliente AND id_user = $id_user"));            
         						$id_pago = $ultimo['id'];
+        						if ($tipo_cambio == 'Banco') {
+        							$ReferenciaB = $conn->real_escape_string($_POST['referenciaB']);
+        							mysqli_query($conn,  "INSERT INTO referencias (id_pago, descripcion) VALUES ('$id_pago', '$ReferenciaB')");
+        						}
 					        	echo '<script>M.toast({html:"El pago se dió de alta satisfcatoriamente.", classes: "rounded"})</script>';
 					        	?>
 							    <script>
@@ -593,6 +597,10 @@ switch ($Accion) {
 					    mysqli_query($conn, "UPDATE `reservaciones` SET anticipo = anticipo+$Abono WHERE id = '$id'");
 					    $ultimo =  mysqli_fetch_array(mysqli_query($conn, "SELECT MAX(id_pago) AS id FROM pagos WHERE id_cliente = $cliente AND id_user = $id_user"));            
         				$id_pago = $ultimo['id'];
+        				if ($tipo_cambio == 'Banco') {
+        					$ReferenciaB = $conn->real_escape_string($_POST['referenciaB']);
+        					mysqli_query($conn,  "INSERT INTO referencias (id_pago, descripcion) VALUES ('$id_pago', '$ReferenciaB')");
+        				}
 					    echo '<script>M.toast({html:"El pago se dió de alta satisfcatoriamente.", classes: "rounded"})</script>';
 					    ?>
 						<script>
@@ -652,6 +660,10 @@ switch ($Accion) {
 				if(mysqli_query($conn, $sql)){
 					$ultimo =  mysqli_fetch_array(mysqli_query($conn, "SELECT MAX(id_pago) AS id FROM pagos WHERE id_cliente = $cliente"));            
         			$id_pago = $ultimo['id'];
+        			if ($tipo_cambio == 'Banco') {
+        				$ReferenciaB = $conn->real_escape_string($_POST['referenciaB']);
+        				mysqli_query($conn,  "INSERT INTO referencias (id_pago, descripcion) VALUES ('$id_pago', '$ReferenciaB')");
+        			}
 					echo '<script>M.toast({html:"El pago se dió de alta satisfcatoriamente.", classes: "rounded"})</script>';
 					?>
 					<script>

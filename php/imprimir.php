@@ -89,7 +89,7 @@ class PDF extends FPDF{
     $pdf->SetFont('Helvetica','', 9);
     $pdf->MultiCell(35,3,utf8_decode($pago['descripcion']),0,'L',0);
     $pdf->SetY($pdf->GetY()-3);
-    $pdf->SetX(40);
+    $pdf->SetX(40);        
     $pdf->MultiCell(14,3,utf8_decode($pago['tipo_cambio']),0,'R',0);    
     $pdf->SetY($pdf->GetY()-3);
     $pdf->SetX(55);
@@ -97,9 +97,17 @@ class PDF extends FPDF{
 
     $id_user = $pago['id_user'];// ID DEL USUARIO AL QUE SE LE APLICO EL CORTE
     
+   
+    $pdf->SetFont('Helvetica','', 8);
+    if ($pago['tipo_cambio'] == 'Banco') {
+        $referencia = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM referencias WHERE id_pago = $id_pago")); 
+        $ReferenciaB = $referencia['descripcion'];
+        $pdf->SetY($pdf->GetY()+1);
+        $pdf->SetX(25);
+        $pdf->MultiCell(35,3,utf8_decode($ReferenciaB),0,'R',0);
+    }
     $pdf->SetY($pdf->GetY()+2);
     $pdf->SetX(5);
-    $pdf->SetFont('Helvetica','', 8);
     $pdf->MultiCell(70,3,utf8_decode('------------------------------------------------------------------------'),0,'L',0);
    
     

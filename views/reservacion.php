@@ -10,6 +10,18 @@
     $User = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `users` WHERE user_id = $id_user"));
     ?>
     <script>
+    	function showContent() {
+	        element1 = document.getElementById("content1");
+	        element2 = document.getElementById("content2");
+	        if (document.getElementById('bancoR').checked==true) {
+	            element1.style.display='none';
+	            element2.style.display='block';
+	        }
+	        else {
+	            element1.style.display='block';
+	            element2.style.display='none';
+	        }    
+	    };
     	//FUNCION QUE BUCARA EN LA BASE DE DATOS CLIENTES CON EL MISMO NOMBRE MOSTRARA Y DARA A ELEGIR
     	function buscarClientes() {
       		var texto = $("input#nombreCliente").val();
@@ -99,6 +111,7 @@
     		var Observacion = $("input#observacionR").val();
     		var Total = $("input#total").val();
     		var Anticipo = $("input#anticipoR").val();
+    		var referenciaB = $("input#referenciaB").val();
 
     		if(document.getElementById('bancoR').checked==true){
 	            tipo_cambio = 'Banco';
@@ -148,7 +161,9 @@
 		        M.toast({html:"Por favor seleccione una Fecha de Entrada.", classes: "rounded"});
 	        }else if (fechaSalida == '') {
 		        M.toast({html:"Por favor seleccione una Fecha de Salida.", classes: "rounded"});
-	        }else if(Total <= 0){
+	        }else if ((document.getElementById('bancoR').checked==true) && referenciaB == "") {
+              M.toast({html: 'Los pagos en banco deben de llevar una referencia.', classes: 'rounded'});
+          	}else if(Total <= 0){
 		        M.toast({html:"El total no es valido o aceptado.", classes: "rounded"});
 	        }else{
 	        	//SI LOS IF NO SE CUMPLEN QUIERE DECIR QUE LA INFORMACION CUENTA CON TODO LO REQUERIDO
@@ -157,6 +172,7 @@
 		          //Cada valor se separa por una ,
 		            accion: 3,
 		            valorNombre: textoNombre,
+		            referenciaB: referenciaB,
 		            valorTelefono: textoTelefono,
 		            valorEmail: textoEmail,
 		            valorRFC: textoRFC,
@@ -367,12 +383,12 @@
               <p>
                 <br>
                 <label>
-                  <input type="checkbox" id="bancoR" />
+                  <input type="checkbox" id="bancoR" onchange="javascript:showContent()"/>
                   <span for="bancoR">Banco</span>
                 </label>
               </p>
             </div>
-            <div class="col s6 m2 l2">
+            <div class="col s6 m2 l2" id="content1" style="display: block;">
               <p>
                 <br>
                 <label>
@@ -381,6 +397,12 @@
                 </label>
               </p>
             </div>
+            <div class="col s6 m2 l2" id="content2" style="display: none;">
+		    	<div class="input-field">
+		            <input id="referenciaB" type="text" class="validate" required>
+		            <label for="referenciaB">Referencia:</label>
+		        </div>
+		    </div>
 		</div>
 		<!-- BOTON QUE MANDA LLAMAR EL SCRIPT PARA QUE EL SCRIPT HAGA LO QUE LA FUNCION CONTENGA -->
       <a onclick="insert_reservacion();" class="waves-effect waves-light btn grey darken-4 right"><i class="material-icons right">add</i>Registrar</a><br><br><br><br>

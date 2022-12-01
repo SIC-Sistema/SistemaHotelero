@@ -155,13 +155,20 @@ switch ($Accion) {
 		$Cantidad = $conn->real_escape_string($_POST['valorCantidad']);
 		$Descripcion = $conn->real_escape_string($_POST['valorDescripcion']);
 		$IdCliente = $conn->real_escape_string($_POST['valorIdCliente']);
-    	//SE VERIFICA SI EL USUARIO LOGEADO TIENE PERMISO DE EDITAR CLIENTES
+    	//SE VERIFICA QUE NO HALLA UN PAGOO CON LOS MISMOS VALORES
     	if(mysqli_num_rows(mysqli_query($conn, "SELECT * FROM pagos WHERE id_cliente = $IdCliente AND descripcion = '$Descripcion' AND cantidad='$Cantidad' AND fecha='$Fecha_hoy'"))>0){
 			echo '<script>M.toast({html:"Ya se encuentra un abono registrado con los mismos valores el día de hoy.", classes: "rounded"})</script>';
 		}else{ 
 			//INSERTAMOS EL PAGO TIPO ABONO CREDITO
 			$sql = "INSERT INTO pagos (id_cliente, cantidad, fecha, hora, descripcion , tipo_cambio, id_user, tipo, corte) VALUES ($IdCliente, '$Cantidad', '$Fecha_hoy', '$Hora', '$Descripcion', '$Tipo_Campio', '$id_user', 'Abono Credito', 0)";
 			if(mysqli_query($conn, $sql)){
+				$ultimo =  mysqli_fetch_array(mysqli_query($conn, "SELECT MAX(id_pago) AS id FROM pagos WHERE id_cliente = $IdCliente"));            
+        		$id_pago = $ultimo['id'];
+        		if ($Tipo_Campio == 'Banco') {
+        			$ReferenciaB = $conn->real_escape_string($_POST['referenciaB']);
+        			echo $id_pago.' '.$ReferenciaB;
+        			mysqli_query($conn,  "INSERT INTO referencias (id_pago, descripcion) VALUES ('$id_pago', '$ReferenciaB')");
+        		}
 				$Deuda_check = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM deudas WHERE id_cliente = $IdCliente AND liquidada=0 limit 1"));
      
 			    // SACAMOS LA SUMA DE TODAS LAS DEUDAS QUE ESTAN LIQUIDADDAS Y TODOS LOS ABONOS ....

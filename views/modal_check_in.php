@@ -52,18 +52,25 @@ $estatus = ($reservacion['estatus'] == 0)? '<span class="new badge green" data-b
               <p>
                 <br>
                 <label>
-                  <input type="checkbox" id="bancoR" />
+                  <input type="checkbox" id="bancoR"  onchange="javascript:showContent()"/>
                   <span for="bancoR">Banco</span>
                 </label>
               </p>
             </div>
-            <div class="col s6 m2">
+            <div class="col s6 m2 l2" id="content1" style="display: block;">
               <p>
+                <br>
                 <label>
                   <input type="checkbox" id="creditoR" />
                   <span for="creditoR">Credito</span>
                 </label>
               </p>
+            </div>
+            <div class="col s6 m2 l2" id="content2" style="display: none;">
+              <div class="input-field">
+                  <input id="referenciaB" type="text" class="validate" required>
+                  <label for="referenciaB">Referencia:</label>
+              </div>
             </div>
 	        <div>
 		        <a onclick="check_in(<?php echo $reservacion['id'] ?>);" class="btn waves-effect waves-light grey darken-4 right">Check-in<i class="material-icons left">exit_to_app</i></a>

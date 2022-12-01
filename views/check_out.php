@@ -7,6 +7,17 @@
     ?>
     <title>San Roman | Check-out</title>
     <script>
+      function showContent() {
+          element1 = document.getElementById("content1");
+          element2 = document.getElementById("content2");
+          if (document.getElementById('bancoR').checked==true) {
+              element1.style.display='none';
+              element2.style.display='block';
+          }  else {
+              element1.style.display='block';
+              element2.style.display='none';
+          }    
+      };
       //FUNCION QUE HACE LA BUSQUEDA DE CLIENTES (SE ACTIVA AL INICIAR EL ARCHIVO O AL ECRIBIR ALGO EN EL BUSCADOR)
       function buscar_reservaciones(){
         //PRIMERO VAMOS Y BUSCAMOS EN ESTE MISMO ARCHIVO EL TEXTO REQUERIDA Y LA ASIGNAMOS A UNA VARIABLE
@@ -27,6 +38,7 @@
         var answer = confirm("Deseas realizar Check-out a la reservacion N°"+id+"?");
         if (answer) {
           var textoLiquidacion = $("input#liquidacionR").val();
+          var referenciaB = $("input#referenciaB").val();
 
           if(document.getElementById('bancoR').checked==true){
               tipo_cambio = 'Banco';
@@ -35,17 +47,22 @@
           }else{
               tipo_cambio = 'Efectivo';
           }
-          //MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO EN LA DIRECCION "../php/control_reservaciones.php"
-          $.post("../php/control_reservaciones.php", { 
-            //Cada valor se separa por una ,
-              id: id,
-              liquidacion: textoLiquidacion,
-              tipo_cambio: tipo_cambio,
-              accion: 12,
-          }, function(mensaje) {
-            //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "control_reservaciones.php"
-            $("#modal").html(mensaje);
-          }); //FIN post
+          if ((document.getElementById('bancoR').checked==true) && referenciaB == "") {
+              M.toast({html: 'Los pagos en banco deben de llevar una referencia.', classes: 'rounded'});
+          }else {
+            //MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO EN LA DIRECCION "../php/control_reservaciones.php"
+            $.post("../php/control_reservaciones.php", { 
+              //Cada valor se separa por una ,
+                id: id,
+                referenciaB: referenciaB,
+                liquidacion: textoLiquidacion,
+                tipo_cambio: tipo_cambio,
+                accion: 12,
+            }, function(mensaje) {
+              //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "control_reservaciones.php"
+              $("#modal").html(mensaje);
+            }); //FIN post
+          }//FIN ELSE
         }//FIN IF
       };//FIN function
 
