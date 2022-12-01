@@ -241,7 +241,7 @@ switch ($Accion) {
         $id_cliente = $reservacion['id_cliente'];
         $cliente = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `clientes` WHERE id = $id_cliente"));
         $Descripcion = $limpieza.' ('.$cliente['limpieza'].')';
-        if (mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `habitaciones` WHERE estatus = 2"))>0) {
+        if (mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `habitaciones` WHERE estatus = 2 and id = $id_habitacion"))>0) {
             echo '<script>M.toast({html:"La habitacion se encuentra en limpieza", classes: "rounded"})</script>';
         }else{
             if (mysqli_query($conn, "INSERT INTO `limpieza` (id_habitacion, descripcion, fecha, usuario) 
@@ -279,7 +279,6 @@ switch ($Accion) {
         //VERIFICAMOS SI HAY UNA RESERVACIION DE LA HABITACION OCUPADA Y PONEMOS  estatus  = 1 SI NO CAMBIAMOS LA HABITACION A ESTATUS estatus = 0
          if (mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `reservaciones` WHERE id_habitacion = $habitacion AND estatus = 1"))>0) {
             mysqli_query($conn, "UPDATE `habitaciones` SET estatus = 1 WHERE id = '$habitacion'");
-
         }else{
             mysqli_query($conn, "UPDATE `habitaciones` SET estatus = 0 WHERE id = '$habitacion'");
         }

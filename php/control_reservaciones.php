@@ -677,16 +677,18 @@ switch ($Accion) {
 
         //SACAREMOS LOS DIAS DE LA ESTANCIA CON LA DIFERENCIA ENTRE FECHAS
         $Entrada = $reservacion['fecha_entrada'];// SACAMOS LA ENTRADA DE LA RESERVACION SELECCIONADA
-        $Salida = $conn->real_escape_string($_POST['salida']);// CON EL METODO POST RESIBIMOS LA NUEVA FECHA SALIDA
-        $dias = (strtotime($Salida) - strtotime($Entrada)) / 86400;
-
+        $SalidaOld = $reservacion['fecha_salida'];// SACAMOS LA SALIDA DE LA RESERVACION SELECCIONADA
+        $SalidaN = $conn->real_escape_string($_POST['salida']);// CON EL METODO POST RESIBIMOS LA NUEVA FECHA SALIDA
+        $diasOld = (strtotime($SalidaOld) - strtotime($Entrada)) / 86400;
+        $diasNuevos = (strtotime($SalidaN) - strtotime($Entrada)) / 86400;
+        $PrecioXDia = $reservacion['total']/$diasOld;
         // CALCULAMOS EL COSTO SEGUN EL PRECIO DE LA HABITACION POR DIA Y LOS DIAS DE ESTANCIA
         $id_habitacion = $reservacion['id_habitacion'];
         $habitacion = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `habitaciones` WHERE id=$id_habitacion"));
-        $total = $dias*$habitacion['precio'];
-
+        $total = $diasNuevos*$PrecioXDia;
+        echo $PrecioXDia.' - '.$diasNuevos. ' - '.$total;
 		//CREAMO LA SENTENCIA SQL PARA HACER LA ACTUALIZACION DE LA INFORMACION DE LA RESERVACION
-		$sql = "UPDATE `reservaciones` SET fecha_salida = '$Salida', total = '$total' WHERE id = '$id'";
+		$sql = "UPDATE `reservaciones` SET fecha_salida = '$SalidaN', total = '$total' WHERE id = '$id'";
 		//VERIFICAMOS QUE LA SENTECIA FUE EJECUTADA CON EXITO!
 		if(mysqli_query($conn, $sql)){		
 			echo '<script >M.toast({html:"Fecha actualizada con exito.", classes: "rounded"})</script>';
