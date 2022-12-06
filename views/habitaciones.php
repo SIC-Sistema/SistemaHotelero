@@ -4,6 +4,9 @@
     <?php
     //INCLUIMOS EL ARCHIVO QUE CONTIENE LA BARRA DE NAVEGACION TAMBIEN TIENE (scripts, conexion, is_logged, modals)
     include('fredyNav.php');
+    //DEFINIMOS LA ZONA  HORARIA
+    date_default_timezone_set('America/Mexico_City');
+    $Fecha_hoy = date('Y-m-d');// FECHA ACTUAL
     ?>
     <title>San Roman | Habitaciones</title>
   </head>
@@ -24,7 +27,13 @@
         echo '<h4>No se encontraron habitaciones.</h4>';
       } else {
         while ($Habitacion = mysqli_fetch_array($habitaciones)) {
-          if ($Habitacion['estatus'] == 1) {
+          $id_habitacion = $Habitacion['id'];
+          $habitacion = (mysqli_query($conn, "SELECT * FROM `reservaciones` WHERE id_habitacion=$id_habitacion AND fecha_entrada = '$Fecha_hoy' AND estatus = 0"));            
+          if ($Habitacion['estatus'] == 0 AND mysqli_num_rows($habitacion) > 0) {
+            $color = 'amber';
+            $icono = 'directions_walk';
+            $estatus = 'Reservacion Hoy';
+          }else if ($Habitacion['estatus'] == 1) {
             $color = 'red';
             $icono = 'hotel';
             $estatus = 'Ocupada';
