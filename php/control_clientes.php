@@ -80,7 +80,7 @@ switch ($Accion) {
 
 		//VERIFICAMOS QUE LA VARIABLE SI CONTENGA INFORMACION
 		if (mysqli_num_rows($consulta) == 0) {
-			echo '<script>M.toast({html:"No se encontraron clientes.", classes: "rounded"})</script>';			
+			echo '<script>M.toast({html:"No se encontraron clientes.", classes: "rounded"})</script>';
 		} else {
 			//SI NO ESTA EN == 0 SI TIENE INFORMACION
 			//La variable $resultado contiene el array que se genera en la consulta, así que obtenemos los datos y los mostramos en un bucle
