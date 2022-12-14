@@ -21,7 +21,7 @@ switch ($Accion) {
 		$Direccion = $conn->real_escape_string($_POST['valorDireccion']);
 		$CP = $conn->real_escape_string($_POST['valorCP']);
 
-		//VERIFICAMOS QUE NO HALLA UN CLIENTE CON LOS MISMOS DATOS
+		//VERIFICAMOS QUE NO HALLA UN EMPRESA CON LOS MISMOS DATOS
 		if(mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `empresas` WHERE razon_social='$RazonSocial' AND rfc='$RFC'"))>0){
 	 		echo '<script >M.toast({html:"Ya se encuentra una empresa con los mismos datos registrados.", classes: "rounded"})</script>';
 	 	}else{
@@ -35,7 +35,7 @@ switch ($Accion) {
 			}else{
 				echo '<script >M.toast({html:"Ocurrio un error...", classes: "rounded"})</script>';	
 			}//FIN else DE ERROR
-	 	}// FIN else DE BUSCAR CLIENTE IGUAL
+	 	}// FIN else DE BUSCAR EMPRESA IGUAL
 
         break;
     case 1:///////////////           IMPORTANTE               ///////////////
@@ -96,7 +96,7 @@ switch ($Accion) {
 		$Direccion = $conn->real_escape_string($_POST['valorDireccion']);
 		$CP = $conn->real_escape_string($_POST['valorCP']);
 
-		//CREAMO LA SENTENCIA SQL PARA HACER LA ACTUALIZACION DE LA INFORMACION DEL CLIENTE Y LA GUARDAMOS EN UNA VARIABLE
+		//CREAMO LA SENTENCIA SQL PARA HACER LA ACTUALIZACION DE LA INFORMACION DE LA EMPRESA Y LA GUARDAMOS EN UNA VARIABLE
 		$sql = "UPDATE `empresas` SET razon_social = '$RazonSocial', rfc = '$RFC', direccion = '$Direccion', cp = '$CP' WHERE id = '$id'";
 		//VERIFICAMOS QUE LA SENTECIA FUE EJECUTADA CON EXITO!
 		if(mysqli_query($conn, $sql)){
@@ -108,11 +108,11 @@ switch ($Accion) {
         break;
     case 3:
         // $Accion es igual a 3 realiza:
-    	//CON POST RECIBIMOS LA VARIABLE DEL BOTON POR EL SCRIPT DE "clientes.php" QUE NESECITAMOS PARA BORRAR
+    	//CON POST RECIBIMOS LA VARIABLE DEL BOTON POR EL SCRIPT DE "empresas.php" QUE NESECITAMOS PARA BORRAR
     	$id = $conn->real_escape_string($_POST['id']);
     	
-		//SI DE CREA LA INSERCION PROCEDEMOS A BORRRAR DE LA TABLA `clientes`
-	    #VERIFICAMOS QUE SE BORRE CORRECTAMENTE EL CLIENTE DE `clientes`
+		//SI DE CREA LA INSERCION PROCEDEMOS A BORRRAR DE LA TABLA `empresas`
+	    #VERIFICAMOS QUE SE BORRE CORRECTAMENTE EL CLIENTE DE `empresas`
 		if(mysqli_query($conn, "DELETE FROM `empresas` WHERE `empresas`.`id` = $id")){
 			#SI ES ELIMINADO MANDAR MSJ CON ALERTA
 			echo '<script >M.toast({html:"Empresa borrada con exito.", classes: "rounded"})</script>';

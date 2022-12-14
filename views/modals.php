@@ -17,6 +17,9 @@
   function recargar_usuarios() {
     setTimeout("location.href='usuarios.php'", 800);
   }
+  function recargar_articulo() {
+    setTimeout("location.href='../views/articulos.php'", 800);
+  }
   function home() {
     setTimeout("location.href='home.php'", 1000);
   }

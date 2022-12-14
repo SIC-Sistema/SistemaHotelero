@@ -15,27 +15,26 @@ $Accion = $conn->real_escape_string($_POST['accion']);
 switch ($Accion) {
     case 0:  ///////////////           IMPORTANTE               ///////////////
         // $Accion es igual a 0 realiza:
-    	//CON POST RECIBIMOS TODAS LAS VARIABLES DEL FORMULARIO POR EL SCRIPT "add_empresa.php" QUE NESECITAMOS PARA INSERTAR
-    	$RazonSocial = $conn->real_escape_string($_POST['valorRazonSocial']);
-		$RFC = $conn->real_escape_string($_POST['valorRFC']);
-		$Direccion = $conn->real_escape_string($_POST['valorDireccion']);
-		$CP = $conn->real_escape_string($_POST['valorCP']);
+    	//CON POST RECIBIMOS TODAS LAS VARIABLES DEL FORMULARIO POR EL SCRIPT "add_articulo.php" QUE NESECITAMOS PARA INSERTAR
+    	$Nombre = $conn->real_escape_string($_POST['valorNombre']);
+		$Codigo = $conn->real_escape_string($_POST['valorCodigo']);
+		$Unidad = $conn->real_escape_string($_POST['valorUnidad']);
 
-		//VERIFICAMOS QUE NO HALLA UN CLIENTE CON LOS MISMOS DATOS
-		if(mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `empresas` WHERE razon_social='$RazonSocial' AND rfc='$RFC'"))>0){
-	 		echo '<script >M.toast({html:"Ya se encuentra una empresa con los mismos datos registrados.", classes: "rounded"})</script>';
+		//VERIFICAMOS QUE NO HALLA UN ARTICULO CON LOS MISMOS DATOS
+		if(mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `articulos` WHERE codigo='$Codigo' AND nombre='$Nombre'"))>0){
+	 		echo '<script >M.toast({html:"Ya se encuentra un articulo con los mismos datos registrados.", classes: "rounded"})</script>';
 	 	}else{
 	 		// SI NO HAY NUNGUNO IGUAL CREAMOS LA SENTECIA SQL  CON LA INFORMACION REQUERIDA Y LA ASIGNAMOS A UNA VARIABLE
-	 		$sql = "INSERT INTO `empresas` (razon_social, direccion, cp, rfc, usuario, fecha) 
-				VALUES('$RazonSocial', '$Direccion', '$CP', '$RFC', '$id_user','$Fecha_hoy')";
+	 		$sql = "INSERT INTO `articulos` (codigo, nombre, unidad,  usuario, fecha) 
+				VALUES('$Codigo', '$Nombre', '$Unidad', '$id_user','$Fecha_hoy')";
 			//VERIFICAMOS QUE LA SENTECIA FUE EJECUTADA CON EXITO!
 			if(mysqli_query($conn, $sql)){
-				echo '<script >M.toast({html:"La empresa se dió de alta satisfactoriamente.", classes: "rounded"})</script>';	
-				echo '<script>recargar_empresas()</script>';// REDIRECCIONAMOS (FUNCION ESTA EN ARCHIVO modals.php)
+				echo '<script >M.toast({html:"El articulo se dió de alta satisfactoriamente.", classes: "rounded"})</script>';	
+				echo '<script>recargar_articulo()</script>';// REDIRECCIONAMOS (FUNCION ESTA EN ARCHIVO modals.php)
 			}else{
 				echo '<script >M.toast({html:"Ocurrio un error...", classes: "rounded"})</script>';	
 			}//FIN else DE ERROR
-	 	}// FIN else DE BUSCAR CLIENTE IGUAL
+	 	}// FIN else DE BUSCAR ARTICULO IGUAL
 
         break;
     case 1:///////////////           IMPORTANTE               ///////////////
@@ -77,7 +76,6 @@ switch ($Accion) {
 		            <td>'.$articulo['fecha'].'</td>
 		            <td><form method="post" action="../views/editar_articulo.php"><input id="id" name="id" type="hidden" value="'.$articulo['id'].'"><button class="btn-small waves-effect waves-light grey darken-3"><i class="material-icons">edit</i></button></form></td>
 		            <td><a onclick="borrar_articulo('.$articulo['id'].')" class="btn-small red waves-effect waves-light"><i class="material-icons">delete</i></a></td>
-
 		          </tr>';
 			}//FIN while
 		}//FIN else
@@ -86,34 +84,33 @@ switch ($Accion) {
     case 2:///////////////           IMPORTANTE               ///////////////
         // $Accion es igual a 2 realiza:
 
-	    //CON POST RECIBIMOS TODAS LAS VARIABLES DEL FORMULARIO POR EL SCRIPT "add_empresa.php" QUE NESECITAMOS PARA ACTUALIZAR
+	    //CON POST RECIBIMOS TODAS LAS VARIABLES DEL FORMULARIO POR EL SCRIPT "editar_articulo.php" QUE NESECITAMOS PARA ACTUALIZAR
     	$id = $conn->real_escape_string($_POST['id']);
-    	$RazonSocial = $conn->real_escape_string($_POST['valorRazonSocial']);
-		$RFC = $conn->real_escape_string($_POST['valorRFC']);
-		$Direccion = $conn->real_escape_string($_POST['valorDireccion']);
-		$CP = $conn->real_escape_string($_POST['valorCP']);
+    	$Nombre = $conn->real_escape_string($_POST['valorNombre']);
+		$Codigo = $conn->real_escape_string($_POST['valorCodigo']);
+		$Unidad = $conn->real_escape_string($_POST['valorUnidad']);
 
 		//CREAMO LA SENTENCIA SQL PARA HACER LA ACTUALIZACION DE LA INFORMACION DEL CLIENTE Y LA GUARDAMOS EN UNA VARIABLE
-		$sql = "UPDATE `empresas` SET razon_social = '$RazonSocial', rfc = '$RFC', direccion = '$Direccion', cp = '$CP' WHERE id = '$id'";
+		$sql = "UPDATE `articulos` SET codigo = '$Codigo', nombre = '$Nombre', unidad = '$Unidad' WHERE id = '$id'";
 		//VERIFICAMOS QUE LA SENTECIA FUE EJECUTADA CON EXITO!
 		if(mysqli_query($conn, $sql)){
 			echo '<script >M.toast({html:"La empresa se actualizo con exito.", classes: "rounded"})</script>';	
-			echo '<script>recargar_empresas()</script>';// REDIRECCIONAMOS (FUNCION ESTA EN ARCHIVO modals.php)
+			echo '<script>recargar_articulo()</script>';// REDIRECCIONAMOS (FUNCION ESTA EN ARCHIVO modals.php)
 		}else{
 			echo '<script >M.toast({html:"Ocurrio un error...", classes: "rounded"})</script>';	
 		}//FIN else DE ERROR
         break;
     case 3:
         // $Accion es igual a 3 realiza:
-    	//CON POST RECIBIMOS LA VARIABLE DEL BOTON POR EL SCRIPT DE "clientes.php" QUE NESECITAMOS PARA BORRAR
+    	//CON POST RECIBIMOS LA VARIABLE DEL BOTON POR EL SCRIPT DE "articulos.php" QUE NESECITAMOS PARA BORRAR
     	$id = $conn->real_escape_string($_POST['id']);
     	
-		//SI DE CREA LA INSERCION PROCEDEMOS A BORRRAR DE LA TABLA `clientes`
-	    #VERIFICAMOS QUE SE BORRE CORRECTAMENTE EL CLIENTE DE `clientes`
-		if(mysqli_query($conn, "DELETE FROM `empresas` WHERE `empresas`.`id` = $id")){
+		//SI DE CREA LA INSERCION PROCEDEMOS A BORRRAR DE LA TABLA `articulos`
+	    #VERIFICAMOS QUE SE BORRE CORRECTAMENTE EL CLIENTE DE `articulos`
+		if(mysqli_query($conn, "DELETE FROM `articulos` WHERE `articulos`.`id` = $id")){
 			#SI ES ELIMINADO MANDAR MSJ CON ALERTA
-			echo '<script >M.toast({html:"Empresa borrada con exito.", classes: "rounded"})</script>';
-			echo '<script>recargar_empresas()</script>';// REDIRECCIONAMOS (FUNCION ESTA EN ARCHIVO modals.php)
+			echo '<script >M.toast({html:"Articulo borrado con exito.", classes: "rounded"})</script>';
+			echo '<script>recargar_articulo()</script>';// REDIRECCIONAMOS (FUNCION ESTA EN ARCHIVO modals.php)
 		}else{
 			#SI NO ES BORRADO MANDAR UN MSJ CON ALERTA
 			echo "<script >M.toast({html: 'Ha ocurrido un error.', classes: 'rounded'});/script>";

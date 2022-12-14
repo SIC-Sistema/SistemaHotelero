@@ -23,8 +23,8 @@
       };//FIN function
 
       //FUNCION QUE BORRA EL CLIENTES (SE ACTIVA AL INICIAR EL BOTON BORRAR)
-      function borrar_empresa(id){
-        var answer = confirm("Deseas eliminar el empresa N°"+id+"?");
+      function borrar_articulo(id){
+        var answer = confirm("Deseas eliminar el articulo N°"+id+"?");
         if (answer) {
           //MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO EN LA DIRECCION "../php/control_inventario.php"
           $.post("../php/control_inventario.php", { 
@@ -33,19 +33,19 @@
               accion: 3,
           }, function(mensaje) {
             //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "control_inventario.php"
-            $("#borrarEmpresa").html(mensaje);
+            $("#borrar").html(mensaje);
           }); //FIN post
         }//FIN IF
       };//FIN function
     </script>
   </head>
   <main>
-  <body onload="buscar_empresa();">
+  <body onload="buscar_articulos();">
     <div class="container"><br><br>
       <!--    //////    BOTON QUE REDIRECCIONA AL FORMULARIO DE AGREGAR HABITACION    ///////   -->
       <a href="add_articulo.php" class="waves-effect waves-light btn grey darken-3 left right">Agregar Articulo<i class="material-icons prefix left">add</i></a><br><br>
-      <!-- CREAMOS UN DIV EL CUAL TENGA id = "borrarEmpresa"  PARA QUE EN ESTA PARTE NOS MUESTRE LOS RESULTADOS EN TEXTO HTML DEL SCRIPT EN FUNCION  -->
-      <div id="borrarEmpresa"></div>
+      <!-- CREAMOS UN DIV EL CUAL TENGA id = "borrar"  PARA QUE EN ESTA PARTE NOS MUESTRE LOS RESULTADOS EN TEXTO HTML DEL SCRIPT EN FUNCION  -->
+      <div id="borrar"></div>
       <div class="row">
         <!--    //////    TITULO    ///////   -->
         <h3 class="hide-on-med-and-down col s12 m6 l6">Articulos</h3>
