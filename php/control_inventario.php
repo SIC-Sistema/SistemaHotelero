@@ -8,10 +8,10 @@ date_default_timezone_set('America/Mexico_City');
 $id_user = $_SESSION['user_id'];// ID DEL USUARIO LOGEADO
 $Fecha_hoy = date('Y-m-d');// FECHA ACTUAL
 
-//CON METODO POST TOMAMOS UN VALOR DEL 0 AL 3 PARA VER QUE ACCION HACER (Para Insertar = 0, Consultar = 1, Actualizar = 2, Borrar = 3)
+//CON METODO POST TOMAMOS UN VALOR DEL 0 AL 3 PARA VER QUE ACCION HACER (Para Insertar = 0, Consultar articulos = 1, Actualizar = 2, Borrar = 3, consultar inventario = 4)
 $Accion = $conn->real_escape_string($_POST['accion']);
 
-//UN SWITCH EL CUAL DECIDIRA QUE ACCION REALIZA DEL CRUD (Para Insertar = 0, Consultar = 1, Actualizar = 2, Borrar = 3)
+//UN SWITCH EL CUAL DECIDIRA QUE ACCION REALIZA DEL CRUD (Para Insertar = 0, Consultar articulos = 1, Actualizar = 2, Borrar = 3, consultar inventario = 4)
 switch ($Accion) {
     case 0:  ///////////////           IMPORTANTE               ///////////////
         // $Accion es igual a 0 realiza:
@@ -116,5 +116,50 @@ switch ($Accion) {
 			echo "<script >M.toast({html: 'Ha ocurrido un error.', classes: 'rounded'});/script>";
 		}		 
     	break;
+    case 4:
+        // $Accion es igual a 4 realiza:
+    	//CON POST RECIBIMOS UN TEXTO DEL BUSCADOR VACIO O NO DE "articulos.php"
+    	$Texto = $conn->real_escape_string($_POST['texto']);
+
+    	//VERIFICAMOS SI CONTIENE ALGO DE TEXTO LA VARIABLE
+		if ($Texto != "") {			
+			//MOSTRARA LOS ARTICULOS QUE SE ESTAN BUSCANDO Y GUARDAMOS LA CONSULTA SQL EN UNA VARIABLE $sql......
+			$sql = "SELECT * FROM `inventario` WHERE  id_articulo LIKE '%$Texto%' ORDER BY id";				
+		}else{
+			//ESTA CONSULTA SE HARA SIEMPRE QUE NO ALLA NADA EN EL BUSCADOR Y GUARDAMOS LA CONSULTA SQL EN UNA VARIABLE $sql...
+			$sql = "SELECT * FROM `inventario`";
+		}//FIN else $Texto VACIO O NO
+
+		// REALIZAMOS LA CONSULTA A LA BASE DE DATOS MYSQL Y GUARDAMOS EN FORMARTO ARRAY EN UNA VARIABLE $consulta
+		$consulta = mysqli_query($conn, $sql);		
+		$contenido = '';//CREAMOS UNA VARIABLE VACIA PARA IR LLENANDO CON LA INFORMACION EN FORMATO
+
+		//VERIFICAMOS QUE LA VARIABLE SI CONTENGA INFORMACION
+		if (mysqli_num_rows($consulta) == 0) {
+	 		echo '<script >M.toast({html:"No se encontraron articulos.", classes: "rounded"})</script>';
+		} else {
+			//SI NO ESTA EN == 0 SI TIENE INFORMACION
+			//RECORREMOS UNO A UNO LOS ARTICULOS CON EL WHILE	
+			while($articulo = mysqli_fetch_array($consulta)) {
+				$id_user = $articulo['modifico'];
+				$user = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `users` WHERE user_id=$id_user"));
+				$id_articulo = $articulo['id_articulo'];
+				$info_art = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `articulos` WHERE id=$id_articulo"));
+				//Output
+				$contenido .= '			
+		          <tr>
+		            <td>'.$id_articulo.'</td>
+		            <td>'.$info_art['codigo'].'</td>
+		            <td>'.$info_art['nombre'].'</td>
+		            <td>'.$info_art['unidad'].'</td>
+		            <td>'.$articulo['cantidad'].'</td>
+		            <td>'.$user['firstname'].'</td>
+		            <td>'.$articulo['fecha_modifico'].'</td>
+		            <td><form method="post" action=""><input id="id" name="id" type="hidden" value="'.$articulo['id'].'"><button class="btn-small waves-effect waves-light grey darken-3"><i class="material-icons">edit</i></button></form></td>
+		          </tr>';
+			}//FIN while
+		}//FIN else
+		echo $contenido;// MOSTRAMOS LA INFORMACION HTML
+        break;
 }// FIN switch
 mysqli_close($conn);

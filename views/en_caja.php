@@ -16,6 +16,7 @@
   $salidas = mysqli_num_rows($sql_salidas);
   $sql_cortes = mysqli_query($conn,"SELECT * FROM `cortes` WHERE corte = 0 AND realizo = $id_user");
   $cortes = mysqli_num_rows($sql_cortes);
+  
   ?>
 </head>
 <main>
@@ -250,19 +251,17 @@
                   <?php 
                   $aux = 0;
                   while ($corte = mysqli_fetch_array($sql_cortes)) {  
-                    $id = $corte['usuario'];
-                    $user = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `users` WHERE user_id = $id"));
                     $aux ++;
                     ?>
                     <tr>
                       <td><?php echo $aux; ?></td>
                       <td><?php echo $corte['id_corte']; ?></td>
-                      <td><?php echo $user['firstname']; ?></td>
+                      <td><?php echo $corte['usuario']; ?></td>
                       <td><?php echo $corte['fecha'].' '.$corte['hora']; ?></td>
                       <td>$<?php echo sprintf('%.2f', $corte['entradas']); ?></td>
                       <td>$<?php echo sprintf('%.2f', $corte['salidas']); ?></td>
                       <td>$<?php echo sprintf('%.2f', $corte['banco']); ?></td>
-                      <td>$<?php echo sprintf('%.2f', $corte['credito']); ?></td>                      
+                      <td>$<?php echo sprintf('%.2f', $corte['credito']); ?></td>
                     </tr>
                     <?php 
                   }?>
