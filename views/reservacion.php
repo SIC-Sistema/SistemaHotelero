@@ -16,8 +16,7 @@
 	        if (document.getElementById('bancoR').checked==true) {
 	            element1.style.display='none';
 	            element2.style.display='block';
-	        }
-	        else {
+	        } else {
 	            element1.style.display='block';
 	            element2.style.display='none';
 	        }    

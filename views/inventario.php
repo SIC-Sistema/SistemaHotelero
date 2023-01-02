@@ -27,7 +27,7 @@
   <body onload="buscar_articulos();">
     <div class="container"><br><br>
       <!--    //////    BOTON QUE REDIRECCIONA AL FORMULARIO DE AGREGAR HABITACION    ///////   -->
-      <a href="add_articulo.php" class="waves-effect waves-light btn grey darken-3 left right">Agregar Articulos (Compra)<i class="material-icons prefix left">add</i></a><br><br>
+      <a href="ingreso_articulos.php" class="waves-effect waves-light btn grey darken-3 left right">Agregar Articulos (Compra)<i class="material-icons prefix left">add</i></a><br><br>
       <!-- CREAMOS UN DIV EL CUAL TENGA id = "borrar"  PARA QUE EN ESTA PARTE NOS MUESTRE LOS RESULTADOS EN TEXTO HTML DEL SCRIPT EN FUNCION  -->
       <div id="borrar"></div>
       <div class="row">
