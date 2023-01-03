@@ -164,11 +164,10 @@ switch ($Accion) {
     case 5:
     	// $Accion es igual a 5 realiza:
 
-        //CON POST RECIBIMOS UN ID DEL MODAL O AL INICIAR EL DOCUMENTO "add_compra.php"
-        $user_id = $conn->real_escape_string($_POST['id']);
+        //CON POST RECIBIMOS UN ID DEL MODAL O AL INICIAR EL DOCUMENTO "ingreso_articulos.php"
         $insert = $conn->real_escape_string($_POST['insert']);
 
-        //VERIFICAMOS SI CONTIENE ALGO DE TEXTO LA VARIABLE insert = 1
+        //VERIFICAMOS SI CONTIENE ALGO DE TEXTO LA VARIABLE insid_user
         if ($insert) {
             //SE HACE LA INSERCION A TMP
             $id_art = $conn->real_escape_string($_POST['id_art']);
@@ -179,7 +178,7 @@ switch ($Accion) {
                 $articulo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `articulos` WHERE id = $id_art"));
                 //CREAMOS EL SQL PARA INSERTAR
                 $sql = "INSERT INTO `tmp_detalle_compra` (id_articulo, cantidad, usuario) 
-                   VALUES($id_art,'1','$user_id')";
+                   VALUES($id_art,'1','$id_user')";
                 if(mysqli_query($conn, $sql)){
                     echo '<script >M.toast({html:"El articulo se registró exitosamente.", classes: "rounded"})</script>';   
                 }else{
@@ -188,7 +187,7 @@ switch ($Accion) {
             }
         }
         // REALIZAMOS LA CONSULTA A LA BASE DE DATOS Y GUARDAMOS EN FORMARTO ARRAY EN UNA VARIABLE $consulta
-        $consulta = mysqli_query($conn, "SELECT * FROM tmp_detalle_compra WHERE usuario = $user_id");      
+        $consulta = mysqli_query($conn, "SELECT * FROM tmp_detalle_compra WHERE usuario = $id_user");      
         ?>
         <div class="row">
             <div class="hide-on-small-only col s1"><br></div>
@@ -212,7 +211,7 @@ switch ($Accion) {
                         ?>
                         <tr>
                             <td><?php echo $articulo['codigo'] ?></td>
-                            <td><input id="cantidadA<?php echo $id_art; ?>" type="number" class="validate col s6 m4 l4" value="<?php echo $detalle_articulo['cantidad'];?>" onchange= 'totales(<?php echo $id_art.', '.$user_id;?>);'><br><?php echo $articulo['unidad'] ?></td>
+                            <td><input id="cantidadA<?php echo $id_art; ?>" type="number" class="validate col s6 m4 l4" value="<?php echo $detalle_articulo['cantidad'];?>" onchange= 'totales(<?php echo $id_art.', '.$id_user;?>);'><br><?php echo $articulo['unidad'] ?></td>
                             <td><?php echo $articulo['nombre'] ?></td>
                             <td><a onclick="borrar_lista_articulo(<?php echo $id_art; ?>);" class="waves-effect waves-light btn-small red right"><i class="material-icons">delete</i></a></td>
                         </tr>
@@ -230,7 +229,7 @@ switch ($Accion) {
             <div class="col s12 m10 l10">
                 <div class="col s6 m6 l6 ">
                     <h5 class="right"><b>Número de Artículos <?php echo $aux;?></b></h5><br><br><br><br>
-                    <a onclick="borrar_lista_all(<?php echo $user_id; ?>)" class="waves-effect waves-light btn-small red right">Cancelar<i class="material-icons left">close</i></a>
+                    <a onclick="borrar_lista_all(<?php echo $id_user; ?>)" class="waves-effect waves-light btn-small red right">Cancelar<i class="material-icons left">close</i></a>
                     <a onclick="insert_compra()" class="waves-effect waves-light btn-small indigo right">Registrar<i class="material-icons left">done</i></a>
                 </div>
                 <div class="hide-on-small-only col s2"><br></div>
@@ -239,5 +238,68 @@ switch ($Accion) {
         <hr><br>
         <?php
         break;
+    case 6:
+    	# code...
+    	break;
+    case 7:
+    	# code...
+    	$id_art = $conn->real_escape_string($_POST['id']);
+    	if (mysqli_query($conn, "DELETE FROM tmp_detalle_compra WHERE id_articulo = $id_art AND usuario  = $id_user")) {
+            echo '<script >M.toast({html:"Artículo borrado con exito", classes: "rounded"})</script>'; 
+    	}else{
+            echo '<script >M.toast({html:"Ocurrio un error al borrar", classes: "rounded"})</script>'; 
+    	}
+    	// REALIZAMOS LA CONSULTA A LA BASE DE DATOS Y GUARDAMOS EN FORMARTO ARRAY EN UNA VARIABLE $consulta
+        $consulta = mysqli_query($conn, "SELECT * FROM tmp_detalle_compra WHERE usuario = $id_user");      
+        ?>
+        <div class="row">
+            <div class="hide-on-small-only col s1"><br></div>
+            <table class="col s12 m10 l10">
+              <thead>
+                <tr>
+                  <th>Código</th>
+                  <th>Cantidad</th>
+                  <th>Artículo</th>
+                  <th>Accion</th>
+                </tr>
+              </thead>
+              <tbody>
+               <?php
+               $aux = mysqli_num_rows($consulta);
+               //VERIFICAMOS SI HA ARRTICULOS EN LA TABLA
+               if(mysqli_num_rows($consulta)>0){
+                    while($detalle_articulo = mysqli_fetch_array($consulta)){
+                        $id_art = $detalle_articulo['id_articulo'];
+                        $articulo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `articulos` WHERE id = $id_art"));
+                        ?>
+                        <tr>
+                            <td><?php echo $articulo['codigo'] ?></td>
+                            <td><input id="cantidadA<?php echo $id_art; ?>" type="number" class="validate col s6 m4 l4" value="<?php echo $detalle_articulo['cantidad'];?>" onchange= 'totales(<?php echo $id_art.', '.$id_user;?>);'><br><?php echo $articulo['unidad'] ?></td>
+                            <td><?php echo $articulo['nombre'] ?></td>
+                            <td><a onclick="borrar_lista_articulo(<?php echo $id_art; ?>);" class="waves-effect waves-light btn-small red right"><i class="material-icons">delete</i></a></td>
+                        </tr>
+                    <?php
+                    }//FIN WHILE
+               }else{
+                  echo '<tr><td></td><td></td><td><h6> Sin Artículos </h6></td></tr>';
+               }//FIN ELSE
+               ?>                
+              </tbody>
+            </table>
+        </div>
+        <div class="row">
+            <div class="hide-on-small-only col s1"><br></div>
+            <div class="col s12 m10 l10">
+                <div class="col s6 m6 l6 ">
+                    <h5 class="right"><b>Número de Artículos <?php echo $aux;?></b></h5><br><br><br><br>
+                    <a onclick="borrar_lista_all(<?php echo $id_user; ?>)" class="waves-effect waves-light btn-small red right">Cancelar<i class="material-icons left">close</i></a>
+                    <a onclick="insert_compra()" class="waves-effect waves-light btn-small indigo right">Registrar<i class="material-icons left">done</i></a>
+                </div>
+                <div class="hide-on-small-only col s2"><br></div>
+            </div>            
+        </div>
+        <hr><br>
+        <?php
+    	break;
 }// FIN switch
 mysqli_close($conn);

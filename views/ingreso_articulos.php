@@ -9,7 +9,7 @@
     $datos_user = mysqli_fetch_array(mysqli_query($conn,"SELECT * FROM users WHERE user_id=$user_id"));
     ?>
     <script>
-      function tmp_articulos(insert, id, id_art = 0){
+      function tmp_articulos(insert, id_art = 0){
 
         if (insert) {
           //PEDIMOS VARIABLES Y CONDICIONES PARA INSERTAR ARTICULO A TMP
@@ -20,7 +20,6 @@
             //Cada valor se separa por una ,
               accion: 5,
               insert: insert,
-              id: id,
               id_art: id_art,
             }, function(mensaje) {
                 //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "control_inventario.php"
@@ -34,7 +33,6 @@
             //Cada valor se separa por una ,
               accion: 5,
               insert: insert,
-              id: id,
             }, function(mensaje) {
                 //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "control_inventario.php"
                 $("#articulosCompra").html(mensaje);
@@ -127,7 +125,7 @@
     </script>
   </head>
   <main>
-  <body onload="tmp_articulos(0,<?php echo $user_id;?>);">
+  <body onload="tmp_articulos(0);">
     <!-- DENTRO DE ESTE DIV VA TODO EL CONTENIDO Y HACE QUE SE VEA AL CENTRO DE LA PANTALLA.-->
     <div class="container" >
       <!--    //////    TITULO    ///////   -->
