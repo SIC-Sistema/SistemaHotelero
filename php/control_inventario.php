@@ -172,15 +172,14 @@ switch ($Accion) {
         if ($insert) {
             //SE HACE LA INSERCION A TMP
             $id_art = $conn->real_escape_string($_POST['id_art']);
-            if (mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `tmp_pv_detalle_compra` WHERE id_articulo = $id_art"))>0) {
+            if (mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `tmp_detalle_compra` WHERE id_articulo = $id_art"))>0) {
                 echo '<script >M.toast({html:"No se pueden repetir los articulos en la lista.", classes: "rounded"})</script>';   
             }else{
                 #SELECCIONAMOS LA INFORMACION DEL ARTICULO
-                $articulo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `punto_venta_articulos` WHERE id = $id_art"));
-                $precio = $articulo['precio'];
+                $articulo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `articulos` WHERE id = $id_art"));
                 //CREAMOS EL SQL PARA INSERTAR
-                $sql = "INSERT INTO `tmp_pv_detalle_compra` (id_articulo, cantidad, precio_compra_u, importe, usuario) 
-                   VALUES($id_art,'1','$precio','$precio','$user_id')";
+                $sql = "INSERT INTO `tmp_detalle_compra` (id_articulo, cantidad, usuario) 
+                   VALUES($id_art,'1','$user_id')";
                 if(mysqli_query($conn, $sql)){
                     echo '<script >M.toast({html:"El articulo se registró exitosamente.", classes: "rounded"})</script>';   
                 }else{
@@ -189,7 +188,7 @@ switch ($Accion) {
             }
         }
         // REALIZAMOS LA CONSULTA A LA BASE DE DATOS Y GUARDAMOS EN FORMARTO ARRAY EN UNA VARIABLE $consulta
-        $consulta = mysqli_query($conn, "SELECT * FROM tmp_pv_detalle_compra WHERE usuario = $user_id");      
+        $consulta = mysqli_query($conn, "SELECT * FROM tmp_detalle_compra WHERE usuario = $user_id");      
         ?>
         <div class="row">
             <div class="hide-on-small-only col s1"><br></div>
@@ -199,27 +198,22 @@ switch ($Accion) {
                   <th>Código</th>
                   <th>Cantidad</th>
                   <th>Artículo</th>
-                  <th>Costo U.</th>
-                  <th>Importe</th>
+                  <th>Accion</th>
                 </tr>
               </thead>
               <tbody>
                <?php
                $aux = mysqli_num_rows($consulta);
-               $total = 0;
                //VERIFICAMOS SI HA ARRTICULOS EN LA TABLA
                if(mysqli_num_rows($consulta)>0){
                     while($detalle_articulo = mysqli_fetch_array($consulta)){
                         $id_art = $detalle_articulo['id_articulo'];
-                        $articulo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `punto_venta_articulos` WHERE id = $id_art"));
-                        $total += $detalle_articulo['importe'];
+                        $articulo = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `articulos` WHERE id = $id_art"));
                         ?>
                         <tr>
                             <td><?php echo $articulo['codigo'] ?></td>
-                            <td class="row col s10"><input id="cantidadA<?php echo $id_art; ?>" type="number" class="validate col s6 m4 l4" value="<?php echo $detalle_articulo['cantidad'];?>" onchange= 'totales(<?php echo $id_art.', '.$user_id;?>);'><br><?php echo $articulo['unidad'] ?></td>
+                            <td><input id="cantidadA<?php echo $id_art; ?>" type="number" class="validate col s6 m4 l4" value="<?php echo $detalle_articulo['cantidad'];?>" onchange= 'totales(<?php echo $id_art.', '.$user_id;?>);'><br><?php echo $articulo['unidad'] ?></td>
                             <td><?php echo $articulo['nombre'] ?></td>
-                            <td class="row col s12"><p class="col s2">$</p><input id="precio_compra<?php echo $id_art; ?>" type="number" class="validate col s10 m7 l6" value="<?php echo sprintf('%.2f', $detalle_articulo['precio_compra_u']); ?>" onchange= 'totales(<?php echo $id_art.', '.$user_id;?>);'></td>
-                            <td><div class="col s2">$</div><input class="col s10 m7 l6" type="" id="importe<?php echo $id_art; ?>" value = "<?php echo sprintf('%.2f', $detalle_articulo['importe']); ?>"></td>
                             <td><a onclick="borrar_lista_articulo(<?php echo $id_art; ?>);" class="waves-effect waves-light btn-small red right"><i class="material-icons">delete</i></a></td>
                         </tr>
                     <?php
@@ -236,25 +230,10 @@ switch ($Accion) {
             <div class="col s12 m10 l10">
                 <div class="col s6 m6 l6 ">
                     <h5 class="right"><b>Número de Artículos <?php echo $aux;?></b></h5><br><br><br><br>
-                    <!-- Switch -->
-                    <div class="switch right">
-                        <label>
-                          Al Contado
-                          <input type="checkbox" id="cambio">
-                          <span class="lever"></span>
-                          Credito
-                        </label>
-                    </div><br><br><br>
                     <a onclick="borrar_lista_all(<?php echo $user_id; ?>)" class="waves-effect waves-light btn-small red right">Cancelar<i class="material-icons left">close</i></a>
                     <a onclick="insert_compra()" class="waves-effect waves-light btn-small indigo right">Registrar<i class="material-icons left">done</i></a>
                 </div>
                 <div class="hide-on-small-only col s2"><br></div>
-                <div class="col s6 m4 l4 row">
-                    <h6 class="right" ><b><div class="col s3 m5 l4">SubTotal</div><div class="col s1">$</div> <input class="col s8 m6 l5" type="" id="subtotal" value="<?php echo sprintf('%.2f', $total-($total*0.16)); ?>"></b></h6>
-                    <h6 class="right" ><b><div class="col s3 m5 l4">Impuesto</div><div class="col s1">$</div> <input class="col s8 m6 l5" type="" id="impuesto" value="<?php echo sprintf('%.2f', $total*0.16); ?>"></b></h6><br><br><br><br>
-                    <hr>
-                    <h5 class="right" ><b><div class="col s3 m5 l4">Total </div><div class="col s1">$</div> <input class="col s8 m7 l6" type="" id="totalCompra" value = "<?php echo sprintf('%.2f', $total); ?>"></td></b></h5>
-                </div>
             </div>            
         </div>
         <hr><br>

@@ -9,8 +9,7 @@
     $datos_user = mysqli_fetch_array(mysqli_query($conn,"SELECT * FROM users WHERE user_id=$user_id"));
     ?>
     <script>
-      function tmp_articulos(insert){
-          M.toast({html: 'ddd', classes: 'rounded'});
+      function tmp_articulos(insert, id, id_art = 0){
 
         if (insert) {
           //PEDIMOS VARIABLES Y CONDICIONES PARA INSERTAR ARTICULO A TMP
@@ -28,7 +27,6 @@
                 $("#articulosCompra").html(mensaje);
             }); 
         }else{
-          M.toast({html: 'ddd', classes: 'rounded'});
 
           //SI LOS IF NO SE CUMPLEN QUIERE DECIR QUE LA INFORMACION CUENTA CON TODO LO REQUERIDO
           //MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO EN LA DIRECCION "../php/control_inventario.php"
@@ -95,7 +93,6 @@
 
       //FUNCION QUE HACE LA INSERCION DE LA VENTA (SE ACTIVA AL PRECIONAR UN BOTON)
       function insert_compra() {
-        almacen = <?php echo $datos_user['almacen']; ?>;
         //PRIMERO VAMOS Y BUSCAMOS EN ESTE MISMO ARCHIVO LA INFORMCION REQUERIDA Y LA ASIGNAMOS A UNA VARIABLE
         var textoFactura = $("input#factura").val();//ej:LA VARIABLE "textoFactura" GUARDAREMOS LA INFORMACION QUE ESTE EN EL SELECT QUE TENGA EL id = "factura"
         var textoProveedor = $("select#proveedor").val();
@@ -118,7 +115,6 @@
           $.post("../php/control_inventario.php", {
             //Cada valor se separa por una ,
               accion: 0,
-              almacen: almacen,
               valorProveedor: textoProveedor,
               valorFactura: textoFactura,
               valorTipoCambio: textoTipoCambio,
@@ -131,7 +127,7 @@
     </script>
   </head>
   <main>
-  <body onload="tmp_articulos(<?php echo $user_id;?>,0,0); printToast();">
+  <body onload="tmp_articulos(0,<?php echo $user_id;?>);">
     <!-- DENTRO DE ESTE DIV VA TODO EL CONTENIDO Y HACE QUE SE VEA AL CENTRO DE LA PANTALLA.-->
     <div class="container" >
       <!--    //////    TITULO    ///////   -->
