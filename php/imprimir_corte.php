@@ -1,4 +1,10 @@
 <?php
+    #INCLUIMOS TODAS LAS LIBRERIAS  DE MAILER PARA PODER ENVIAR CORREOS DE ESTE ARCHIVO
+    use PHPMailer\PHPMailer\PHPMailer;
+    use PHPMailer\PHPMailer\SMTP;
+    use PHPMailer\PHPMailer\Exception;
+
+    require '../PHPMailer/vendor/autoload.php';
     #INCLUIMOS EL ARCHIVO CON LA CONEXION A LA BASE DE DATPS
     include('../php/conexion.php');
     #INCLUIMOS EL ARCHIVO CON LAS LIBRERIAS DE FPDF PARA PODER CREAR ARCHIVOS CON FORMATO PDF
@@ -280,5 +286,33 @@
        
     }//FIN IF MOVIMIENTOS 
 
-    $pdf->Output('CORTE','I');
+    #$pdf->Output('CORTE','I');
+    $doc = $pdf->Output('CORTE','S');
+
+    $Aviso = 'Buen dia, le adjuntamos automaticamente el comprobarte del corte, Saludos!';
+      #AVISO
+      if ($Aviso != '') {
+          $correo = new PHPMailer(true);
+          try{
+              #$correo->SMTPDebug = SMTP::DEBUG_SERVER;
+              $correo->isSMTP();
+              $correo->Host = 'mail.hotelsanroman.net';
+              $correo->SMTPAuth = true;
+              $correo->Username = 'cortes@hotelsanroman.net';
+              $correo->Password = '8FY1wVE8Km';
+              $correo->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+              $correo->Port = 465;
+              #COLOCAMOS UN TITULO AL CORREO  COMO REMITENTE
+              $correo->setFrom('no_replay2023@gmail.com', 'CORTES SAN ROMAN');
+              #DEFINIMOS A QUE CORREOS SERAN LOS DESTINATARIOS
+              $correo->addAddress('ruby.roman@hotelsanroman.net', 'RUBY ROMAN');   
+              $correo->Subject = 'CORTES SAN ROMAN';// SE CREA EL ASUNTO DEL CORREO
+              $correo->Body = $Aviso;
+              $correo->AddStringAttachment($doc, 'Corte_'.$corte.'.pdf', 'base64', 'application/pdf');
+              $correo->send();
+              echo "CORREO ENVIADO CON EXITO !!!";
+          }catch(Exception $e){
+              echo 'ERROR: '.$correo->ErrorInfo;
+          }
+    }
 ?>

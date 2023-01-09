@@ -95,9 +95,6 @@ class PDF extends FPDF{
     $pdf->SetX(55);
     $pdf->MultiCell(20,3,utf8_decode('$'.sprintf('%.2f',$pago['cantidad'])),0,'R',0);
 
-    $id_user = $pago['id_user'];// ID DEL USUARIO AL QUE SE LE APLICO EL CORTE
-    
-   
     $pdf->SetFont('Helvetica','', 8);
     if ($pago['tipo_cambio'] == 'Banco') {
         $referencia = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM referencias WHERE id_pago = $id_pago")); 
@@ -125,7 +122,9 @@ class PDF extends FPDF{
     $pdf->MultiCell(70,3,utf8_decode('------------------------------------------------------------------------'),0,'L',0);
     $pdf->SetY($pdf->GetY());
     $pdf->SetX(5);
-    $pdf->SetFont('Helvetica','B', 10);      
+    $pdf->SetFont('Helvetica','B', 10); 
+    $id_user = $pago['id_user'];// ID DEL USUARIO AL QUE SE LE APLICO EL CORTE
+
     #TOMAMOS LA INFORMACION DEL USUARIO QUE ESTA LOGEADO QUIEN HIZO LOS COBROS
     $usuario = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM users WHERE user_id = $id_user"));  
     $pdf->MultiCell(70,4,utf8_decode('LE ATENDIO: '.$usuario['firstname'].' '.$usuario['lastname']),0,'C',0);

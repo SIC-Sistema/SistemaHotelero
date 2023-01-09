@@ -93,7 +93,7 @@ switch ($Accion) {
 	                    //insertar pagos de corte...
 	                    $id_pago = $pago['id_pago'];
 	                    if(mysqli_query($conn,"INSERT INTO `detalles_corte` (`id_corte`, `id_pago`) VALUES ($corte, $id_pago )")){
-	                    		echo "SIMON pagos<br>";
+	                    		#echo "SIMON pagos<br>";
 	                    }
 	                }
 	                //// MODIFICAMOS TODOS LOS PAGOS A 1 QUE SIGNIFICA QUE SE LE HIZO CORTE
@@ -108,7 +108,7 @@ switch ($Accion) {
 	                    //insertar salida de corte...
 	                    $id_salida = $salida['id'];
 	                    if(mysqli_query($conn,"INSERT INTO `detalles_corte` (`id_corte`, `id_salida`) VALUES ($corte, $id_salida )")){
-	                    	echo "SIMON salida<br>";
+	                    	#echo "SIMON salida<br>";
 	                    }
 	                }
 	                //// MODIFICAMOS TODAS LAS SALIDAS A 1 QUE SIGNIFICA QUE SE LE HIZO CORTE
