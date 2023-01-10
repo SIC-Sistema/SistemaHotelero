@@ -45,6 +45,7 @@
           </div>
         </form>
       </div>
+      <a href="../php/imprimir_inventario.php" target="blank" class="waves-effect waves-light btn grey darken-4 right"><i class="material-icons left">picture_as_pdf</i>Imprimir</a>
       <!--    //////    TABLA QUE MUESTRA LA INFORMACION DE LOS CLIENTES    ///////   -->
       <div class="row">
         <table class="bordered highlight">
@@ -53,11 +54,9 @@
               <th>N°</th>
               <th>Código</th>
               <th>Nombre</th>
-              <th>Unidad</th>
               <th>Existencia</th>
-              <th>Usuario</th>
-              <th>Fecha</th>
-              <th>Editar</th>
+              <th>Modifico</th>
+              <th>Fecha Modificacion</th>
             </tr>
           </thead>
           <!-- DENTRO DEL tbody COLOCAMOS id = "articulosALL"  PARA QUE EN ESTA PARTE NOS MUESTRE LOS RESULTADOS EN TEXTO HTML DEL SCRIPT EN FUNCION buscar_articulos() -->

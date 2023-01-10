@@ -152,11 +152,9 @@ switch ($Accion) {
 		            <td>'.$id_articulo.'</td>
 		            <td>'.$info_art['codigo'].'</td>
 		            <td>'.$info_art['nombre'].'</td>
-		            <td>'.$info_art['unidad'].'</td>
-		            <td>'.$articulo['cantidad'].'</td>
+		            <td>'.$articulo['cantidad'].' '.$info_art['unidad'].'</td>
 		            <td>'.$user['firstname'].'</td>
 		            <td>'.$articulo['fecha_modifico'].'</td>
-		            <td><form method="post" action=""><input id="id" name="id" type="hidden" value="'.$articulo['id'].'"><button class="btn-small waves-effect waves-light grey darken-3"><i class="material-icons">edit</i></button></form></td>
 		          </tr>';
 			}//FIN while
 		}//FIN else

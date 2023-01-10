@@ -305,7 +305,7 @@
               #COLOCAMOS UN TITULO AL CORREO  COMO REMITENTE
               $correo->setFrom('no_replay2023@gmail.com', 'CORTES SAN ROMAN');
               #DEFINIMOS A QUE CORREOS SERAN LOS DESTINATARIOS
-              $correo->addAddress('ruby.roman@hotelsanroman.net', 'RUBY ROMAN');   
+              $correo->addAddress('ruby.roman@hotelsanroman.net', 'RUBY ROMAN');   //Cnfkv9mSJr
               $correo->Subject = 'CORTES SAN ROMAN';// SE CREA EL ASUNTO DEL CORREO
               $correo->Body = $Aviso;
               $correo->AddStringAttachment($doc, 'Corte_'.$corte.'.pdf', 'base64', 'application/pdf');

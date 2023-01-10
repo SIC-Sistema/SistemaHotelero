@@ -48,6 +48,7 @@ $check_out = mysqli_fetch_array(mysqli_query($conn,"SELECT count(*) FROM `reserv
 					<li><a href = "limpieza.php" class="black-text"><i class="material-icons">photo_filter</i>Limpieza</a></li>	
 					<li><a href = "articulos.php" class="black-text"><i class="material-icons">dashboard</i>Articulos</a></li>	
 					<li><a href = "inventario.php" class="black-text"><i class="material-icons">list</i>Inventario</a></li>	
+					<li><a href = "salida_productos.php" class="black-text"><i class="material-icons">exit_to_app</i>Salida (Productos)</a></li>	
  				</ul>
  				<li><a class='dropdown-button' data-target='dropdown5'><i class="material-icons left">person_pin</i><b>Admin</b> <i class="material-icons right">arrow_drop_down</i></a></li>
 				<ul id='dropdown5' class='dropdown-content'>
@@ -117,6 +118,7 @@ $check_out = mysqli_fetch_array(mysqli_query($conn,"SELECT count(*) FROM `reserv
 							<li><a href = "limpieza.php"><i class="material-icons">photo_filter</i>Limpieza</a></li>	
 							<li><a href = "articulos.php"><i class="material-icons">dashboard</i>Articulos</a></li>	
 							<li><a href = "inventario.php"><i class="material-icons">list</i>Inventario</a></li>
+							<li><a href = "salida_productos.php"><i class="material-icons">exit_to_app</i>Salida (Productos)</a></li>	
 					      </ul>
 					    </span>
 		      		</div>    			

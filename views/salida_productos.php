@@ -10,7 +10,6 @@
     ?>
     <script>
       function tmp_articulos(insert, id_art = 0){
-
         if (insert) {
           //PEDIMOS VARIABLES Y CONDICIONES PARA INSERTAR ARTICULO A TMP
           M.toast({html: 'Insertar articulo N° '+id_art, classes: 'rounded'});
@@ -18,7 +17,7 @@
           //MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO EN LA DIRECCION "../php/control_salidas.php"
           $.post("../php/control_salidas.php", {
             //Cada valor se separa por una ,
-              accion: 5,
+              accion: 0,
               insert: insert,
               id_art: id_art,
             }, function(mensaje) {
@@ -31,7 +30,7 @@
           //MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO EN LA DIRECCION "../php/control_salidas.php"
           $.post("../php/control_salidas.php", {
             //Cada valor se separa por una ,
-              accion: 5,
+              accion: 0,
               insert: insert,
             }, function(mensaje) {
                 //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "control_salidas.php"
@@ -47,7 +46,7 @@
           //MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO EN LA DIRECCION "../php/control_salidas.php"
           $.post("../php/control_salidas.php", {
             //Cada valor se separa por una ,
-            accion: 7,
+            accion: 2,
             id: id,
           }, function(mensaje) {
             //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "control_salidas.php"
@@ -58,12 +57,12 @@
 
       //FUNCION QUE BORRA TODOS LOS ARTICULOS DE TMP (SE ACTIVA AL INICIAR EL BOTON BORRAR)
       function borrar_lista_all(usuario){
-        var answer = confirm("Deseas cancelar la compra?");
+        var answer = confirm("Deseas cancelar la salida?");
         if (answer) {
           //MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO EN LA DIRECCION "../php/control_salidas.php"
           $.post("../php/control_salidas.php", {
             //Cada valor se separa por una ,
-            accion: 8,
+            accion: 3,
             usuario: usuario,
           }, function(mensaje) {
             //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "control_salidas.php"
@@ -80,7 +79,7 @@
         //MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO EN LA DIRECCION "../php/control_salidas.php"
         $.post("../php/control_salidas.php", {
             //Cada valor se separa por una ,
-            accion: 6,
+            accion: 1,
             texto: texto,
           }, function(mensaje){
               //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "control_salidas.php"
@@ -90,15 +89,21 @@
 
 
       //FUNCION QUE HACE LA INSERCION DE LA VENTA (SE ACTIVA AL PRECIONAR UN BOTON)
-      function insert_compra() {
+      function insert_salida() {
+        var exist = $("input#mayor_exist").val();
+        if (exist) {
+          M.toast({html: '! NO SE PUEDE REALIZAR LA VENTA ¡', classes: 'rounded'});
+          M.toast({html: 'Alguno de los articulos superan su existencia', classes: 'rounded'});
+        }else{
           //MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO EN LA DIRECCION "../php/control_salidas.php"
-        $.post("../php/control_salidas.php", {
+          $.post("../php/control_salidas.php", {
             //Cada valor se separa por una ,
-              accion: 10,
+              accion: 5,
             }, function(mensaje) {
                 //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "control_salidas.php"
                 $("#resultado_insert").html(mensaje);
-            }); 
+          }); 
+        }
       };//FIN function 
       //FUNCION QUE MODIFICARA LOS VALORES DE LOS TOTALES
       function totales(id_art){
@@ -108,7 +113,7 @@
         //MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO EN LA DIRECCION "../php/control_salidas.php"
         $.post("../php/control_salidas.php", {
             //Cada valor se separa por una ,
-            accion: 9,
+            accion: 4,
             valorIdArt: id_art,
             valorCantidadA: CantidadA,
           }, function(mensaje){
