@@ -70,6 +70,7 @@
               <th>Código</th>
               <th>Nombre</th>
               <th>Unidad</th>
+              <th>Stock Minimo</th>
               <th>Usuario</th>
               <th>Fecha</th>
               <th>Editar</th>

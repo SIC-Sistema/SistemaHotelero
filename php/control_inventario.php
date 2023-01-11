@@ -20,14 +20,15 @@ switch ($Accion) {
     	$Nombre = $conn->real_escape_string($_POST['valorNombre']);
 		$Codigo = $conn->real_escape_string($_POST['valorCodigo']);
 		$Unidad = $conn->real_escape_string($_POST['valorUnidad']);
+		$Minimo = $conn->real_escape_string($_POST['valorMinimo']);
 
 		//VERIFICAMOS QUE NO HALLA UN ARTICULO CON LOS MISMOS DATOS
 		if(mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `articulos` WHERE codigo='$Codigo' AND nombre='$Nombre'"))>0){
 	 		echo '<script >M.toast({html:"Ya se encuentra un articulo con los mismos datos registrados.", classes: "rounded"})</script>';
 	 	}else{
 	 		// SI NO HAY NUNGUNO IGUAL CREAMOS LA SENTECIA SQL  CON LA INFORMACION REQUERIDA Y LA ASIGNAMOS A UNA VARIABLE
-	 		$sql = "INSERT INTO `articulos` (codigo, nombre, unidad,  usuario, fecha) 
-				VALUES('$Codigo', '$Nombre', '$Unidad', '$id_user','$Fecha_hoy')";
+	 		$sql = "INSERT INTO `articulos` (codigo, nombre, unidad, stock_minimo, usuario, fecha) 
+				VALUES('$Codigo', '$Nombre', '$Unidad', '$Minimo', '$id_user','$Fecha_hoy')";
 			//VERIFICAMOS QUE LA SENTECIA FUE EJECUTADA CON EXITO!
 			if(mysqli_query($conn, $sql)){
 				echo '<script >M.toast({html:"El articulo se dió de alta satisfactoriamente.", classes: "rounded"})</script>';	
@@ -73,6 +74,7 @@ switch ($Accion) {
 		            <td>'.$articulo['codigo'].'</td>
 		            <td>'.$articulo['nombre'].'</td>
 		            <td>'.$articulo['unidad'].'</td>
+		            <td>'.$articulo['stock_minimo'].'</td>
 		            <td>'.$user['firstname'].'</td>
 		            <td>'.$articulo['fecha'].'</td>
 		            <td><form method="post" action="../views/editar_articulo.php"><input id="id" name="id" type="hidden" value="'.$articulo['id'].'"><button class="btn-small waves-effect waves-light grey darken-3"><i class="material-icons">edit</i></button></form></td>
@@ -90,12 +92,13 @@ switch ($Accion) {
     	$Nombre = $conn->real_escape_string($_POST['valorNombre']);
 		$Codigo = $conn->real_escape_string($_POST['valorCodigo']);
 		$Unidad = $conn->real_escape_string($_POST['valorUnidad']);
+		$Minimo = $conn->real_escape_string($_POST['valorMinimo']);
 
 		//CREAMO LA SENTENCIA SQL PARA HACER LA ACTUALIZACION DE LA INFORMACION DEL CLIENTE Y LA GUARDAMOS EN UNA VARIABLE
-		$sql = "UPDATE `articulos` SET codigo = '$Codigo', nombre = '$Nombre', unidad = '$Unidad' WHERE id = '$id'";
+		$sql = "UPDATE `articulos` SET codigo = '$Codigo', nombre = '$Nombre', unidad = '$Unidad', stock_minimo = '$Minimo' WHERE id = '$id'";
 		//VERIFICAMOS QUE LA SENTECIA FUE EJECUTADA CON EXITO!
 		if(mysqli_query($conn, $sql)){
-			echo '<script >M.toast({html:"La empresa se actualizo con exito.", classes: "rounded"})</script>';	
+			echo '<script >M.toast({html:"El articulo se actualizo con exito.", classes: "rounded"})</script>';	
 			echo '<script>recargar_articulo()</script>';// REDIRECCIONAMOS (FUNCION ESTA EN ARCHIVO modals.php)
 		}else{
 			echo '<script >M.toast({html:"Ocurrio un error...", classes: "rounded"})</script>';	
@@ -146,13 +149,21 @@ switch ($Accion) {
 				$user = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `users` WHERE user_id=$id_user"));
 				$id_articulo = $articulo['id_articulo'];
 				$info_art = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `articulos` WHERE id=$id_articulo"));
+				if ($info_art['stock_minimo'] >= $articulo['cantidad']) {
+					$estatus = '<span class="new badge red" data-badge-caption="">Faltante</span>';
+					$color = 'red-text';
+				}else{
+					$estatus = '<span class="new badge green" data-badge-caption="">Correcto</span>'; 
+					$color = '';
+				}
 				//Output
 				$contenido .= '			
 		          <tr>
+		            <td>'.$estatus.'</td>
 		            <td>'.$id_articulo.'</td>
 		            <td>'.$info_art['codigo'].'</td>
 		            <td>'.$info_art['nombre'].'</td>
-		            <td>'.$articulo['cantidad'].' '.$info_art['unidad'].'</td>
+		            <td class = "'.$color.'">'.$articulo['cantidad'].' '.$info_art['unidad'].'</td>
 		            <td>'.$user['firstname'].'</td>
 		            <td>'.$articulo['fecha_modifico'].'</td>
 		          </tr>';

@@ -51,6 +51,7 @@
         <table class="bordered highlight">
           <thead>
             <tr>
+              <th>Estatus</th>
               <th>N°</th>
               <th>Código</th>
               <th>Nombre</th>

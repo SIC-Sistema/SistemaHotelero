@@ -9,6 +9,20 @@ $cuentas = mysqli_fetch_array(mysqli_query($conn,"SELECT count(*) FROM `reservac
 $mantenimientos = mysqli_fetch_array(mysqli_query($conn,"SELECT count(*) FROM `mantenimientos` WHERE estatus = 0"));
 $check_in = mysqli_fetch_array(mysqli_query($conn,"SELECT count(*) FROM `reservaciones` WHERE estatus = 0"));
 $check_out = mysqli_fetch_array(mysqli_query($conn,"SELECT count(*) FROM `reservaciones` WHERE estatus = 1 AND fecha_salida <= '$Hoy' "));
+$notificacion = 0;
+$sql_art_stock = mysqli_query($conn,"SELECT * FROM `articulos`");
+if (mysqli_num_rows($sql_art_stock)>0) {
+	while ($art_stock = mysqli_fetch_array($sql_art_stock)) {
+		$id = $art_stock['id'];
+		$sql_existe = mysqli_query($conn, "SELECT cantidad FROM `inventario` WHERE  id_articulo = $id");
+		if (mysqli_num_rows($sql_existe)>0) {
+			$existe = mysqli_fetch_array($sql_existe);
+			if ($art_stock['stock_minimo'] >= $existe['cantidad']) {
+				$notificacion ++;
+			}
+		}
+	}
+}
 ?>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -47,7 +61,7 @@ $check_out = mysqli_fetch_array(mysqli_query($conn,"SELECT count(*) FROM `reserv
 					<li><a href = "salida.php" class="black-text"><i class="material-icons">money_off</i>Salida (Egreso)</a></li>	
 					<li><a href = "limpieza.php" class="black-text"><i class="material-icons">photo_filter</i>Limpieza</a></li>	
 					<li><a href = "articulos.php" class="black-text"><i class="material-icons">dashboard</i>Articulos</a></li>	
-					<li><a href = "inventario.php" class="black-text"><i class="material-icons">list</i>Inventario</a></li>	
+					<li><a href = "inventario.php" class="black-text"><i class="material-icons">list</i>Inventario<span class="new badge pink" data-badge-caption=""><?php echo $notificacion;?></span></a></li>	
 					<li><a href = "salida_productos.php" class="black-text"><i class="material-icons">exit_to_app</i>Salida (Productos)</a></li>	
  				</ul>
  				<li><a class='dropdown-button' data-target='dropdown5'><i class="material-icons left">person_pin</i><b>Admin</b> <i class="material-icons right">arrow_drop_down</i></a></li>

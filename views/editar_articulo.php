@@ -27,6 +27,7 @@ if (isset($_POST['id']) == false) {
 	      var textoNombre = $("input#nombre").val();//ej:LA VARIABLE "textoNombre" GUARDAREMOS LA INFORMACION QUE ESTE EN EL INPUT QUE TENGA EL id = "nombre"
 	      var textoCodigo = $("input#codigo").val();// ej: TRAE LE INFORMACION DEL INPUT (id="codigo")
 	      var textoUnidad = $("input#unidad").val();
+      	var textoMinimo = $("input#minimo").val();
 
 	      // CREAMOS CONDICIONES QUE SI SE CUMPLEN MANDARA MENSAJES DE ALERTA EN FORMA DE TOAST
 	      //SI SE CUMPLEN LOS IF QUIERE DECIR QUE NO PASA LOS REQUISITOS MINIMOS DE LLENADO...
@@ -44,6 +45,7 @@ if (isset($_POST['id']) == false) {
 	            valorNombre: textoNombre,
 	            valorCodigo: textoCodigo,
 	            valorUnidad: textoUnidad,
+            	valorMinimo: textoMinimo,
 	          }, function(mensaje) {
 	              //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "control_inventario.php"
 	              $("#resultado_update").html(mensaje);
@@ -88,6 +90,11 @@ if (isset($_POST['id']) == false) {
 	            <i class="material-icons prefix">local_offer</i>
 	            <input id="unidad" type="text"  class="validate" data-length="100" required value="<?php echo $datos['unidad']; ?>">
 	            <label for="unidad">Unidad (pz, kg, etc.):</label>
+	          </div>
+	          <div class="input-field">
+	            <i class="material-icons prefix">mood_bad</i>
+	            <input id="minimo" type="number"  class="validate" data-length="100" required value="<?php echo $datos['stock_minimo']; ?>">
+	            <label for="minimo">Stock Minimo:</label>
 	          </div>
 	        </div>
 	      </form>
