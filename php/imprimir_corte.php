@@ -286,7 +286,7 @@
        
     }//FIN IF MOVIMIENTOS 
 
-    #$pdf->Output('CORTE','I');
+    $pdf->Output('CORTE','I');
     $doc = $pdf->Output('CORTE','S');
 
     $Aviso = 'Buen dia, le adjuntamos automaticamente el comprobarte del corte, Saludos!';
@@ -296,14 +296,14 @@
           try{
               #$correo->SMTPDebug = SMTP::DEBUG_SERVER;
               $correo->isSMTP();
-              $correo->Host = 'mail.hotelsanroman.net';
+              $correo->Host = 'sicsom.com';
               $correo->SMTPAuth = true;
-              $correo->Username = 'cortes@hotelsanroman.net';
-              $correo->Password = '8FY1wVE8Km';
+              $correo->Username = 'cortes@sicsom.com';
+              $correo->Password = '3.NiOYNE(Txj';
               $correo->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
               $correo->Port = 465;
               #COLOCAMOS UN TITULO AL CORREO  COMO REMITENTE
-              $correo->setFrom('no_replay2023@gmail.com', 'CORTES SAN ROMAN');
+              $correo->setFrom('no_replay2023@hotelsanroman.net', 'CORTES SAN ROMAN');
               #DEFINIMOS A QUE CORREOS SERAN LOS DESTINATARIOS
               $correo->addAddress('ruby.roman@hotelsanroman.net', 'RUBY ROMAN');   //Cnfkv9mSJr
               $correo->Subject = 'CORTES SAN ROMAN';// SE CREA EL ASUNTO DEL CORREO
