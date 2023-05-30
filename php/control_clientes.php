@@ -88,6 +88,12 @@ switch ($Accion) {
 			while($cliente = mysqli_fetch_array($consulta)) {
 				$id_user = $cliente['usuario'];
 				$user = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `users` WHERE user_id=$id_user"));
+				$usuarioRegistro = "";
+				if (!$user){
+					$usuarioRegistro = "N/A";
+				}else {
+					$usuarioRegistro = $user['firstname'];
+				}
 				$id_empresa = $cliente['empresa'];
 				if ($id_empresa == 0) {
 					$empresa['razon_social'] = 'N/A';
@@ -103,7 +109,7 @@ switch ($Accion) {
 		            <td>'.$cliente['rfc'].'</td>
 		            <td>'.$cliente['email'].'</td>
 		            <td>'.$empresa['razon_social'].'</td>
-		            <td>'.$user['firstname'].'</td>
+		            <td>'.$usuarioRegistro.'</td>
 		            <td>'.$cliente['fecha'].'</td>
 		            <td><form method="post" action="../views/reservacion.php"><input id="cliente" name="cliente" type="hidden" value="'.$cliente['id'].'"><button class="btn-small green waves-effect waves-light"><i class="material-icons">event</i></button></form> </td>
 		            <td><form method="post" action="../views/detalles_cliente.php"><input id="id" name="id" type="hidden" value="'.$cliente['id'].'"><button class="btn-small waves-effect waves-light blue"><i class="material-icons">list</i></button></form></td>

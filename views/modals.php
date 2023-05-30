@@ -41,6 +41,15 @@
   function recargar_empresas() {
     setTimeout("location.href='../views/empresas.php'", 800);
   }
+  function recargar_emisores() {
+    setTimeout("location.href='../views/emisor_sat.php'", 800);
+  }
+  function recargar_receptores() {
+    setTimeout("location.href='../views/add_receptor_sat.php'", 900);
+  }
+  function recargar_receptores_sat() {
+    setTimeout("location.href='../views/receptores_sat.php'", 900);
+  }
 </script>
 <!-- Modal AGREGAR ARTICULOS IMPOTANTE! -->
 <div id="modal_addArticulo" class="modal"><br>

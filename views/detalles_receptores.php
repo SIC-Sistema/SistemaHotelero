@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>San Roman | Receptor Fiscal</title>
+    <?php
+    //INCLUIMOS EL ARCHIVO QUE CONTIENE LA BARRA DE NAVEGACION TAMBIEN TIENE (scripts, conexion, is_logged, modals)
+    include('fredyNav.php');
+		$id_user = $_SESSION['user_id'];// ID DEL USUARIO LOGEADO
+    //Obtenemos la informacion del Usuario
+    $User = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `users` WHERE user_id = $id_user"));
+
+		//VERIFICAMOS QUE SI NOS ENVIE POR POST EL ID DEL ARTICULO
+		if (isset($_POST['id']) == false OR $User['facturar'] == 0) {
+		  ?>
+		  <script>    
+		    M.toast({html:"Regresando a clientes.", classes: "rounded"});
+		    setTimeout("location.href='clientes.php'", 500);
+		  </script>
+		  <?php
+		}else{
+			$id = $_POST['id'];// POR EL METODO POST RECIBIMOS EL ID DEL cliente
+		  //CONSULTA PARA SACAR LA INFORMACION DE LA cliente Y ASIGNAMOS EL ARRAY A UNA VARIABLE $cliente
+		  $receptor = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `receptores_sat` WHERE id=$id"));
+		  $idEstadoMx = $receptor['estado_Mx'];
+		  $idRegimen = $receptor['regimen'];
+		  $idUsoCfdi = $receptor['uso_cfdi'];
+		  $estadoMx = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `estados_mex` WHERE id=$idEstadoMx"));
+		  $regimenFiscal = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `regimen_fiscal_sat` WHERE clave=$idRegimen"));
+		  $usoCfdi = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `uso_cfdi_sat` WHERE clave='$idUsoCfdi'"));
+		}
+		?>
+		<script>
+			function verificar_eliminar(IdPago){ 
+				var textoIdCliente = $("input#id_cliente").val();  
+				$.post("../views/verificar_eliminar_pago.php", {
+					valorIdPago: IdPago,
+					redireciona: 0,
+					}, function(mensaje) {
+						$("#editPagos").html(mensaje);
+					}); 
+       		};
+       //FUNCION QUE MUESTRA EL MODAL HACER CHECK OUT
+	      function modal_salida(id){
+	          //MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO EN LA DIRECCION "modal_salida.php" PARA MOSTRAR EL MODAL
+	          $.post("modal_salida.php", {
+	            //Cada valor se separa por una ,
+	              id:id,
+	            }, function(mensaje){
+	                //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "modal_salida.php"
+	                $("#modal").html(mensaje);
+	          });//FIN post
+	      }//FIN function
+	      //FUNCION QUE MUESTRA EL MODAL HACER CHECK OUT
+	      function update_fecha_salida(id){
+          var FechaSalida = $("input#fecha_salida").val();
+
+	          //MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO EN LA DIRECCION "../php/control_reservaciones.php" PARA MOSTRAR EL MODAL
+	          $.post("../php/control_reservaciones.php", {
+	            //Cada valor se separa por una ,
+	              id:id,
+	              salida: FechaSalida,
+	              accion: 13,
+	              ruta: 'clientes.php',
+	            }, function(mensaje){
+	                //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "../php/control_reservaciones.php"
+	                $("#modal").html(mensaje);
+	          });//FIN post
+	      }//FIN function
+		</script>
+</head>
+<body>
+	<div class="container">
+		  <div class="row"><br>
+		  	<div id="modal"></div>
+   		  <ul class="collection">
+            <li class="collection-item avatar">
+              <div class="hide-on-large-only"><br><br></div>
+              <img src="../img/cliente.png" alt="" class="circle">
+              <span class="title"><b>DETALLES DEL RECEPTOR FISCAL</b></span><br><br>
+              <p class="row col s12"><b>
+              	<div class="col s12 m6">
+              		<div class="col s12"><b class="indigo-text">N° CLIENTE: </b><?php echo $id;?></div>
+              		<div class="col s12"><b class="indigo-text">NOMBRE: </b><?php echo $receptor['nombre'];?></div>           		
+              		<div class="col s12"><b class="indigo-text">RFC: </b><?php echo $receptor['rfc'];?></div>           		
+              		<div class="col s12"><b class="indigo-text">RAZON SOCIAL: </b><?php echo $receptor['razon_social'];?></div>            		
+		  			<div class="col s12"><b class="indigo-text">REGIMEN: </b><?php echo '('.$receptor['regimen'].') '.$regimenFiscal['nombre'];?></div>
+		  			<div class="col s12"><b class="indigo-text">CODIGO POSTAL: </b><?php echo $receptor['codigo_postal'];?></div>
+					<div class="col s12"><b class="indigo-text">USO CFDI: </b><?php echo '('.$receptor['uso_cfdi'].') '.$usoCfdi['nombre'];?></div> 
+				</div>
+              	<div class="col s12 m6">       
+              		<div class="col s12"><b class="indigo-text">COLONIA: </b><?php echo $receptor['colonia'];?></div>          		
+              		<div class="col s12"><b class="indigo-text">LOCALIDAD: </b><?php echo $receptor['localidad'];?></div>          		
+		  			<div class="col s12"><b class="indigo-text">DIRECCION: </b><?php echo $receptor['calle'].' #'.$receptor['numero_exterior'].' ('.$receptor['numero_interior'].')';?></div>          		
+		  			<div class="col s12"><b class="indigo-text">ESTADO: </b><?php echo $estadoMx['nombre'];?></div>           		
+              		<div class="col s12"><b class="indigo-text">MUNICIPIO </b><?php echo $receptor['municipio'];?></div>           		
+					<div class="col s12"><b class="indigo-text">EMAIL: </b><?php echo $receptor['email'];?></div> 
+					<form method="post" action="../views/editar_receptor_sat.php"><input id="id" name="id" type="hidden" value=<?php echo $receptor['id'];?>.><button class="btn-small waves-effect waves-light green darken-3 right"><i class="material-icons">edit</i></button></form></td>
+				</div>
+              </b></p><br><br><br><br>
+            </li>
+        </ul>
+      </div>
+        
+	    <h4>Historial:</h4>
+	    <div class="row">
+	    <!-- ----------------------------  TABs o MENU  ---------------------------------------->
+	      <div class="col s12">
+	        <ul id="tabs-swipe-demo" class="tabs">
+	          <li class="tab col s6"><a class="active black-text" href="#test-swipe-1">FACTURAS</a></li>
+	          <li class="tab col s6"><a class="black-text" href="#test-swipe-2">PAGOS</a></li>
+	        </ul>
+	      </div>
+	      <!-- ----------------------------  FORMULARIO 1 Tabs  ---------------------------------------->
+	      <div  id="test-swipe-1" class="col s12">
+	        <div class="row">
+	          <p><div>
+	            <table class="bordered centered highlight">
+	              <thead>
+	                <tr>
+	                  <th>N°</th>
+	                  <th>Habitacion</th>
+	                  <th>Responsable</th>
+	                  <th>Fecha Entrada</th>            
+	                  <th>Fecha Salida</th>
+	                  <th>Total</th>
+	                  <th>Estatus</th>
+	                  <th>Registro</th>
+	                  <th>Fecha Registro</th>
+	                  <th>Acción</th>
+	                </tr>
+	              </thead>
+	              <tbody>
+	              	<?php
+	              	$reservaciones = mysqli_query($conn,"SELECT * FROM reservaciones WHERE id_cliente = $id");
+					//VERIFICAMOS QUE LA VARIABLE SI CONTENGA INFORMACION
+					if (mysqli_num_rows($reservaciones) == 0) {
+					    echo '<h4>No se encontraron reservaciones.</h4>';
+					} else {
+					    while ($reservacion = mysqli_fetch_array($reservaciones)) {
+						   	$id_usuario = $reservacion['usuario'];// ID DEL USUARIO REGISTRO
+						    //Obtenemos la informacion del Usuario
+						    $usuario = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `users` WHERE user_id = $id_usuario"));
+						   	if($reservacion['estatus'] == 3){
+								$estatus = '<span class="new badge red" data-badge-caption="Cancelada"></span>';
+							}elseif ($reservacion['estatus'] == 2) {
+								$estatus = '<span class="new badge black" data-badge-caption="Terminada"></span>';
+							}else{
+								$estatus = ($reservacion['estatus'] == 1)? '<span class="new badge blue" data-badge-caption="Ocupada"></span>': '<span class="new badge green" data-badge-caption="Pendiente"></span>';
+							}
+						   	?>
+						   	<tr>
+						   		<td><?php echo $reservacion['id']; ?></td>
+						   		<td>N°<?php echo $reservacion['id_habitacion']; ?></td>
+						  		<td><?php echo $reservacion['nombre']; ?></td>
+						   		<td><?php echo $reservacion['fecha_entrada']; ?></td>
+						   		<td><?php echo $reservacion['fecha_salida']; ?></td>
+						   		<td>$<?php echo sprintf('%.2f', $reservacion['total']); ?></td>
+						   		<td><?php echo $estatus; ?></td>
+						   		<td><?php echo $usuario['firstname']; ?></td>
+						  		<td><?php echo $reservacion['fecha_registro']; ?></td>
+						  		<td><a onclick="modal_salida(<?php echo $reservacion['id']; ?>)" class="btn-small blue waves-effect waves-light tooltipped" data-position="bottom" data-tooltip="Cambiar Salida"><i class="material-icons prefix">exit_to_app</i></a></td>
+						  	</tr>
+						  	<?php
+						}//FIN while
+					}//FIN ELSE
+	                ?>
+	              </tbody>
+	            </table>
+	          </div></p>
+	        </div>
+	      </div>
+	      <!-- ----------------------------  FORMULARIO 2 Tabs  ---------------------------------------->
+	      <div  id="test-swipe-2" class="col s12">
+	        <div class="row">
+	          <p><div>
+	            <table class="bordered centered highlight">
+	              <thead>
+	                <tr>
+	                  <th>N°</th>
+	                  <th>Cantidad</th>
+	                  <th>Tipo</th>
+	                  <th>Descripcion</th>
+	                  <th>Usuario</th>
+	                  <th>Fecha</th>
+	                  <th>Cambio</th> 
+	                  <th>Borrar</th> 
+	                </tr>
+	              </thead>
+                <div id="editPagos"></div>
+	              <tbody>
+	              	<?php
+	              	$pagos = mysqli_query($conn,"SELECT * FROM pagos WHERE id_cliente = $id"); 
+						      //VERIFICAMOS QUE LA VARIABLE SI CONTENGA INFORMACION
+						      if (mysqli_num_rows($pagos) == 0) {
+						        echo '<h4>No se encontraron pagos.</h4>';
+						      } else {
+						        while ($pago = mysqli_fetch_array($pagos)) {
+						        	$id_usuario = $pago['id_user'];// ID DEL USUARIO REGISTRO
+									    //Obtenemos la informacion del Usuario
+									    $usuario = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `users` WHERE user_id = $id_usuario"));
+						        	?>
+						        	<tr>
+						        		<td><?php echo $pago['id_pago']; ?></td>
+						        		<td>$<?php echo sprintf('%.2f', $pago['cantidad']); ?></td>
+						        		<td><?php echo $pago['tipo']; ?></td>
+						        		<td><?php echo $pago['descripcion']; ?></td>
+						        		<td><?php echo $usuario['firstname']; ?></td>
+						        		<td><?php echo $pago['fecha'].' '.$pago['hora']; ?></td>
+						        		<td><?php echo $pago['tipo_cambio']; ?></td>
+						        		<td><a onclick="verificar_eliminar(<?php echo $pago['id_pago']; ?>)" class="btn-small red waves-effect waves-light"><i class="material-icons">delete</i></a></td>
+						        	</tr>
+						        	<?php
+	                	}//FIN while
+						      }//FIN ELSE
+	                ?>
+	              </tbody>
+	            </table>
+	          </div></p>
+	        </div>
+	      </div>
+	    </div>
+	</div>
+</body>
+</html>
