@@ -102,14 +102,29 @@ if (isset($_POST['id']) == false) {
             <br>
             <div class="input-field">
               <i class="material-icons prefix">people</i>
-              <input id="nombre" type="text" class="validate" data-length="50" required value="<?php echo $datos['nombre']; ?>">
+              <input id="nombre" type="text" class="validate" data-length="100" required value="<?php echo $datos['nombre']; ?>">
               <label for="nombre">Nombre Completo:</label>
-            </div>      
+            </div>
             <div class="input-field">
               <i class="material-icons prefix">phone</i>
-              <input id="telefono" type="text" class="validate" data-length="13" required value="<?php echo $datos['telefono']; ?>">
-              <label for="telefono">Teléfono:</label>
-            </div> 
+              <input id="numero_exterior" type="text" class="validate" data-length="10" required value="<?php echo $datos['numero_exterior']; ?>">
+              <label for="numeroExterior">Número Exterior:</label>
+            </div>
+            <div class="input-field">
+              <i class="material-icons prefix">phone</i>
+              <input id="colonia" type="text" class="validate" data-length="30" required value="<?php echo $datos['colonia']; ?>">
+              <label for="colonia">Colonia:</label>
+            </div>
+            <div class="input-field">
+              <i class="material-icons prefix">phone</i>
+              <input id="municipio" type="text" class="validate" data-length="50" required value="<?php echo $datos['municipio']; ?>">
+              <label for="municipio">Municipio:</label>
+            </div>    
+            <div class="input-field">
+              <i class="material-icons prefix">location_on</i>
+              <input id="cp" type="number" class="validate" data-length="6" required value="<?php echo $datos['cp']; ?>">
+              <label for="cp">Codigo Postal:</label>
+            </div>
             <div class="input-field">
               <i class="material-icons prefix">mail</i>
               <input id="email" type="text" class="validate" data-length="30" required value="<?php echo $datos['email']; ?>">
@@ -131,24 +146,56 @@ if (isset($_POST['id']) == false) {
             <br>
             <div class="input-field">
               <i class="material-icons prefix">location_on</i>
-              <input id="direccion" type="text"  class="validate" data-length="100" required value="<?php echo $datos['direccion']; ?>">
-              <label for="direccion">Direccion:</label>
+              <input id="calle" type="text"  class="validate" data-length="50" required value="<?php echo $datos['calle']; ?>">
+              <label for="calle">Calle:</label>
             </div>
             <div class="input-field">
               <i class="material-icons prefix">location_city</i>
-              <input id="colonia" type="text" class="validate" data-length="30" required value="<?php echo $datos['colonia']; ?>">
-              <label for="colonia">Colonia:</label>
+              <input id="numeroInterior" type="text" class="validate" data-length="10" required value="<?php echo $datos['numero_interior']; ?>">
+              <label for="numeroInterior">Número Interior:</label>
             </div> 
             <div class="input-field">
               <i class="material-icons prefix">location_city</i>
               <input id="localidad" type="text" class="validate" data-length="30" required value="<?php echo $datos['localidad']; ?>">
               <label for="localidad">Localidad:</label>
             </div> 
+            <select id="estado" name="estado" class="browser-default">
+											<!--OPTION PARA QUE LA SELECCION QUEDE POR DEFECTO VACIA-->
+											
+											<?php 
+											$idEstado = $datos['estado_mex'];
+											$consultaEstado = mysqli_query($conn, "SELECT * FROM estados_mex WHERE id=$idEstado");
+											if (mysqli_num_rows($consultaEstado) == 0){
+											  echo '<script>M.toast({html:"Hubo un error al obtener el estado", classes: "rounded"})</script>';
+											  echo '<option value="100" select> Seleccione un estado de la república</option>';
+											}else{
+											  while($seleccionEstado =mysqli_fetch_array($consultaEstado)){
+											   ?>
+												<option value="<?php echo $seleccionEstado['id'];?>"><?php echo $seleccionEstado['nombre'];?></option>
+											  <?php
+											  }
+								  }
+												// REALIZAMOS LA CONSULTA A LA BASE DE DATOS MYSQL Y GUARDAMOS EN FORMARTO ARRAY EN UNA VARIABLE $consulta
+											$consulta = mysqli_query($conn,"SELECT * FROM estados_mex");
+												//VERIFICAMOS QUE LA VARIABLE SI CONTENGA INFORMACION
+											if (mysqli_num_rows($consulta) == 0) {
+												echo '<script>M.toast({html:"No se encontraron estados.", classes: "rounded"})</script>';
+											} else {
+													//RECORREMOS UNO A UNO LOS ARTICULOS CON EL WHILE
+												while($estados = mysqli_fetch_array($consulta)) {
+														//Output
+													?>                      
+													<option value="<?php echo $estados['id'];?>"><?php echo $estados['nombre'];// MOSTRAMOS LA INFORMACION HTML?></option>
+													<?php
+												}//FIN while
+											}//FIN else
+											?>
+										</select>
             <div class="input-field">
-              <i class="material-icons prefix">location_on</i>
-              <input id="cp" type="number" class="validate" data-length="6" required value="<?php echo $datos['cp']; ?>">
-              <label for="cp">Codigo Postal:</label>
-            </div>
+              <i class="material-icons prefix">phone</i>
+              <input id="telefono" type="text" class="validate" data-length="13" required value="<?php echo $datos['telefono']; ?>">
+              <label for="telefono">Teléfono:</label>
+            </div> 
             <div class="input-field">
               <select id="empresa" name="empresa" class="browser-default">              
                 <!--OPTION PARA QUE LA SELECCION QUEDE POR DEFECTO-->

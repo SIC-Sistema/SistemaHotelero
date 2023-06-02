@@ -78,7 +78,12 @@ if (mysqli_num_rows($sql_art_stock)>0) {
 					<li><a href = "cajas.php" class="black-text"><i class="material-icons">list</i>Cajas </a></li> 
 					<li><a href = "credito.php" class="black-text"><i class="material-icons">credit_card</i>Credito </a></li> 
 					<li><a href = "historial_cortes.php" class="black-text"><i class="material-icons">content_cut</i>Historial Cortes </a></li> 
-					<li><a href = "reportes.php" class="black-text"><i class="material-icons">assessment</i>Reportes </a></li> 
+					<li><a href = "reportes.php" class="black-text"><i class="material-icons">assessment</i>Reportes </a></li>
+					<li><a class='dropdown-btn1 black-text' data-target='sub-dropdown'><i class="material-icons left">assignment_ind</i> Facturación <i class="material-icons right">chevron_right</i></a></li>
+					<ul id='sub-dropdown' class='dropdown-content'>
+				    	<li><a href="emisor_sat.php" class="black-text"><i class="material-icons">assignment_late</i>Emisor</a></li>   
+				    	<li><a href="receptores_sat.php" class="black-text"><i class="material-icons">assignment_turned_in</i>Receptores </a></li>
+				    </ul> 
 				</ul>
  				<li><a class='dropdown-button' data-target='dropdown4'><b><?php echo $_SESSION['user_name'];?> </b><i class="material-icons right">arrow_drop_down</i></a></li>
 				<ul id='dropdown4' class='dropdown-content'>				    

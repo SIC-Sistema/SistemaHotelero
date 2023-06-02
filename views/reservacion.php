@@ -39,7 +39,7 @@
     	//FUNICION QUE MUESTRA LA INFORMACION DEL CLIENTE SI SELECCIONAMOS ALGUNO O VACIO PARA NUEVO
     	function mostrarCliente(id_cliente) {
     		//MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO NE LA DIRECCION "../php/control_reservaciones.php"
-	      	$.post("../php/control_reservaciones.php", {
+			$.post("../php/control_reservaciones.php", {
 		        //Cada valor se separa por una ,
 		            accion: 1,
 		            id_cliente: id_cliente,
@@ -122,13 +122,8 @@
 	        clienteEntra = true;
 	        if (cliente == '') {
 		          var textoNombre = $("input#nombreCliente").val();//ej:LA VARIABLE "textoNombre" GUARDAREMOS LA INFORMACION QUE ESTE EN EL INPUT QUE TENGA EL id = "nombreCliente"
-			      var textoTelefono = $("input#telefono").val();// ej: TRAE LE INFORMACION DEL INPUT FILA 
+				  var textoTelefono = $("input#telefono").val();// ej: TRAE LE INFORMACION DEL INPUT FILA 
 			      var textoEmail = $("input#email").val();
-			      var textoRFC = $("input#rfc").val();
-			      var textoDireccion = $("input#direccion").val();
-			      var textoColonia = $("input#colonia").val();
-			      var textoLocalidad = $("input#localidad").val();
-			      var textoCP = $("input#cp").val();
 			      var textoLimpieza = $("input#limpieza").val();
 
 			      // CREAMOS CONDICIONES QUE SI SE CUMPLEN MANDARA MENSAJES DE ALERTA EN FORMA DE TOAST
@@ -136,18 +131,17 @@
 			      if (textoNombre == "") {
 			       	msj = 'El campo Nombre Cliente se encuentra vacío.';
 			      }else if(textoTelefono.length < 10){
-			       	msj = 'El Telefono tiene que tener al menos 10 dijitos.';
-			      }else if(textoEmail == ""){
-			        msj = "Por favor ingrese un Email.";
-			      }else if (!validar_email(textoEmail)) {
+			       	msj = 'El Telefono tiene que tener al menos 10 digitos.';
+			      }else if (!validar_email(textoEmail) && textoEmail != "" ) {
 			        msj = "Por favor ingrese un Email correcto.";
 			      }else{
 			      	clienteEntra = false;
 			      }
 	        }else{
 	        	clienteEntra = false;
-	        	var textoNombre = ''; var textoTelefono = ''; var textoEmail = ''; var textoRFC = ''; var textoDireccion = '';
-			    var textoColonia = ''; var textoLocalidad = ''; var textoCP = ''; var textoLimpieza = '';
+	        	var textoNombre = '';  var textoTelefono = '';
+				var textoEmail = '';
+			    var textoLimpieza = '';
 	        }
 
 	        if (clienteEntra) {
@@ -171,15 +165,10 @@
 		          //Cada valor se separa por una ,
 		            accion: 3,
 		            valorNombre: textoNombre,
+					valorTelefono: textoTelefono,
+					valorEmail: textoEmail,
+					valorLimpieza: textoLimpieza,
 		            referenciaB: referenciaB,
-		            valorTelefono: textoTelefono,
-		            valorEmail: textoEmail,
-		            valorRFC: textoRFC,
-		            valorDireccion: textoDireccion,
-		            valorColonia: textoColonia,
-		            valorLocalidad: textoLocalidad,
-		            valorCP: textoCP,
-		            valorLimpieza: textoLimpieza,
 		            valorCliente: cliente,
 		            valorHabitacion: habitacion,
 		            valorNomResp: NomResp,
@@ -197,6 +186,7 @@
     	}
     	 //FUNCION QUE AL USAR VALIDA LA VARIABLE QUE LLEVE UN FORMATO DE CORREO 
 	    function validar_email( email )   {
+			
 	      var regex = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
 	      return regex.test(email) ? true : false;
 	    }; 
@@ -207,7 +197,7 @@
 		<!-- CREAMOS UN DIV EL CUAL TENGA id = "resultado_insert"  PARA QUE EN ESTA PARTE NOS MUESTRE LOS RESULTADOS EN TEXTO HTML DEL SCRIPT EN FUNCION  -->
      	<div id="resultado_insert"></div>
 		<div class="row col s12">
-			<div class="col s12 m6">
+			<div class="col s12 m12">
 				<div class="row"><br>
 		   		  <ul class="collection">
 		            <li class="collection-item avatar">
@@ -222,58 +212,31 @@
 					  ?>					  	
 		                <div class="row col s12" id="infoCliente">
 					        <b>		
-					            <div class="col s12">
+					            <div class="col s12 m6">
 					              	<b class="indigo-text col s12 m4"><br>NOMBRE: </b>
 					              	<div class="col s12 m8">
 							        	<input id="nombreCliente" type="text" class="validate" data-length="100"  onkeyup="buscarClientes()" required>	
 									</div>
 					        	</div>
-					            <div class="col s12" id="clienteBusqueda"><br><br></div> 
+					            <div class="col s12 m6" id="clienteBusqueda"></div> 
 					            <input type="hidden" name="id_cliente" id="id_cliente" value="">             	
-					            <div class="col s12">
-					              	<b class="indigo-text col s12 m4"><br>DIRECCION: </b>
+					            
+								<div class="col s12 m6">
+					              	<b class="indigo-text col s12 m4"><br>TELÉFONO: </b>
 					              	<div class="col s12 m8">
-							            <input id="direccion" type="text" class="validate" data-length="100" required>	
+							            <input id="telefono" type="number" class="validate" data-length="10">	
 							        </div>
-					            </div>     
-					            <div class="col s12">
-					              	<b class="indigo-text col s12 m3"><br>COLONIA: </b>
-					              	<div class="col s12 m5">
-							            <input id="colonia" type="text" class="validate" data-length="20"  required>	
-							        </div>
-							        <b class="indigo-text col s12 m1"><br>CP: </b>
-					              	<div class="col s12 m3">
-							            <input id="cp" type="text" class="validate" data-length="6"  required>	
-							        </div>
-					            </div>   
-					            <div class="col s12">
-					              	<b class="indigo-text col s12 m4"><br>LOCALIDAD: </b>
-					              	<div class="col s12 m8">
-							            <input id="localidad" type="text" class="validate" data-length="20" required>	
-							        </div>
-					            </div>  
-					            <div class="col s12">
-					              	<b class="indigo-text col s12 m4"><br>RFC: </b>
-					              	<div class="col s12 m8">
-							            <input id="rfc" type="text" class="validate" data-length="6"  required>	
-							        </div>
-					            </div>  
-					            <div class="col s12">
+					            </div>
+								<div class="col s12 m6">
 					              	<b class="indigo-text col s12 m4"><br>EMAIL: </b>
 					              	<div class="col s12 m8">
-							            <input id="email" type="text"  required>	
+							            <input id="email" type="text" class="validate" data-length="100">	
 							        </div>
 					            </div>
-					            <div class="col s12">
-					              	<b class="indigo-text col s12 m4"><br>TELEFONO: </b>
-					              	<div class="col s12 m8">
-							            <input id="telefono" type="text" class="validate" data-length="10"  required>	
-							        </div>
-					            </div>
-					            <div class="col s12">
+					            <div class="col s12 m6">
 					              	<b class="indigo-text col s12 m4"><br>LIMPIEZA: </b>
 					              	<div class="col s12 m8">
-							            <input id="limpieza" type="text" class="validate" data-length="100"  required>	
+							            <input id="limpieza" type="text" class="validate" data-length="100">	
 							        </div>
 					            </div>		            		
 					        </b>
@@ -282,15 +245,15 @@
 		          </ul>
 		        </div>
 			</div>
-			<div class="col s12 m6">
-				<div class="row"><br>
+			<div class="col s12 m12">
+				<div class="row">
 		   		  <ul class="collection">
 		            <li class="collection-item avatar">
 		              <img src="../img/hotel.png" alt="" class="circle"><br>
-		              <span class="title"><b>DETALLES DE HABITACION</b></span><br><br>
-		              <div class="col s12"><br>
-		              		<b class="indigo-text col s12 m5"><br>HABITACION: </b>
-		              		<div class="col s12 m6"><br>
+		              <span class="title"><b>DETALLES DE HABITACION</b></span><br>
+		              <div class="col s12 m12">
+		              		<b class="indigo-text col s12 m6"><br>HABITACION: </b>
+		              		<div class="col s12 m6">
 					            <select id="habitacion" name="habitacion" class=" browser-default validate" onchange="mostrarHabitacion();">              
 					              <!--OPTION PARA QUE LA SELECCION QUEDE POR DEFECTO-->
 					              <?php
@@ -318,22 +281,22 @@
 					        </div>
 		              </div>
 		              <div class="row" id="infoHabitacion"><b>		              	
-		              	<div class="col s12"><br>
+		              	<div class="col s12 m6"><br>
 		              		<b class="indigo-text col s12 m5">ESTADO: </b>		              		
 		              	</div>      
-		              	<div class="col s12"><br>
+		              	<div class="col s12 m6"><br>
 		              		<b class="indigo-text col s12 m5">HASTA: </b>		              		
 		              	</div>  
-		              	<div class="col s12"><br>
+		              	<div class="col s12 m6"><br>
 		              		<b class="indigo-text col s12 m5">NIVEL / PISO: </b>		              		
 		              	</div> 		              	         		
-		              	<div class="col s12"><br>
+		              	<div class="col s12 m6"><br>
 		              		<b class="indigo-text col s12 m5">DESCRIPCION: </b><br>		              		
 		              	</div>
-		              	<div class="col s12"><br>
-		              		<b class="indigo-text col s12 m5">TIPO DE HABITACION: </b><br>
+		              	<div class="col s12 m6"><br>
+		              		<b class="indigo-text col s12 m6">TIPO DE HABITACION: </b><br>
 		              	</div> 
-		              	<div class="col s12"><br><br>
+		              	<div class="col s12 m6"><br><br>
 		              		<b class="indigo-text col s12 m5">PRECIO POR DIA: <br><br></b>		              				
 		              	</div>
 		              </b></div>

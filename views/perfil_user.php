@@ -1,6 +1,8 @@
 <?php
 //INCLUIMOS EL ARCHIVO QUE CONTIENE LA BARRA DE NAVEGACION TAMBIEN TIENE (scripts, conexion, is_logged, modals)
 include('fredyNav.php');
+$idEmisor = 1;
+$datosEmisor = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `emisores_sat` WHERE id=$idEmisor"));
 //VERIFICAMOS QUE SI NOS ENVIE POR POST EL ID DEL CLIENTE
 if ($_SESSION['user_id'] == false) {
   ?>
@@ -105,53 +107,55 @@ if ($_SESSION['user_id'] == false) {
       <!-- CREAMOS UN DIV EL CUAL TENGA id = "modal"  PARA QUE EN ESTA PARTE NOS MUESTRE LOS RESULTADOS EN TEXTO HTML DEL SCRIPT EN FUNCION  -->
       <div id="modal"></div>
       <div class="container" id="update_perfil">
-        <div class="row">
-          <h2 class="hide-on-med-and-down">Perfil:</h2>
-          <h4 class="hide-on-large-only">Perfil:</h4>
-        </div>
-        <hr>
-        <div class="row">
-          <b class="col s4 m2 l2">N° Usuario: </b>
-          <div class="col s8 m4 l4"><?php echo $datos['user_id'];?></div>
-          <b class="col s4 m2 l2">Usuario: </b>
-          <div class="col s8 m4 l4">
-            <div class="input-field">
-              <i class="material-icons prefix">person_pin</i>
-              <input type="text" id="usuario" name="usuario" value="<?php echo $datos['user_name'];?>">
-              <label for="usuario">Nombre de usuario</label>
-            </div>            
-          </div>
-          <b class="col s4 m2 l2">Nombre(s): </b>
-          <div class="col s8 m4 l4">
-            <div class="input-field">
-              <i class="material-icons prefix">people</i>
-              <input type="text" id="nombres" name="nombres" value="<?php echo $datos['firstname']; ?>">
-              <label for="nombre">Nombre</label>
-            </div>            
-          </div>
-          <b class="col s4 m2 l2">Apellidos: </b>
-          <div class="col s8 m4 l4">
-            <div class="input-field">
-              <i class="material-icons prefix">people</i>
-              <input type="text" id="apellidos" name="apellidos" value="<?php echo $datos['lastname'];?>">
-              <label for="apellidos">Apellidos</label>
+        <br>
+          <div class="row">
+            <div class="row">
+              <h4 class="hide-on-med-and-down center">Perfil de acceso al sistema:</h2>
+              <h4 class="hide-on-large-only center">Perfil de acceso al sistema:</h4>
             </div>
+            <hr>
+            <div class="row">
+              <b class="col s4 m2 l2">N° Usuario: </b>
+              <div class="col s8 m4 l4"><?php echo $datos['user_id'];?></div>
+              <b class="col s4 m2 l2">Usuario: </b>
+              <div class="col s8 m4 l4">
+                <div class="input-field">
+                  <i class="material-icons prefix">person_pin</i>
+                  <input type="text" id="usuario" name="usuario" value="<?php echo $datos['user_name'];?>">
+                  <label for="usuario">Nombre de usuario</label>
+                </div>            
+              </div>
+              <b class="col s4 m2 l2">Nombre(s): </b>
+              <div class="col s8 m4 l4">
+                <div class="input-field">
+                  <i class="material-icons prefix">people</i>
+                  <input type="text" id="nombres" name="nombres" value="<?php echo $datos['firstname']; ?>">
+                  <label for="nombre">Nombre</label>
+                </div>            
+              </div>
+              <b class="col s4 m2 l2">Apellidos: </b>
+              <div class="col s8 m4 l4">
+                <div class="input-field">
+                  <i class="material-icons prefix">people</i>
+                  <input type="text" id="apellidos" name="apellidos" value="<?php echo $datos['lastname'];?>">
+                  <label for="apellidos">Apellidos</label>
+                </div>
+              </div>
+              <b class="col s4 m2 l2">E-mail: </b>
+              <div class="col s8 m4 l4">
+                <div class="input-field">
+                  <i class="material-icons prefix">mail</i>
+                  <input type="text" id="email" name="email" value="<?php echo $datos['user_email'];?>">
+                  <label for="email">E-mail</label>
+                </div>            
+              </div>
+              <b class="col s4 m2 l2"><br>Area: </b>
+              <div class="col s8 m4 l4"><br><?php echo $datos['area'];?></div>
+            </div>
+            <hr>
+            <a onclick="editar_pass(<?php echo $datos['user_id'];?>);" class="waves-effect waves-light btn grey darken-3 right"><i class="material-icons right">security</i>Editar contraseña</a>
+            <a onclick="editar_perfil(<?php echo $datos['user_id'];?>);" class="waves-effect waves-light btn grey darken-4 right"><i class="material-icons right">edit</i>Editar perfil</a><br><br>
           </div>
-          <b class="col s4 m2 l2">E-mail: </b>
-          <div class="col s8 m4 l4">
-            <div class="input-field">
-              <i class="material-icons prefix">mail</i>
-              <input type="text" id="email" name="email" value="<?php echo $datos['user_email'];?>">
-              <label for="email">E-mail</label>
-            </div>            
-          </div>
-          <b class="col s4 m2 l2"><br>Area: </b>
-          <div class="col s8 m4 l4"><br><?php echo $datos['area'];?></div>
-        </div>
-        <hr>
-        <a onclick="editar_pass(<?php echo $datos['user_id'];?>);" class="waves-effect waves-light btn grey darken-3 right"><i class="material-icons right">security</i>Editar contraseña</a>
-        <a onclick="editar_perfil(<?php echo $datos['user_id'];?>);" class="waves-effect waves-light btn grey darken-4 right"><i class="material-icons right">edit</i>Editar perfil</a><br><br>
-      </div>
     </body>
   </html>
 <?php 

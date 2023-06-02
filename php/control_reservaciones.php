@@ -26,29 +26,29 @@ switch ($Accion) {
             $habitacion = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `habitaciones` WHERE id=$id"));            
             ?>
             	<div class="row col s12" id="infoHabitacion"><b>
-		              	<div class="col s12"><br><br>
+		              	<div class="col s12 m6"><br>
 		              		<b class="indigo-text col s12 m5">ESTADO: </b>
 		              		<span class="new badge <?php echo ($habitacion['estatus'] == 0)?'green':'red';?> prefix" data-badge-caption=""><?php echo ($habitacion['estatus'] == 0)?'Disponible':'Ocupada';?></span>
 		              	</div> 
-		              	<div class="col s12"><br>
+		              	<div class="col s12 m6"><br>
 		              		<b class="indigo-text col s12 m5">HASTA: </b>
 		              		<?php echo 'Por Definir';?>
 		              	</div>      
-		              	<div class="col s12"><br>
+		              	<div class="col s12 m6"><br>
 		              		<b class="indigo-text col s12 m5">NIVEL / PISO: </b>
 		              		<?php echo $habitacion['piso'];?>
 		              	</div>           		
-		              	<div class="col s12"><br>
+		              	<div class="col s12 m6"><br>
 		              		<b class="indigo-text col s12 m5">DESCRIPCION: </b>
 		              		<?php echo $habitacion['descripcion'];?>
 		              	</div>
-		              	<div class="col s12"><br>
-		              		<b class="indigo-text col s12 m5">TIPO DE HABITACION: </b>
-		              		<br><?php echo $habitacion['tipo'];?>
+		              	<div class="col s12 m6"><br>
+		              		<b class="indigo-text col s12 m6">TIPO DE HABITACION: </b>
+		              		<?php echo $habitacion['tipo'];?>
 		              	</div> 
-		              	<div class="col s12"><br>
+		              	<div class="col s12 m6"><br>
 		              		<b class="indigo-text col s12 m5">PRECIO POR DIA: $</b>
-		              		<div class="col s10 m5">
+		              		<div class="col s12 m6">
 				              <input id="precioXDia" type="text" class="validate" data-length="100" value="<?php echo sprintf('%.2f', $habitacion['precio']);?>" required onchange="total();">	
 				            </div>   		
 		              	</div>
@@ -60,71 +60,45 @@ switch ($Accion) {
         break;
     case 1:///////////////           IMPORTANTE               ///////////////
         // $Accion es igual a 1 realiza:
-
+		
         //CON POST RECIBIMOS EL ID DEL CLIENTE DEL FORMULARIO POR EL SCRIPT "reservacion.php" QUE NESECITAMOS PARA BUSCAR
     	$id_cliente = $conn->real_escape_string($_POST['id_cliente']);  
     	if ($id_cliente != 0) {
             //HACEMOS LA CONSULTA DEL CLIENTE Y MOSTRAMOS LA INFOR EN FORMATO HTML
             $cliente = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `clientes` WHERE id=$id_cliente"));
-            ?>
-            	<div class="row col s12" id="infoCliente">
-			        <b>		
-			            <div class="col s12">
-			              	<b class="indigo-text col s12 m4"><br>NOMBRE: </b>
-			              	<div class="col s12 m8">
-					        	<input id="nombreCliente" type="text" class="validate" data-length="100" value="<?php echo $cliente['nombre'];?>" onkeyup = 'buscarClientes()' required>	
-							</div>
-			        	</div>
-			            <div class="col s12" id="clienteBusqueda"><br><br></div>
-					    <input type="hidden" name="id_cliente" id="id_cliente" value="<?php echo $id_cliente;?>">           	
-			            <div class="col s12">
-			              	<b class="indigo-text col s12 m4"><br>DIRECCION: </b>
-			              	<div class="col s12 m8">
-					            <input id="direccion" type="text" class="validate" data-length="100" value="<?php echo $cliente['direccion'];?>" required>	
-					        </div>
-			            </div>     
-			            <div class="col s12">
-			              	<b class="indigo-text col s12 m3"><br>COLONIA: </b>
-			              	<div class="col s12 m5">
-					            <input id="colonia" type="text" class="validate" data-length="20" value="<?php echo $cliente['colonia'];?>" required>	
-					        </div>
-					        <b class="indigo-text col s12 m1"><br>CP: </b>
-			              	<div class="col s12 m3">
-					            <input id="cp" type="text" class="validate" data-length="6" value="<?php echo $cliente['cp'];?>" required>	
-					        </div>
-			            </div>   
-			            <div class="col s12">
-			              	<b class="indigo-text col s12 m4"><br>LOCALIDAD: </b>
-			              	<div class="col s12 m8">
-					            <input id="localidad" type="text" class="validate" data-length="20" value="<?php echo $cliente['localidad'];?>" required>	
-					        </div>
-			            </div>  
-			            <div class="col s12">
-			              	<b class="indigo-text col s12 m4"><br>RFC: </b>
-			              	<div class="col s12 m8">
-					            <input id="rfc" type="text" class="validate" data-length="6" value="<?php echo $cliente['rfc'];?>" required>	
-					        </div>
-			            </div>  
-			            <div class="col s12">
-			              	<b class="indigo-text col s12 m4"><br>EMAIL: </b>
-			              	<div class="col s12 m8">
-					            <input id="email" type="text" value="<?php echo $cliente['email'];?>" required>	
-					        </div>
-			            </div>
-			            <div class="col s12">
-			              	<b class="indigo-text col s12 m4"><br>TELEFONO: </b>
-			              	<div class="col s12 m8">
-					            <input id="telefono" type="text" class="validate" data-length="10" value="<?php echo $cliente['telefono'];?>" required>	
-					        </div>
-			            </div>
-			            <div class="col s12">
-			              	<b class="indigo-text col s12 m4"><br>LIMPIEZA: </b>
-			              	<div class="col s12 m8">
-					            <input id="limpieza" type="text" class="validate" data-length="100" value="<?php echo $cliente['limpieza'];?>" required>	
-					        </div>
-			            </div>		            		
-			        </b>
-		        </div>
+			?>
+			
+			<div class="row col s12" id="infoCliente">
+					        <b>		
+					            <div class="col s12 m6">
+					              	<b class="indigo-text col s12 m4"><br>NOMBRE: </b>
+					              	<div class="col s12 m8">
+							        	<input id="nombreCliente" type="text" class="validate" data-length="100"   value="<?php echo $cliente['nombre'];?>" onkeyup="buscarClientes()" required>	
+									</div>
+					        	</div>
+					            <div class="col s12 m6" id="clienteBusqueda"></div> 
+					            <input type="hidden" name="id_cliente" id="id_cliente" value="<?php echo $id_cliente;?>">             	
+					            
+								<div class="col s12 m6">
+					              	<b class="indigo-text col s12 m4"><br>TELÉFONO: </b>
+					              	<div class="col s12 m8">
+							            <input id="telefono" type="number" class="validate" value="<?php echo $cliente['telefono'];?>" data-length="10">	
+							        </div>
+					            </div>
+								<div class="col s12 m6">
+					              	<b class="indigo-text col s12 m4"><br>EMAIL: </b>
+					              	<div class="col s12 m8">
+							            <input id="email" type="text" class="validate" value="<?php echo $cliente['email'];?>" data-length="100">	
+							        </div>
+					            </div>
+					            <div class="col s12 m6">
+					              	<b class="indigo-text col s12 m4"><br>LIMPIEZA: </b>
+					              	<div class="col s12 m8">
+							            <input id="limpieza" type="text" class="validate" value="<?php echo $cliente['limpieza'];?>" data-length="100">	
+							        </div>
+					            </div>		            		
+					        </b>
+				        </div>
        	<?php
         }//FIN IF
        	break;
@@ -138,7 +112,7 @@ switch ($Accion) {
 			//MOSTRARA LOS ARTICULOS QUE SE ESTAN BUSCANDO Y GUARDAMOS LA CONSULTA SQL EN UNA VARIABLE $sql......
 			$sql = mysqli_query($conn,"SELECT * FROM `clientes` WHERE id = 'Texto' OR nombre LIKE '%$Texto%' OR rfc LIKE '%$Texto%' LIMIT 1");
 			if (mysqli_num_rows($sql) == 0) {
-				echo '<br><br>';
+				
         	} else {
         		$clienteIgual = mysqli_fetch_array($sql);
         		?>
@@ -154,7 +128,7 @@ switch ($Accion) {
         		<?php
         	}	
 		}else{//ESTA CONSULTA SE HARA SIEMPRE QUE NO ALLA NADA EN EL BUSCADOR Y GUARDAMOS LA CONSULTA SQL EN UNA VARIABLE $sql...
-			echo '<br><br>';
+			
 		}//FIN else $Texto VACIO O NO
     	// code...
     	break;
@@ -219,26 +193,33 @@ switch ($Accion) {
         	// SI ESTA DISPONIBLE REGISTRAMOS LA RESERVACION
 
         	$cliente = $conn->real_escape_string($_POST['valorCliente']);
+			
         	if ($cliente == '') {
         		// SI ESTA VACIO QUIERE DECIR QUE ES UN CLIENTE NUEVO O NO REGISTRADO Y HAY QUE REGISTRARLO EN LA BD
         		//CON POST RECIBIMOS TODAS LAS VARIABLES DEL FORMULARIO POR EL SCRIPT "add_cliente.php" QUE NESECITAMOS PARA INSERTAR
 		    	$Nombre = $conn->real_escape_string($_POST['valorNombre']);
+				$calle = "";
+				$numeroExterior = "";
+				$numeroInterior = "";
+				$Colonia = "";
+				$Localidad = "";
+				$municipio = "";
+				$estadoMex = "";
+				$CP = "";
 				$Telefono = $conn->real_escape_string($_POST['valorTelefono']);
 				$Email = $conn->real_escape_string($_POST['valorEmail']);
-				$RFC = $conn->real_escape_string($_POST['valorRFC']);
-				$Direccion = $conn->real_escape_string($_POST['valorDireccion']);
-				$Colonia = $conn->real_escape_string($_POST['valorColonia']);
-				$Localidad = $conn->real_escape_string($_POST['valorLocalidad']);
-				$CP = $conn->real_escape_string($_POST['valorCP']);
+				$RFC = "";
 				$Limpieza = $conn->real_escape_string($_POST['valorLimpieza']);
-
+				$direccion = "";
 				//VERIFICAMOS QUE NO HALLA UN CLIENTE CON LOS MISMOS DATOS
-				if(mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `clientes` WHERE(nombre='$Nombre' AND direccion='$Direccion' AND colonia='$Colonia' AND cp='$CP') OR email='$Email'"))>0){
+				if(mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `clientes` WHERE(nombre='$Nombre' AND colonia='$Colonia' AND cp='$CP') OR email='$Email'"))>0){
 			 		echo '<script >M.toast({html:"Ya se encuentra un cliente con los mismos datos registrados.", classes: "rounded"})</script>';
-			 	}else{
+				}else{
 			 		// SI NO HAY NUNGUNO IGUAL CREAMOS LA SENTECIA SQL  CON LA INFORMACION REQUERIDA Y LA ASIGNAMOS A UNA VARIABLE
-			 		$sql = "INSERT INTO `clientes` (nombre, telefono, direccion, colonia, cp, rfc, email, localidad, limpieza, usuario, fecha) 
-						VALUES('$Nombre', '$Telefono', '$Direccion', '$Colonia', '$CP', '$RFC', '$Email', '$Localidad', '$Limpieza', '$id_user','$Fecha_hoy')";
+			 		$sql = "INSERT INTO `clientes` (nombre, rfc, email, telefono, direccion, calle, numero_exterior, 
+					numero_interior, colonia, localidad, municipio, estado_mex, cp, limpieza, usuario, fecha) 
+						VALUES('$Nombre', '$RFC', '$Email', '$Telefono', '$direccion', '$calle', '$numeroExterior', '$numeroInterior',
+						 '$Colonia', '$Localidad', '$municipio', '$estadoMex', '$CP', '$Limpieza', '$id_user','$Fecha_hoy')";
 					//VERIFICAMOS QUE LA SENTECIA FUE EJECUTADA CON EXITO!
 					if(mysqli_query($conn, $sql)){
 						echo '<script >M.toast({html:"El cliente se dió de alta satisfactoriamente.", classes: "rounded"})</script>';
@@ -263,7 +244,9 @@ switch ($Accion) {
 			 		echo '<script >M.toast({html:"Ya se encuentra una reservacion con los mismos datos registrados.", classes: "rounded"})</script>';
 			 	}else{
 			 		// SI NO HAY NUNGUNO IGUAL CREAMOS LA SENTECIA SQL  CON LA INFORMACION REQUERIDA Y LA ASIGNAMOS A UNA VARIABLE
-			 		$sql = "INSERT INTO `reservaciones` (`id_cliente`, `id_habitacion`, `nombre`, `fecha_entrada`, `fecha_salida`, `observacion`, `total`, `anticipo`, `estatus`, `usuario`, `fecha_registro`) 	VALUES('$cliente', '$habitacion', '$Responsable', '$Entrada', '$Salida', '$observacion', '$total', '$anticipo', 0, '$id_user','$Fecha_hoy')";
+			 		$sql = "INSERT INTO `reservaciones` (`id_cliente`, `id_habitacion`, `nombre`, `fecha_entrada`, `fecha_salida`, `observacion`, `total`, `anticipo`, 
+					`estatus`, `usuario`, `fecha_registro`) 	
+					VALUES('$cliente', '$habitacion', '$Responsable', '$Entrada', '$Salida', '$observacion', '$total', '$anticipo', 0, '$id_user','$Fecha_hoy')";
 					//VERIFICAMOS QUE LA SENTECIA FUE EJECUTADA CON EXITO!
 					if(mysqli_query($conn, $sql)){
 						echo '<script >M.toast({html:"La reservacion se dió de alta satisfactoriamente.", classes: "rounded"})</script>';
