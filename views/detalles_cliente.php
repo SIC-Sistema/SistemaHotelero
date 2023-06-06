@@ -119,6 +119,7 @@
 	                  <th>Registro</th>
 	                  <th>Fecha Registro</th>
 	                  <th>Acción</th>
+					  <th>Facturar</th>
 	                </tr>
 	              </thead>
 	              <tbody>
@@ -151,7 +152,9 @@
 						   		<td><?php echo $usuario['firstname']; ?></td>
 						  		<td><?php echo $reservacion['fecha_registro']; ?></td>
 						  		<td><a onclick="modal_salida(<?php echo $reservacion['id']; ?>)" class="btn-small blue waves-effect waves-light tooltipped" data-position="bottom" data-tooltip="Cambiar Salida"><i class="material-icons prefix">exit_to_app</i></a></td>
-						  	</tr>
+								<td><form method="post" action="../views/timbrado_cfdis.php">
+								<input id="id" name="id" type="hidden" value="<?php echo $reservacion['id']; ?>"><button class="btn-small waves-effect waves-light green darken-3"><i class="material-icons">description</i></button></form></td>
+							</tr>
 						  	<?php
 						}//FIN while
 					}//FIN ELSE

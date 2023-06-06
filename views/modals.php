@@ -139,3 +139,25 @@
     </div>
 </div>
 <!--Cierre modal LIMPIEZA-->
+
+<div id="modalBuscarReceptores" class="modal"><br>
+  <div class="modal-content">
+    <div class="row">
+      <h6 class="col s12 m5 l5"></h6>
+      <!--    //////    INPUT DE EL BUSCADOR    ///////   -->
+      <form class="col s12 m7 l7">
+        <div class="row">
+          <div class="input-field col s12">
+            <i class="material-icons prefix">search</i>
+            <input id="busquedaReceptores" name="busquedaReceptores" type="text" class="validate" autocomplete="off" onKeyUp="buscarReceptores();" autofocus="true" required>
+            <label for="busquedaReceptores">Buscar Receptor(RFC, Razón Social)</label>
+          </div>
+        </div>
+      </form>
+      <div id="tablaReceptores"></div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <a href="#" class="modal-action modal-close waves-effect waves-green red btn-small">Cerrar<i class="material-icons left">close</i></a>
+  </div><br>
+</div>

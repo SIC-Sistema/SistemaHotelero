@@ -12,7 +12,7 @@
           texto: texto,
           accion: 3,
           }, function(mensaje){
-              $("#tablaReceptores").html(mensaje);
+              $("#tablaReceptoresSat").html(mensaje);
           });
       };
     </script>
@@ -48,7 +48,7 @@
                 <th>Editar</th>
               </tr>
             </thead>
-            <tbody id="tablaReceptores">
+            <tbody id="tablaReceptoresSat">
             </tbody>
           </table>
         </div><br><br>

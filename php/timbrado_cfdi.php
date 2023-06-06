@@ -2,7 +2,7 @@
 require_once('vendor/autoload.php');
 include ('conexion.php');
 $idEmisor = 1;
-$idReceptor = 4;
+$idReceptor = $conn->real_escape_string($_POST['valorReceptor']);
 
 $queryClientes = mysqli_query($conn, "SELECT * FROM facturar_compras WHERE id_compra=1");
 $datosEmisor = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `emisores_sat` WHERE id=$idEmisor"));
