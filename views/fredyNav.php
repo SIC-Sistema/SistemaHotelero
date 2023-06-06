@@ -64,6 +64,13 @@ if (mysqli_num_rows($sql_art_stock)>0) {
 					<li><a href = "inventario.php" class="black-text"><i class="material-icons">list</i>Inventario<span class="new badge pink" data-badge-caption=""><?php echo $notificacion;?></span></a></li>	
 					<li><a href = "salida_productos.php" class="black-text"><i class="material-icons">exit_to_app</i>Salida (Productos)</a></li>	
  				</ul>
+
+				<li><a class='dropdown-button' data-target='dropdown6'><i class="material-icons left">book</i><b>Facturación</b> <i class="material-icons right">arrow_drop_down</i></a></li>
+				<ul id='dropdown6' class='dropdown-content'>
+
+					<li><a href = "unidades.php" class="black-text"><i class="material-icons">loupe</i>Unidades</a></li> 
+				</ul>
+				
  				<li><a class='dropdown-button' data-target='dropdown5'><i class="material-icons left">person_pin</i><b>Admin</b> <i class="material-icons right">arrow_drop_down</i></a></li>
 				<ul id='dropdown5' class='dropdown-content'>
 					<li><a href = "usuarios.php" class="black-text"><i class="material-icons">people</i>Usuarios </a></li> 

@@ -20,6 +20,11 @@
   function recargar_articulo() {
     setTimeout("location.href='../views/articulos.php'", 800);
   }
+  
+  function recargar_unidades() {
+    setTimeout("location.href='../views/unidades.php'", 800);
+  }
+
   function recargar_inventario() {
     setTimeout("location.href='../views/inventario.php'", 800);
   }
