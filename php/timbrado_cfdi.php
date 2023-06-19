@@ -1,34 +1,58 @@
 <?php
 require_once('vendor/autoload.php');
 include ('conexion.php');
+$valorDvisionTotal = 0.8403361344537815;
+$valorIva = 0.1600;
+$valorIvaF = "0.160000";
+$valorIsh = 0.03;
+$tasaIsh = "3";
 $idEmisor = 1;
 $idReceptor = $conn->real_escape_string($_POST['valorReceptor']);
+$idReservacion = $conn->real_escape_string($_POST['valorReservacion']);
+date_default_timezone_set('America/Monterrey'); 
+$fecha = date('d/m/Y');
+$hora = date('H:i:s');
 
-$queryClientes = mysqli_query($conn, "SELECT * FROM facturar_compras WHERE id_compra=1");
+$queryImpuestos = mysqli_query ($conn, "SELECT * FROM reservaciones INNER JOIN habitaciones 
+ON reservaciones.id_habitacion = habitaciones.id INNER JOIN unidades 
+ON habitaciones.idunidad = unidades.idunidad WHERE reservaciones.id = $idReservacion");
+$queryReservacion = mysqli_query($conn, "SELECT * FROM reservacion WHERE id_compra=$idReservacion");
 $datosEmisor = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `emisores_sat` WHERE id=$idEmisor"));
 $datosReceptor = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `receptores_sat` WHERE id=$idReceptor"));
 
-while ($clientes = mysqli_fetch_array($queryClientes)) {
-   
-    $arreglodinamico[] = 
-        Array (
-            "Cantidad" => $clientes["cantidad"],
-            "CodigoUnidad" => $clientes["codigo_unidad"],
-            "Unidad" => $clientes["unidad"],
-            "CodigoProducto" => $clientes["codigo_producto"],
-            "Producto" => $clientes["producto"],
-            "PrecioUnitario" => $clientes["precio_unitario"],
-            "Importe" => $clientes["importe"],
-            "ObjetoDeImpuesto" => $clientes["objeto_impuesto"],
-                "Impuestos" => Array ( Array (
-                    "TipoImpuesto" => $clientes["tipo_impuesto"],
-                    "Impuesto" => $clientes["impuesto"],
-                    "Factor" => $clientes["factor"],
-                    "Base" => $clientes["base"],
-                    "Tasa" => $clientes["tasa"],
-                    "ImpuestoImporte" => $clientes["impuesto_importe"]
-                    )
+function round_up($number, $precision)
+{
+    $fig = pow(10, $precision);
+    return (ceil($number * $fig) / $fig);
+}
 
+while ($datosReservacion = mysqli_fetch_array($queryImpuestos)) {
+    $cantidad = 1;
+    $idCliente = $datosReservacion['id_cliente'];
+    $totalFactura = $datosReservacion['total'];
+    $precioUnitarioSinFormato =  $datosReservacion['total'] * $valorDvisionTotal;
+    $precioUnitario = bcdiv($precioUnitarioSinFormato, 1, 2);;
+    $importe = $cantidad * $precioUnitario;
+    $ivaImporte = round_up($importe * $valorIva, 2);
+    $ishImporte = round_up($importe * $valorIsh, 2);
+    $arreglodinamico[] = 
+        Array  (
+            "Cantidad" => $cantidad,
+            "CodigoUnidad" => $datosReservacion["clave"],
+            "Unidad" => $datosReservacion["nombre"],
+            "CodigoProducto" => $datosReservacion["codigo_producto"],
+            "Producto" => $datosReservacion["producto"],
+            "PrecioUnitario" => $precioUnitario,
+            "Importe" => $importe,
+            "ObjetoDeImpuesto" => "02",
+                "Impuestos" => Array ( Array (
+                    "TipoImpuesto" => "1",
+                    "Impuesto" => "2",
+                    "Factor" => "1",
+                    "Base" => $importe,
+                    "Tasa" => $valorIvaF,
+                    "ImpuestoImporte" => $ivaImporte
+                )
                 )
         );
 }
@@ -44,7 +68,7 @@ $csdPassword = $datosEmisor['csd_password'];
 $generarPDF = true;
 $logotipo = $datosEmisor['logotipo'];
 $cfdi = "Factura";
-$opcionesDecimales = "1";
+$opcionesDecimales = "2";
 $numeroDecimales = "2";
 $tipoCFDI = "Ingreso";
 $enviaEmail = false;
@@ -57,8 +81,8 @@ $emailMensaje = $datosEmisor['asunto_email'];
 $segundoSubArreglo = "Encabezado";
 $cfdisRelacionados = "";
 $tipoRelacion = "04";
-$rfcEmisor = $datosEmisor['rfc'];
-$nombreRazonSocialEmisor = $datosEmisor['razon_social'];
+$rfcEmisor = "EKU9003173C9";
+$nombreRazonSocialEmisor = "ESCUELA KEMPER URGATE";
 $regimenFiscalEmisor = $datosEmisor['regimen'];
 $calleEmisor = $datosEmisor['calle'];
 $numeroExteriorEmisor = $datosEmisor['numero_exterior'];
@@ -69,10 +93,10 @@ $municipioEmisor = $datosEmisor['municipio'];
 $estadoEmisor = $datosEmisor['estado_Mx'];
 $paisEmisor = $datosEmisor['pais'];
 $codigoPostalEmisor = $datosEmisor['codigo_postal'];
-$uscoCfdiReceptor = $datosReceptor['uso_cfdi'];;
-$rfcReceptor = $datosReceptor['rfc'];;
-$nombreRazonSocialReceptor = $datosReceptor['razon_social'];
-$regimenFiscalReceptor = $datosReceptor['razon_social'];
+$uscoCfdiReceptor = "G03";
+$rfcReceptor = "SSF1103037F1";
+$nombreRazonSocialReceptor = "SCAFANDRA SOFTWARE FACTORY, ";
+$regimenFiscalReceptor = "601";
 $calleReceptor = $datosReceptor['calle'];
 $numeroExteriorReceptor = $datosReceptor['numero_exterior'];
 $numeroInteriorReceptor = $datosReceptor['numero_interior'];
@@ -81,19 +105,20 @@ $localidadReceptor = $datosReceptor['localidad'];
 $municipioReceptor = $datosReceptor['municipio'];
 $estadoReceptor = $datosReceptor['estado_Mx'];
 $paisReceptor = $datosReceptor['pais'];
-$codigoPostalReceptor = $datosReceptor['codigo_postal'];
-$fecha = "2023-05-07T08:03:16";
+$codigoPostalReceptor = "06470";
+$fecha = "2023-06-13T09:03:16";
 $serie = "AB";
 $folio = "102";
 $metodoPago = "PUE";
 $formaPago = "01";
 $moneda = "MXN";
 $lugarExpedicion = "26015";
-$subTotal = "150";
-$total = "174";
+$subTotal = $importe;
+$total = $importe + $ivaImporte + $ishImporte;
 
 /* Declaración del tercer sub-array y de sus variables usando el estándar variableName*/
 $tercerSubArreglo = "Conceptos";
+$cuartoSubArreglo = "Complemento";
 
 $arregloFactura = Array (
   $primerSubArreglo => Array (
@@ -161,12 +186,25 @@ $arregloFactura = Array (
        "Total" => $total    
    ),
 
-   "$tercerSubArreglo" => $arreglodinamico
+   "$tercerSubArreglo" => $arreglodinamico,
+   
+   "$cuartoSubArreglo" => Array (
+    "ImpuestosLocales" => 
+    Array (
+        Array (
+            "Tipo" => "1",
+            "Nombre" => "Impuesto sobre hospedaje",
+            "Tasa" => $tasaIsh,
+            "Importe" => "$ishImporte",
+        )
+    ),
+     "TipoComplemento" => "5"
+)
+  
 );
 
 $json = json_encode($arregloFactura);
-echo $json;
-/*
+//echo $json;
 $response = $client->request('POST', 'https://testapi.facturoporti.com.mx/servicios/timbrar/json', [
     'body' => $json,
     'headers' => [
@@ -179,23 +217,41 @@ $response = $client->request('POST', 'https://testapi.facturoporti.com.mx/servic
 
 $respuesta =  $response->getBody();
 $jsonRespuesta = json_decode($respuesta, true);
+//echo $respuesta;
 $estadoRecibido = $jsonRespuesta['estatus']['codigo'];
 $mensajeRecibido = $jsonRespuesta['estatus']['descripcion'];
 $errorRecibido = $jsonRespuesta['estatus']['informacionTecnica'];
 $pdfBase64 = $jsonRespuesta['cfdiTimbrado']['respuesta']['pdf'];
+$uuid = $jsonRespuesta['cfdiTimbrado']['respuesta']['uuid'];
 $pdfEnconde = base64_decode($pdfBase64,true);
 if (strpos($pdfEnconde, '%PDF') !== 0) {
-    throw new Exception('PDF no válido');
+    echo '<script>
+        errorTimbrado();
+    </script>';	
 }
-if ($estadoRecibido == '000'){
-    echo $mensajeRecibido;
-    echo $errorRecibido;
-    file_put_contents("factura$rfcReceptor.pdf", $pdfEnconde);
-    header('Content-Type: application/pdf');
-    echo $pdfEnconde;
-}else {
-    echo $mensajeRecibido;
-    echo $errorRecibido;
+//echo $estadoRecibido;
+if ($estadoRecibido != "000"){
+    echo '<script>
+        errorTimbrado();
+    </script>';	   
+}else{
+   
+//echo $mensajeRecibido;
+//echo $errorRecibido;
+//file_put_contents("factura$rfcReceptor.pdf", $pdfEnconde);
+ //header('Content-Type: application/pdf');
+$sql = "INSERT INTO `facturas_generadas` (id_receptor, id_reservacion, id_cliente,  pdf64, fecha, hora, uuid, total) 
+VALUES('$idReceptor', '$idReservacion', '$idCliente', '$pdfBase64', '$fecha', '$hora', '$uuid', '$total')";
+if(mysqli_query($conn, $sql)){
+    $jsonEncodePdf = json_encode($pdfBase64);
+    echo '<script>
+	    imprimirCfdi('.$jsonEncodePdf.')
+	</script>';
+}else{
+    echo '<script>
+		errorTimbrado();
+	</script>';	
+	}
 }
-*/
+
 ?>

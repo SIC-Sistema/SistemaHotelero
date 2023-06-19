@@ -153,7 +153,13 @@
 						  		<td><?php echo $reservacion['fecha_registro']; ?></td>
 						  		<td><a onclick="modal_salida(<?php echo $reservacion['id']; ?>)" class="btn-small blue waves-effect waves-light tooltipped" data-position="bottom" data-tooltip="Cambiar Salida"><i class="material-icons prefix">exit_to_app</i></a></td>
 								<td><form method="post" action="../views/timbrado_cfdis.php">
-								<input id="id" name="id" type="hidden" value="<?php echo $reservacion['id']; ?>"><button class="btn-small waves-effect waves-light green darken-3"><i class="material-icons">description</i></button></form></td>
+								<?php
+									if ($reservacion['estatus'] == 2 && $reservacion['facturado'] == 0){?> 
+										<input id="id" name="id" type="hidden" value="<?php echo $reservacion['id']; ?>"><button class="btn-small waves-effect waves-light green darken-3"><i class="material-icons">description</i></button></form></td>
+								<?php
+									}else{ ?>
+										<input id="id" name="id" type="hidden" value="<?php echo $reservacion['id']; ?>"><button class="disabled btn-small waves-effect waves-light green darken-3"><i class="material-icons">description</i></button></form></td><?php
+									}?>
 							</tr>
 						  	<?php
 						}//FIN while

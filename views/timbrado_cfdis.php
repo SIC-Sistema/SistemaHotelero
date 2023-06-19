@@ -6,10 +6,9 @@
     //ARCHIVO QUE RESTRINGE A QUE SOLO ALGUNOS USUARIOS PUEDAN ACCEDER
     //include('../php/cobrador.php');
     $idServicio = $_POST['id'];
-    //$idServicio = 2;
-    $porcentajeIva = 0.16;
+    $porcentajeIva = 0.16000;
     $porcentajeIsh = 0.03;
-    $porcentajeReduccion = 0.81;
+    $porcentajeReduccion = 0.8403361344537815;
     ?>
     <script>
 			function buscarReceptores(){
@@ -58,13 +57,31 @@
       function timbrarCfdi(id_servicio){
         var idReceptorT = $("input#idReceptor").val();
         idServicio = id_servicio;
-        $.post("../php/timbrado_cfdi.php", {
-				  valorReceptor: idReceptorT,
-          valorIdServicio: idServicio,
-				}, function(mensaje) {
-				  $("#resultado_info").html(mensaje);
-        })
+        if (typeof idReceptorT === "undefined") {
+            M.toast({html:"Por favor, selecciona un receptor fiscal", classes: "rounded"});
+          }else {
+          $.post("../php/timbrado_cfdi.php", {
+            valorReceptor: idReceptorT,
+            valorReservacion: idServicio,
+          }, function(mensaje) {
+          $("#resultado_info").html(mensaje);
+          
+          })
+        }   
       };
+
+      function errorTimbrado(){
+        M.toast({html:"Ocurrió un error al timbrar el CDFI", classes: "rounded"});
+      }
+      
+      function imprimirCfdi(jsonEncoded){
+        var pdf_newTab = window.open("");
+        pdf_newTab.document.write(
+          "<html><head><title>CFDI</title></head><body><iframe title='CFDI'  width='100%' height='100%' src='data:application/pdf;base64, " +    encodeURI(jsonEncoded) + "'></iframe></body></html>"
+        );
+        M.toast({html:"Factura generada correctamente", classes: "rounded"});
+        window.location.href = "../views/clientes.php";
+      }  
 
       function recargarReceptor(id_receptor){
         idReceptor = id_receptor;
@@ -87,7 +104,7 @@
 				  $('#modalBuscarReceptores').modal('close');
 			  })
 		  };
-      
+
     </script>
     <style>
       .card-panel {
@@ -152,9 +169,9 @@
                       <td><?php 
                         echo "$". $datosReservacion['total'] * $porcentajeReduccion; ?></td>
                       <td><?php 
-                        echo "$". $datosReservacion['total'] * $porcentajeIva; ?></td>
+                        echo "$". $datosReservacion['total'] * $porcentajeReduccion * $porcentajeIva; ?></td>
                       <td><?php 
-                        echo "$". $datosReservacion['total'] * $porcentajeIsh; ?></td>
+                        echo "$". $datosReservacion['total'] * $porcentajeReduccion * $porcentajeIsh; ?></td>
                       <td><?php 
                         echo "$". $datosReservacion['total'] ?></td>
                     </tr>
