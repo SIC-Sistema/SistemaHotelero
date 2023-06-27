@@ -18,12 +18,14 @@ switch ($Accion) {
         // $Accion es igual a 0 realiza:
 
         //CON POST RECIBIMOS TODAS LAS VARIABLES DEL FORMULARIO QUE NESECITAMOS PARA INSERTAR
-        $No           = $conn->real_escape_string($_POST['valorNo']);     
-        $Descripcion  = $conn->real_escape_string($_POST['valorDescripcion']);     
-        $Precio       = $conn->real_escape_string($_POST['valorPrecio']);     
-        $Piso         = $conn->real_escape_string($_POST['valorPiso']); 
-        $Tipo         = $conn->real_escape_string($_POST['valorTipo']);
-        $unidad       = $conn->real_escape_string($_POST['valorUnidad']);
+        $No                       = $conn->real_escape_string($_POST['valorNo']);     
+        $Descripcion              = $conn->real_escape_string($_POST['valorDescripcion']);     
+        $Precio                   = $conn->real_escape_string($_POST['valorPrecio']);     
+        $Piso                     = $conn->real_escape_string($_POST['valorPiso']); 
+        $Tipo                     = $conn->real_escape_string($_POST['valorTipo']);
+        $descripcionFactura       = $conn->real_escape_string($_POST['valorDescripcionFactura']);
+        $codigoProducto           = $conn->real_escape_string($_POST['valorCodigoFiscal']);
+        $unidad                   = $conn->real_escape_string($_POST['valorUnidad']);
 
         //VERIFICAMOS QUE NO HALLA UN ARTICULO CON LOS MISMOS DATOS
 		if(mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `habitaciones` WHERE id='$No' "))>0){
@@ -31,8 +33,10 @@ switch ($Accion) {
         }else{
             // SI NO HAY NUNGUNO IGUAL CREAMOS LA SENTECIA SQL  CON LA INFORMACION REQUERIDA Y LA ASIGNAMOS A UNA VARIABLE
             
-            $sql_h = "INSERT INTO `habitaciones` (id, piso, descripcion, precio, tipo, estatus, idunidad, usuario, fecha) 
-               VALUES($No, '$Piso', '$Descripcion', '$Precio', '$Tipo', 0, $unidad, $id_user, '$Fecha_hoy')";
+            $sql_h = "INSERT INTO `habitaciones` (id, piso, descripcion, precio, tipo, estatus, idunidad,
+             producto, codigo_producto, usuario, fecha) 
+               VALUES($No, '$Piso', '$Descripcion', '$Precio', '$Tipo', 0, $unidad, '$descripcionFactura',
+                $codigoProducto,  $id_user, '$Fecha_hoy')";
             //VERIFICAMOS QUE LA SENTECIA FUE EJECUTADA CON EXITO!
 			if(mysqli_query($conn, $sql_h)){
 				echo '<script >M.toast({html:"La habitació se registró exitosamente.", classes: "rounded"})</script>';	
@@ -53,15 +57,19 @@ switch ($Accion) {
         if ($User['habitaciones'] == 1) {
 
             //CON POST RECIBIMOS TODAS LAS VARIABLES DEL FORMULARIO QUE NESECITAMOS PARA ACTUALIZAR
-            $id             = $conn->real_escape_string($_POST['id']);     
-            $No             = $conn->real_escape_string($_POST['valorNo']);     
-            $Descripcion    = $conn->real_escape_string($_POST['valorDescripcion']);     
-            $Precio         = $conn->real_escape_string($_POST['valorPrecio']);     
-            $Piso           = $conn->real_escape_string($_POST['valorPiso']); 
-            $Tipo           = $conn->real_escape_string($_POST['valorTipo']);
-            $unidad         = $conn->real_escape_string($_POST['valorUnidad']);
+            $id                       = $conn->real_escape_string($_POST['id']);     
+            $No                       = $conn->real_escape_string($_POST['valorNo']);     
+            $Descripcion              = $conn->real_escape_string($_POST['valorDescripcion']);     
+            $Precio                   = $conn->real_escape_string($_POST['valorPrecio']);     
+            $Piso                     = $conn->real_escape_string($_POST['valorPiso']); 
+            $Tipo                     = $conn->real_escape_string($_POST['valorTipo']);
+            $descripcionFactura       = $conn->real_escape_string($_POST['valorDescripcionFactura']);
+            $codigoProducto           = $conn->real_escape_string($_POST['valorCodigoFiscal']);
+            $unidad                   = $conn->real_escape_string($_POST['valorUnidad']);
 
-            $sql = "UPDATE habitaciones SET id = $No, descripcion = '$Descripcion', precio = '$Precio', piso = '$Piso', tipo = '$Tipo', idunidad = $unidad WHERE id = $id";
+            $sql = "UPDATE habitaciones SET id = $No, descripcion = '$Descripcion', precio = '$Precio', 
+            piso = '$Piso', tipo = '$Tipo', idunidad = $unidad,
+            producto = '$descripcionFactura', codigo_producto = $codigoProducto WHERE id = $id";
             if (mysqli_query($conn, $sql)) {
                 ?>
                 <script>

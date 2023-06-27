@@ -35,9 +35,9 @@ if (isset($_GET['id']) == false OR $User['habitaciones'] == 0) {
       var textoPrecio = $("input#precio").val();// 
       var textoPiso = $("select#piso").val();
       var textoTipo = $("select#tipo").val();
+      var textoDescripcionFactura = $("input#descripcionFactura").val();
+      var textoCodigoFiscal = $("input#codigoFiscal").val();
       var textoUnidad = $("select#uclaveUnidad").val();
-
-      alert(textoUnidad);
 
       // CREAMOS CONDICIONES QUE SI SE CUMPLEN MANDARA MENSAJES DE ALERTA EN FORMA DE TOAST
       //SI SE CUMPLEN LOS IF QUIERE DECIR QUE NO PASA LOS REQUISITOS MINIMOS DE LLENADO...
@@ -47,6 +47,10 @@ if (isset($_GET['id']) == false OR $User['habitaciones'] == 0) {
         M.toast({html:"Por favor ingrese una Descripción.", classes: "rounded"});
       }else if(textoPrecio < 0 || textoPrecio == ''){
         M.toast({html:"Por favor ingrese un precio.", classes: "rounded"});
+      }else if(textoDescripcionFactura == ""){
+        M.toast({html:"Por favor ingrese el concepto que aparecerá en la factura.", classes: "rounded"});
+      }else if(textoCodigoFiscal == ''){
+        M.toast({html:"Por favor ingrese un código fiscal.", classes: "rounded"});
       }else if (textoPiso == 0) {
         M.toast({html:"Por favor seleccione un Piso.", classes: "rounded"});
       }else if(textoTipo == 0){
@@ -64,6 +68,8 @@ if (isset($_GET['id']) == false OR $User['habitaciones'] == 0) {
             valorPiso: textoPiso,
             valorTipo: textoTipo,
             valorUnidad: textoUnidad,
+            valorDescripcionFactura: textoDescripcionFactura,
+            valorCodigoFiscal: textoCodigoFiscal
           }, function(mensaje) {
               //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "control_habitaciones.php"
               $("#resultado_update").html(mensaje);
@@ -107,7 +113,6 @@ if (isset($_GET['id']) == false OR $User['habitaciones'] == 0) {
           <div class="input-field col s12 m6 l6">
             <i class="material-icons prefix">location_city</i>
             <select id="piso" name="piso" class="validate">              
-              <!--OPTION PARA QUE LA SELECCION QUEDE POR DEFECTO-->
               <option value="<?php echo $Habitacion['piso'];?>" select><?php echo $Habitacion['piso'];?></option>
               <option value="Primer">Primer</option>
               <option value="Segundo">Segundo</option>
@@ -115,7 +120,6 @@ if (isset($_GET['id']) == false OR $User['habitaciones'] == 0) {
               <option value="Cuarto">Cuarto</option>
             </select>
           </div>
-
           <div class="input-field col s12 m6 l6">
             <i class="material-icons prefix">hotel</i>
             <select id="tipo" name="tipo" class="validate">              
@@ -126,36 +130,36 @@ if (isset($_GET['id']) == false OR $User['habitaciones'] == 0) {
               <option value="King Size">King Size</option>
             </select>
           </div>
-
+          <div class="input-field col s12 m6 l6">
+            <i class="material-icons prefix">edit</i>
+            <input id="descripcionFactura" type="text" class="validate" data-length="100" value="<?php echo $Habitacion['producto'];?>" required>
+            <label for="descripcionFactura">Descripción de concepto en la factura:</label>
+          </div>
+          <div class="input-field col s12 m6 l6">
+            <i class="material-icons prefix">edit</i>
+            <input id="codigoFiscal" type="number" class="validate" data-length="100" value="<?php echo $Habitacion['codigo_producto'];?>" required>
+            <label for="codigoFiscal">Código de producto (SAT):</label>
+          </div>
           <?php
-
             $idunidad = $Habitacion["idunidad"];
             $sqlUnidad = "SELECT * FROM unidades WHERE idunidad = $idunidad";
-
             $unidad = mysqli_fetch_array(mysqli_query($conn, $sqlUnidad), MYSQLI_ASSOC);
-
           ?>
-
           <div class="input-field col s12 m6 l6">
           <i class="material-icons prefix">loupe</i>
           <select id="uclaveUnidad" name="uclaveUnidad" class="validate">              
             <option value="<?php echo $unidad["idunidad"];?>" select disabled><?php echo $unidad["nombre"];?></option>
             <?php
-
               $sql = "SELECT * FROM unidades";
-
               $unidades = mysqli_fetch_all(mysqli_query($conn, $sql), MYSQLI_ASSOC);
-
               foreach ($unidades as $u) {
                 echo '
                 <option value="'.$u["idunidad"].'">'.$u["nombre"].'</option>
               ';
               }
             ?>
-
           </select>
         </div>
-          
         </form>
         <!-- BOTON QUE MANDA LLAMAR EL SCRIPT PARA QUE EL SCRIPT HAGA LO QUE LA FUNCION CONTENGA -->
         <a onclick="update_habitacion(<?php echo $id; ?>);" class="waves-effect waves-light btn grey darken-4 right"><i class="material-icons right">save</i>Guardar</a>

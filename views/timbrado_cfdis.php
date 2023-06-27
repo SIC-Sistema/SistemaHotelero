@@ -56,6 +56,8 @@
 
       function timbrarCfdi(id_servicio){
         var idReceptorT = $("input#idReceptor").val();
+        var textoFormaPago = $("select#formaPago").val();
+        var textoMetodoPago = $("select#metodoPago").val();
         idServicio = id_servicio;
         if (typeof idReceptorT === "undefined") {
             M.toast({html:"Por favor, selecciona un receptor fiscal", classes: "rounded"});
@@ -63,6 +65,8 @@
           $.post("../php/timbrado_cfdi.php", {
             valorReceptor: idReceptorT,
             valorReservacion: idServicio,
+            valorFormaPago: textoFormaPago,
+            valorMetodoPago: textoMetodoPago
           }, function(mensaje) {
           $("#resultado_info").html(mensaje);
           
@@ -81,7 +85,7 @@
         );
         M.toast({html:"Factura generada correctamente", classes: "rounded"});
         window.location.href = "../views/clientes.php";
-      }  
+      };  
 
       function recargarReceptor(id_receptor){
         idReceptor = id_receptor;
@@ -165,13 +169,13 @@
                     ?>
                     <tr>
                       <td><?php echo "1"; ?></td>
-                      <td><?php echo $tipoHabitacion['descripcion']; ?></td>
+                      <td><?php echo $tipoHabitacion['producto']; ?></td>
                       <td><?php 
-                        echo "$". $datosReservacion['total'] * $porcentajeReduccion; ?></td>
+                        echo "$". round($datosReservacion['total'] * $porcentajeReduccion, 2); ?></td>
                       <td><?php 
-                        echo "$". $datosReservacion['total'] * $porcentajeReduccion * $porcentajeIva; ?></td>
+                        echo "$". round($datosReservacion['total'] * $porcentajeReduccion * $porcentajeIva, 2); ?></td>
                       <td><?php 
-                        echo "$". $datosReservacion['total'] * $porcentajeReduccion * $porcentajeIsh; ?></td>
+                        echo "$". round($datosReservacion['total'] * $porcentajeReduccion * $porcentajeIsh, 2); ?></td>
                       <td><?php 
                         echo "$". $datosReservacion['total'] ?></td>
                     </tr>
@@ -182,6 +186,45 @@
 	                </tbody>
 	            </table>
 	          </div></p>
+            <br>
+            <div class="input-field">
+              <div class="row">
+                <div class="col s12 m6 l6">
+                  <select id="formaPago" name="formaPago" class="browser-default">
+                    <option value="0" select>Seleccione la forma de pago:</option>               
+                    <?php
+                      $formaPago = mysqli_query($conn,"SELECT * FROM formas_pago_sat"); 
+                      if (mysqli_num_rows($formaPago) == 0) {
+                        echo '<script>M.toast({html:"No se encontraron datos.", classes: "rounded"})</script>';
+                      } else {
+                        while($formasPago = mysqli_fetch_array($formaPago)) {
+                    ?>
+                      <option value="<?php echo $formasPago['id'];?>"><?php echo $formasPago['descripcion'];?></option>
+                    <?php
+                        }
+                      }
+                    ?>
+                  </select>
+                </div>  
+                <div class="col s12 m6 l6">
+                  <select id="metodoPago" name="metodoPago" class="browser-default">
+                    <option value="0" select>Seleccione el método de pago:</option>               
+                    <?php
+                      $metodoPago = mysqli_query($conn,"SELECT * FROM metodos_pago_sat"); 
+                      if (mysqli_num_rows($metodoPago) == 0) {
+                        echo '<script>M.toast({html:"No se encontraron datos.", classes: "rounded"})</script>';
+                      } else {
+                        while($metodosPago = mysqli_fetch_array($metodoPago)) {
+                    ?>
+                      <option value="<?php echo $metodosPago['id'];?>"><?php echo $metodosPago['descripcion'];?></option>
+                    <?php
+                        }
+                      }
+                    ?>
+                  </select>
+                </div>  
+              </div>  
+            </div> 
             <a onclick="timbrarCfdi(<?php echo $idServicio; ?>);" 
               class="waves-effect waves-light btn-small pink right">Timbrar</a></td>
 	          </div>

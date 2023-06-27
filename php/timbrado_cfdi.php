@@ -9,8 +9,10 @@ $tasaIsh = "3";
 $idEmisor = 1;
 $idReceptor = $conn->real_escape_string($_POST['valorReceptor']);
 $idReservacion = $conn->real_escape_string($_POST['valorReservacion']);
+$idFormaPago = $conn->real_escape_string($_POST['valorFormaPago']);
+$idMetodoPago = $conn->real_escape_string($_POST['valorMetodoPago']);
 date_default_timezone_set('America/Monterrey'); 
-$fecha = date('d/m/Y');
+$fecha1 = date('Y/m/d');
 $hora = date('H:i:s');
 
 $queryImpuestos = mysqli_query ($conn, "SELECT * FROM reservaciones INNER JOIN habitaciones 
@@ -19,6 +21,8 @@ ON habitaciones.idunidad = unidades.idunidad WHERE reservaciones.id = $idReserva
 $queryReservacion = mysqli_query($conn, "SELECT * FROM reservacion WHERE id_compra=$idReservacion");
 $datosEmisor = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `emisores_sat` WHERE id=$idEmisor"));
 $datosReceptor = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `receptores_sat` WHERE id=$idReceptor"));
+$datosFormaPago = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `formas_pago_sat` WHERE id=$idFormaPago"));
+$datosMetodoPago = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `metodos_pago_sat` WHERE id=$idMetodoPago"));
 
 function round_up($number, $precision)
 {
@@ -106,11 +110,11 @@ $municipioReceptor = $datosReceptor['municipio'];
 $estadoReceptor = $datosReceptor['estado_Mx'];
 $paisReceptor = $datosReceptor['pais'];
 $codigoPostalReceptor = "06470";
-$fecha = "2023-06-13T09:03:16";
-$serie = "AB";
-$folio = "102";
-$metodoPago = "PUE";
-$formaPago = "01";
+$fecha = "2023-06-22T09:03:16";
+$serie = "";
+$folio = "";
+$metodoPago = $datosMetodoPago['clave'];
+$formaPago = $datosFormaPago['clave'];
 $moneda = "MXN";
 $lugarExpedicion = "26015";
 $subTotal = $importe;
@@ -217,7 +221,7 @@ $response = $client->request('POST', 'https://testapi.facturoporti.com.mx/servic
 
 $respuesta =  $response->getBody();
 $jsonRespuesta = json_decode($respuesta, true);
-//echo $respuesta;
+echo $respuesta;
 $estadoRecibido = $jsonRespuesta['estatus']['codigo'];
 $mensajeRecibido = $jsonRespuesta['estatus']['descripcion'];
 $errorRecibido = $jsonRespuesta['estatus']['informacionTecnica'];
@@ -240,18 +244,25 @@ if ($estadoRecibido != "000"){
 //echo $errorRecibido;
 //file_put_contents("factura$rfcReceptor.pdf", $pdfEnconde);
  //header('Content-Type: application/pdf');
-$sql = "INSERT INTO `facturas_generadas` (id_receptor, id_reservacion, id_cliente,  pdf64, fecha, hora, uuid, total) 
-VALUES('$idReceptor', '$idReservacion', '$idCliente', '$pdfBase64', '$fecha', '$hora', '$uuid', '$total')";
-if(mysqli_query($conn, $sql)){
-    $jsonEncodePdf = json_encode($pdfBase64);
-    echo '<script>
-	    imprimirCfdi('.$jsonEncodePdf.')
-	</script>';
-}else{
-    echo '<script>
-		errorTimbrado();
-	</script>';	
-	}
+    $insertFactura = "INSERT INTO `facturas_generadas` (id_receptor, id_reservacion, id_cliente,  pdf64, fecha, hora, uuid, total) 
+    VALUES('$idReceptor', '$idReservacion', '$idCliente', '$pdfBase64', '$fecha1', '$hora', '$uuid', '$total')";
+    if(mysqli_query($conn, $insertFactura)){
+        $updateReservacion = "UPDATE `reservaciones` SET  facturado = 1 WHERE id = '$idReservacion'";
+        if(mysqli_query($conn, $updateReservacion)){
+            $jsonEncodePdf = json_encode($pdfBase64);
+            echo '<script>
+                imprimirCfdi('.$jsonEncodePdf.')
+            </script>';
+        }else{
+            echo '<script>
+                errorTimbrado();
+            </script>';	  
+        }
+    }else{
+        echo '<script>
+            errorTimbrado();
+        </script>';	
+    }
 }
 
 ?>
