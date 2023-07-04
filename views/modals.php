@@ -92,6 +92,11 @@
         <input type="password" name="clave" id="clave">
         <label for="clave">Ingresar Clave</label>
       </div>
+      <div class="input-field col s12 m6 l6">
+        <i class="material-icons prefix">attach_money</i>
+        <input type="number" name="montoEnCaja" id="montoEnCaja">
+        <label for="montoEnCaja">Disponible en caja (siguiente turno)</label>
+      </div>
     </div>
       </form>
   </div>

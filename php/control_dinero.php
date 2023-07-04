@@ -64,7 +64,7 @@ switch ($Accion) {
 			$salidas = $conn->real_escape_string($_POST['valorSalidas']);
 			$banco = $conn->real_escape_string($_POST['valorBanco']);
 			$credito = $conn->real_escape_string($_POST['valorCredito']);
-
+			$montoEnCaja = $conn->real_escape_string($_POST['valorMontoEnCaja']);
 	        #SELECCIONAMOS UN CORTE QUE YA TENGA LOS MISMOS VALORES
 	        $sql_check = mysqli_query($conn, "SELECT id_corte FROM cortes WHERE usuario = '$usuario' AND fecha = '$Fecha_hoy' AND entradas = '$entradas' AND salidas = '$salidas' AND banco = '$banco' AND credito =  '$credito' AND realizo = '$id_user' AND corte = 0");
 	        $corte = 0;//DEFINIMOS EL CORTE EN 0 PARA NO TENER ERROR

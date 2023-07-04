@@ -110,7 +110,7 @@ $municipioReceptor = $datosReceptor['municipio'];
 $estadoReceptor = $datosReceptor['estado_Mx'];
 $paisReceptor = $datosReceptor['pais'];
 $codigoPostalReceptor = "06470";
-$fecha = "2023-06-22T09:03:16";
+$fecha = "2023-06-29T09:03:16";
 $serie = "";
 $folio = "";
 $metodoPago = $datosMetodoPago['clave'];
@@ -221,7 +221,7 @@ $response = $client->request('POST', 'https://testapi.facturoporti.com.mx/servic
 
 $respuesta =  $response->getBody();
 $jsonRespuesta = json_decode($respuesta, true);
-echo $respuesta;
+//echo $respuesta;
 $estadoRecibido = $jsonRespuesta['estatus']['codigo'];
 $mensajeRecibido = $jsonRespuesta['estatus']['descripcion'];
 $errorRecibido = $jsonRespuesta['estatus']['informacionTecnica'];

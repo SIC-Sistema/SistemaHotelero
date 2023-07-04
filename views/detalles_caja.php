@@ -43,11 +43,15 @@ if (isset($_POST['id_usuario']) == false) {
       //FUNCION QUE ENVIA LOS DATOS PARA VALIDAR DESPUES DE LLENADO DEL MODAL
       function recargar_corte() {
         var textoClave = $("input#clave").val(); 
-          var tipo = $("input#corteTipo").val(); 
+        var tipo = $("input#corteTipo").val();
+        var textoMontoEnCaja = $("input#montoEnCaja").val(); 
        
         if (textoClave == "") {
             M.toast({html:"El campo clave no puede ir vacío.", classes: "rounded"});
-        }else{
+        }else if(textoMontoEnCaja == ""){
+          M.toast({html:"El campo monto no puede ir vacío.", classes: "rounded"});
+        }
+        else{
           //MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO EN LA DIRECCION "control_dinero.php" PARA MOSTRAR EL MODAL
           $.post("../php/control_dinero.php", {
             //Cada valor se separa por una ,
@@ -59,6 +63,7 @@ if (isset($_POST['id_usuario']) == false) {
               valorUsuario: <?php echo $user_id; ?>,
               accion: 1,
               tipo: tipo,
+              valorMontoEnCaja: textoMontoEnCaja,
             }, function(mensaje) {
               //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "control_dinero.php"
                $("#resultado_corte").html(mensaje);
