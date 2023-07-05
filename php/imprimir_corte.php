@@ -72,25 +72,43 @@
     $pdf->SetY($pdf->GetY()+1);
     $pdf->SetX(5);
     $pdf->SetFont('Helvetica','B', 12);
+
     $pdf->MultiCell(70,4,utf8_decode('======== RESUMEN ========'),0,'C',0);
+    
     $pdf->SetY($pdf->GetY()+3);
     $pdf->SetX(5);
     $pdf->SetFont('Helvetica','', 10);
     $pdf->MultiCell(35,4,utf8_decode('EN EFECTIVO'."\n".'SALIDAS'."\n".'A BANCO'."\n".'A CREDITO'),0,'L',0);    
+    
     $pdf->SetY($pdf->GetY()-16);
     $pdf->SetX(41);
     $pdf->MultiCell(34,4,utf8_decode('$'.sprintf('%.2f', $Info_Corte['entradas'])."\n".'-$'.sprintf('%.2f', $Info_Corte['salidas'])."\n".'$'.sprintf('%.2f', $Info_Corte['banco'])."\n".'($'.sprintf('%.2f', $Info_Corte['credito']).')'),0,'R',0);
+
     $pdf->SetY($pdf->GetY());
     $pdf->SetX(5);
     $pdf->SetFont('Helvetica','', 8);
     $pdf->MultiCell(70,3,utf8_decode('------------------------------------------------------------------------'),0,'L',0);
+
     $pdf->SetY($pdf->GetY());
     $pdf->SetX(5);
     $pdf->SetFont('Helvetica','B', 10);
-    $pdf->MultiCell(35,4,utf8_decode('TOTAL PAGOS'),0,'L',0);    
+    $pdf->MultiCell(35,4,utf8_decode('TOTAL PAGOS'),0,'L',0); 
     $pdf->SetY($pdf->GetY()-4);
     $pdf->SetX(41);
     $pdf->MultiCell(34,4,utf8_decode('$'.sprintf('%.2f', $Info_Corte['entradas']+$Info_Corte['banco']-$Info_Corte['salidas'])),0,'R',0);
+
+    $pdf->SetY($pdf->GetY());
+    $pdf->SetX(5);
+    $pdf->SetFont('Helvetica','', 8);
+    $pdf->MultiCell(70,3,utf8_decode('========================================='),0,'L',0);
+
+    $pdf->SetY($pdf->GetY());
+    $pdf->SetX(5);
+    $pdf->SetFont('Helvetica','B', 10);
+    $pdf->MultiCell(35,4,utf8_decode('EN CAJA'),0,'L',0); 
+    $pdf->SetY($pdf->GetY()-4);
+    $pdf->SetX(41);
+    $pdf->MultiCell(34,4,utf8_decode('$'.sprintf('%.2f', $Info_Corte['en_caja'])),0,'R',0);
 
     ///////      DESGOSE DE PAGOS         //////////
     $pdf->SetY($pdf->GetY()+6);
