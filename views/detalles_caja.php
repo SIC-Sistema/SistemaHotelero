@@ -38,6 +38,10 @@ if (isset($_POST['id_usuario']) == false) {
     $salidas['total'] = $salidas['total']+$cortes['salidas'];
     $banco['total'] = $banco['total']+$cortes['banco'];
     $credito['total'] = $credito['total']+$cortes['credito'];
+
+    $ultimoCorte 	= mysqli_fetch_array(mysqli_query($conn,"SELECT  MAX(id_corte) AS id  FROM cortes"));
+    $ultimoIdCorte 	= $ultimoCorte['id'];
+    $enCajaInicio	= mysqli_fetch_array(mysqli_query($conn, "SELECT  en_caja FROM cortes WHERE id_corte ='$ultimoIdCorte'"));
     ?>  
     <script>
       //FUNCION QUE ENVIA LOS DATOS PARA VALIDAR DESPUES DE LLENADO DEL MODAL
@@ -105,21 +109,25 @@ if (isset($_POST['id_usuario']) == false) {
               <div class="hide-on-large-only"><br><br></div>
               <span class="title"><b>RESUMEN: </b></span><br><br>
               <div class="col s6 m3">
+                <b class="right">En caja al inicio:</b><br>
                 <b class="right">Entradas: </b><br>               
                 <b class="right">Salidas: </b><br>
               </div>
               <div class="col s6 m9">
+                $<?php echo sprintf('%.2f',$enCajaInicio['en_caja']);?><br>
                 $<?php echo sprintf('%.2f',$entradads['total']);?><br>
                 $<?php echo sprintf('%.2f',$salidas['total']);?><br>
-              </div>                
-              <br><br><hr>   
+              </div>
+              <div class="col s12 m12 l12">          
+              <hr>
+              </div>
               <div class="col s6 m3">
                 <b class="indigo-text right">TOTAL EFECTIVO: </b><br>               
                 <b class="indigo-text right">TOTAL A BANCO: </b><br>               
                 <b class="indigo-text right">TOTAL CREDITO: </b><br>   
               </div>  
               <div class="col s6 m9">
-                $<?php echo sprintf('%.2f',$entradads['total']-$salidas['total']);?><br>               
+                $<?php echo sprintf('%.2f',$enCajaInicio['en_caja']+$entradads['total']-$salidas['total']);?><br>               
                 $<?php echo sprintf('%.2f',$banco['total']);?><br>               
                 $<?php echo sprintf('%.2f',$credito['total']);?><br>   
               </div>        

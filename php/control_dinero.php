@@ -75,8 +75,12 @@ switch ($Accion) {
 	            $ultimo = mysqli_fetch_array($sql_check);
 	            $corte = $ultimo['id_corte'];//TOMAMOS EL ID DEL CORTE
 	        }else{
+				
 	            #SI NO EXISTE CREAMOS EL CORTE.....  /////////////       IMPORTANTE               /////////////
-				$efectivo = $entradas - $montoEnCaja;
+				$ultimoCorte 	= mysqli_fetch_array(mysqli_query($conn,"SELECT  MAX(id_corte) AS id  FROM cortes"));
+				$ultimoIdCorte 	= $ultimoCorte['id'];
+				$enCajaInicio	= mysqli_fetch_array(mysqli_query($conn, "SELECT  en_caja FROM cortes WHERE id_corte ='$ultimoIdCorte'"));
+				$efectivo 		= $enCajaInicio['en_caja'] + $entradas - $montoEnCaja;
 	            if (mysqli_query($conn,"INSERT INTO cortes (usuario, fecha, hora, entradas, salidas, banco, credito, realizo, en_caja) VALUES ($usuario, '$Fecha_hoy', '$Hora', '$efectivo', '$salidas', '$banco', '$credito', $id_user, '$montoEnCaja')")) {
 	                #SELECCIONAMOS EL ULTIMO CORTE CREADO
 	                $ultimo =  mysqli_fetch_array(mysqli_query($conn, "SELECT MAX(id_corte) AS id FROM cortes WHERE usuario = $usuario AND realizo = $id_user"));           
