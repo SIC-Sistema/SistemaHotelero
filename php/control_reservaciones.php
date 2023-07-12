@@ -652,7 +652,7 @@ switch ($Accion) {
         			// CREAMOS LA DEUDA DE CREDITO AL CLIENTE
         			$mysql= "INSERT INTO deudas(id_cliente, cantidad, fecha_deuda, descripcion, usuario) VALUES ($cliente, '$Liquidacion', '$Fecha_hoy',  '$descripcion', $id_user)";        
 					mysqli_query($conn,$mysql);
-					$ultimo =  mysqli_fetch_array(mysqli_query($conn, "SELECT MAX(id_deuda) AS id FROM deudas WHERE id_cliente = $cliente AND id_user = $id_user"));            
+					$ultimo =  mysqli_fetch_array(mysqli_query($conn, "SELECT MAX(id_deuda) AS id FROM deudas WHERE id_cliente = $cliente AND usuario = $id_user"));            
 					$id_deuda = $ultimo['id'];
         		}else{
         			$id_deuda = 0;

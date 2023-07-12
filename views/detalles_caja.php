@@ -47,6 +47,9 @@ if (isset($_POST['id_usuario']) == false) {
     $joinTarjetaCredito = mysqli_query($conn, "SELECT * FROM pagos INNER JOIN referencias ON pagos.id_pago = referencias.id_pago WHERE pagos.corte = 0 AND pagos.tipo_cambio = 'Banco'
     AND referencias.tarjeta = 1 AND referencias.credito = 1 AND pagos.id_user = $user_id;");
     $pagosTarjetaCredito = mysqli_num_rows($joinTarjetaCredito);
+    $ultimoCorte 	= mysqli_fetch_array(mysqli_query($conn,"SELECT  MAX(id_corte) AS id  FROM cortes"));
+    $ultimoIdCorte 	= $ultimoCorte['id'];
+    $enCajaInicio	= mysqli_fetch_array(mysqli_query($conn, "SELECT  en_caja FROM cortes WHERE id_corte ='$ultimoIdCorte'"));
     ?>  
     <script>
       //FUNCION QUE ENVIA LOS DATOS PARA VALIDAR DESPUES DE LLENADO DEL MODAL

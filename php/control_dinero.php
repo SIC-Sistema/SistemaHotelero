@@ -64,7 +64,7 @@ switch ($Accion) {
 			$salidas = $conn->real_escape_string($_POST['valorSalidas']);
 			$banco = $conn->real_escape_string($_POST['valorBanco']);
 			$credito = $conn->real_escape_string($_POST['valorCredito']);
-			$montoEnCaja = $conn->real_escape_string($_POST['valorMontoEnCaja']);
+			$montoEnCaja = intval($conn->real_escape_string($_POST['valorMontoEnCaja']));
 			$transferencia = intval($conn->real_escape_string($_POST['valorTransferencia']));
 			$tarjetaDebito = intval($conn->real_escape_string($_POST['valorTarjetaDebito']));
 			$tarjetaCredito = intval($conn->real_escape_string($_POST['valorTarjetaCredito']));
@@ -80,8 +80,12 @@ switch ($Accion) {
 	        }else{
 				
 	            #SI NO EXISTE CREAMOS EL CORTE.....  /////////////       IMPORTANTE               /////////////
-	            if (mysqli_query($conn,"INSERT INTO cortes (usuario, fecha, hora, entradas, salidas, banco, credito, realizo, transferencia, tarjeta_debito, tarjeta_credito)
-				 VALUES ($usuario, '$Fecha_hoy', '$Hora', '$entradas', '$salidas', '$banco', '$credito', $id_user, $transferencia, $tarjetaDebito, $tarjetaCredito)")) {
+	            $ultimoCorte 	= mysqli_fetch_array(mysqli_query($conn,"SELECT  MAX(id_corte) AS id  FROM cortes"));
+				$ultimoIdCorte 	= $ultimoCorte['id'];
+				$enCajaInicio	= mysqli_fetch_array(mysqli_query($conn, "SELECT  en_caja FROM cortes WHERE id_corte ='$ultimoIdCorte'"));
+				$efectivo 		= $enCajaInicio['en_caja'] + $entradas - $montoEnCaja;
+				if (mysqli_query($conn,"INSERT INTO cortes (usuario, fecha, hora, entradas, salidas, banco, credito, realizo, transferencia, tarjeta_debito, tarjeta_credito, en_caja)
+				 VALUES ($usuario, '$Fecha_hoy', '$Hora', '$efectivo', '$salidas', '$banco', '$credito', $id_user, $transferencia, $tarjetaDebito, $tarjetaCredito, $montoEnCaja)")) {
 	                #SELECCIONAMOS EL ULTIMO CORTE CREADO
 	                $ultimo =  mysqli_fetch_array(mysqli_query($conn, "SELECT MAX(id_corte) AS id FROM cortes WHERE usuario = $usuario AND realizo = $id_user"));           
 	                $corte = $ultimo['id'];//TOMAMOS EL ID DEL ULTIMO CORTE

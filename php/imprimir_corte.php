@@ -90,10 +90,10 @@
     $pdf->SetY($pdf->GetY()+3);
     $pdf->SetX(5);
     $pdf->SetFont('Helvetica','', 10);
-    $pdf->MultiCell(35,4,utf8_decode('EN EFECTIVO'."\n".'SALIDAS'."\n".'TRANSFERENCIA'."\n".'TARJETA DEBITO'."\n".'TARJETA CREDITO'."\n".'A CREDITO'),0,'L',0);    
-    $pdf->SetY($pdf->GetY()-24);
+    $pdf->MultiCell(35,4,utf8_decode('EN CAJA INICIO'."\n".'EN EFECTIVO'."\n".'SALIDAS'."\n".'TRANSFERENCIA'."\n".'TARJETA DEBITO'."\n".'TARJETA CREDITO'."\n".'A CREDITO'),0,'L',0);    
+    $pdf->SetY($pdf->GetY()-28);
     $pdf->SetX(41);
-    $pdf->MultiCell(34,4,utf8_decode('$'.sprintf('%.2f', $Info_Corte['entradas'])."\n".'-$'.sprintf('%.2f', $Info_Corte['salidas'])."\n".'$'.sprintf('%.2f', $Info_Corte['transferencia'])."\n".'$'.sprintf('%.2f', $Info_Corte['tarjeta_debito'])."\n".'$'.sprintf('%.2f', $Info_Corte['tarjeta_credito'])."\n".'($'.sprintf('%.2f', $Info_Corte['credito']).')'),0,'R',0);
+    $pdf->MultiCell(34,4,utf8_decode('$'.sprintf('%.2f', $enCajaInicio['en_caja'])."\n".'$'.sprintf('%.2f', $Info_Corte['entradas'])."\n".'-$'.sprintf('%.2f', $Info_Corte['salidas'])."\n".'$'.sprintf('%.2f', $Info_Corte['transferencia'])."\n".'$'.sprintf('%.2f', $Info_Corte['tarjeta_debito'])."\n".'$'.sprintf('%.2f', $Info_Corte['tarjeta_credito'])."\n".'($'.sprintf('%.2f', $Info_Corte['credito']).')'),0,'R',0);
     $pdf->SetY($pdf->GetY());
     $pdf->SetX(5);
     $pdf->SetFont('Helvetica','', 8);
