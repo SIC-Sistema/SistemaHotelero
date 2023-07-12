@@ -29,18 +29,6 @@
     $Abono = mysqli_num_rows(mysqli_query($conn,"SELECT *  FROM detalles_corte INNER JOIN pagos ON detalles_corte.id_pago = pagos.id_pago WHERE detalles_corte.id_corte = $corte AND pagos.tipo = 'Abono'" ));
     $AbonoCredito = mysqli_num_rows(mysqli_query($conn,"SELECT *  FROM detalles_corte INNER JOIN pagos ON detalles_corte.id_pago = pagos.id_pago WHERE detalles_corte.id_corte = $corte AND pagos.tipo = 'Abono Credito'" ));
 
-    
-    $idAnterior = $corte-1;
-    if (mysqli_fetch_array(mysqli_query($conn, "SELECT  en_caja FROM cortes WHERE id_corte ='$idAnterior'"))==null) {
-        while (mysqli_fetch_array(mysqli_query($conn, "SELECT  en_caja FROM cortes WHERE id_corte ='$idAnterior'"))==null) {
-            $idAnterior -=1;
-        }
-    }
-
-    $enCajaInicio=mysqli_fetch_array(mysqli_query($conn, "SELECT  en_caja FROM cortes WHERE id_corte ='$idAnterior'"));
-    
-
-
     class PDF extends FPDF{
 
     }
@@ -84,9 +72,7 @@
     $pdf->SetY($pdf->GetY()+1);
     $pdf->SetX(5);
     $pdf->SetFont('Helvetica','B', 12);
-
     $pdf->MultiCell(70,4,utf8_decode('======== RESUMEN ========'),0,'C',0);
-    
     $pdf->SetY($pdf->GetY()+3);
     $pdf->SetX(5);
     $pdf->SetFont('Helvetica','', 10);
@@ -98,35 +84,13 @@
     $pdf->SetX(5);
     $pdf->SetFont('Helvetica','', 8);
     $pdf->MultiCell(70,3,utf8_decode('------------------------------------------------------------------------'),0,'L',0);
-
     $pdf->SetY($pdf->GetY());
     $pdf->SetX(5);
     $pdf->SetFont('Helvetica','B', 10);
-    $pdf->MultiCell(35,4,utf8_decode('TOTAL PAGOS'),0,'L',0); 
+    $pdf->MultiCell(35,4,utf8_decode('TOTAL PAGOS'),0,'L',0);    
     $pdf->SetY($pdf->GetY()-4);
     $pdf->SetX(41);
-    $pdf->MultiCell(34,4,utf8_decode('$'.sprintf('%.2f', $Info_Corte['entradas']+$Info_Corte['banco']-$Info_Corte['salidas']+$Info_Corte['en_caja'])),0,'R',0);
-
-    $pdf->SetY($pdf->GetY());
-    $pdf->SetX(5);
-    $pdf->SetFont('Helvetica','', 10);
-    $pdf->MultiCell(35,4,utf8_decode('DEJO EN CAJA'),0,'L',0); 
-    $pdf->SetY($pdf->GetY()-4);
-    $pdf->SetX(41);
-    $pdf->MultiCell(34,4,utf8_decode('$'.sprintf('%.2f', $Info_Corte['en_caja'])),0,'R',0);
-
-    $pdf->SetY($pdf->GetY());
-    $pdf->SetX(5);
-    $pdf->SetFont('Helvetica','', 8);
-    $pdf->MultiCell(70,3,utf8_decode('------------------------------------------------------------------------'),0,'L',0);
-
-    $pdf->SetY($pdf->GetY());
-    $pdf->SetX(5);
-    $pdf->SetFont('Helvetica','B', 10);
-    $pdf->MultiCell(35,4,utf8_decode('RETIRO'),0,'L',0); 
-    $pdf->SetY($pdf->GetY()-4);
-    $pdf->SetX(41);
-    $pdf->MultiCell(34,4,utf8_decode('$'.sprintf('%.2f', $Info_Corte['entradas']+$Info_Corte['banco']-$Info_Corte['salidas']+$Info_Corte['en_caja']-$Info_Corte['en_caja'])),0,'R',0);
+    $pdf->MultiCell(34,4,utf8_decode('$'.sprintf('%.2f', $Info_Corte['entradas']+$Info_Corte['banco']-$Info_Corte['salidas'])),0,'R',0);
 
     ///////      DESGOSE DE PAGOS         //////////
     $pdf->SetY($pdf->GetY()+6);

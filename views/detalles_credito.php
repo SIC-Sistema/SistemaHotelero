@@ -6,12 +6,25 @@
   include('fredyNav.php');
   ?>
   <script>
+     function showTarjeta(){
+			grupoTipoTarjeta = document.getElementById("grupoTipoTarjeta");
+			grupoTipoTarjeta.style.display='block';
+		};
+
+		function hideTarjeta(){
+			grupoTipoTarjeta = document.getElementById("grupoTipoTarjeta");
+			grupoTipoTarjeta.style.display='none';
+		};
+
      function showContent() {
           element2 = document.getElementById("content2");
+          element3 = document.getElementById("grupoTipoBanco");
           if (document.getElementById('bancoA').checked==true) {
               element2.style.display='block';
+              element3.style.display='block';
           } else {
               element2.style.display='none';
+              element3.style.display='none';
           }    
       };
     //FUNCION QUE ENVIA LA INFORMACION PARA INSERTAR EL ABONO
@@ -27,12 +40,38 @@
         textoTipo_Campio = "Efectivo";
       }
 
+      if(document.getElementById('tarjetaRb').checked && document.getElementById('debitoRb').checked){
+				transferencia = '0';
+				tarjeta = '1';
+				debito = '1';
+				credito = '0';
+			}else if (document.getElementById('tarjetaRb').checked && document.getElementById('creditoRb').checked){
+				transferencia = '0';
+				tarjeta = '1';
+				debito = '0';
+				credito = '1';
+			}else if(document.getElementById('transferenciaRb').checked){
+				transferencia = '1';
+				tarjeta = '0';
+				debito = '0';
+				credito = '0';
+			}else{
+				transferencia = '0';
+				tarjeta = '0';
+				debito = '0';
+				credito = '0';
+			}
+
       if (textoCantidad == "" || textoCantidad ==0) {
         M.toast({html:"El campo Cantidad se encuentra vacío o en 0.", classes: "rounded"});
       }else if (textoDescripcion == "") {
         M.toast({html:"El campo Descripción esta vacio.", classes: "rounded"});
       }else if ((document.getElementById('bancoA').checked==true) && referenciaB == "") {
         M.toast({html: 'Los pagos en banco deben de llevar una referencia.', classes: 'rounded'});
+      }else if ((document.getElementById('bancoA').checked==true) && (document.getElementById('transferenciaRb').checked == false && document.getElementById('tarjetaRb').checked == false)) {
+        M.toast({html: 'Seleccione el tipo de pago en Banco.', classes: 'rounded'});
+      }else if ((document.getElementById('tarjetaRb').checked==true) && (document.getElementById('debitoRb').checked == false && document.getElementById('creditoRb').checked == false)) {
+        M.toast({html: 'Seleccione el tipo de tarjeta.', classes: 'rounded'});
       }else{
         //MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO EN LA DIRECCION "../php/control_dinero.php"
         $.post("../php/control_dinero.php", { 
@@ -42,6 +81,10 @@
             valorCantidad: textoCantidad,
             valorDescripcion: textoDescripcion,
             valorIdCliente: textoIdCliente,
+            valorTransferencia: transferencia,
+					  valorTarjeta: tarjeta,
+					  valorDebito: debito,
+					  valorCredito: credito,
             accion: 2,
         }, function(mensaje) {
           //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "control_dinero.php"
@@ -146,12 +189,44 @@ $user_id = $_SESSION['user_id'];
             </label>
           </p>
         </div>
-        <div class="col s6 m2 " id="content2" style="display: none;">
+        <div class="col s6 m3 l2 " id="content2" style="display: none;">
           <div class="input-field">
               <input id="referenciaB" type="text" class="validate" required>
               <label for="referenciaB">Referencia:</label>
           </div>
         </div>
+        <div class="col s6 m5 l5" id="grupoTipoBanco" style="display: none;">
+		    	<div class="input-field">
+					<p>
+      				<label>
+						<input name="grupoTipoBancoR" id="transferenciaRb" type="radio" onchange="javascript:hideTarjeta()" />
+						<span>Transferencia</span>
+      				</label>
+					</p>
+					<p>
+					<label>
+						<input name="grupoTipoBancoR" id="tarjetaRb" type="radio" onchange="javascript:showTarjeta()" />
+						<span>Tarjeta</span>
+					</label>
+					</p>
+		        </div>
+		    </div>
+			<div class="col s6 m4 l4" id="grupoTipoTarjeta" style="display: none;">
+		    	<div class="input-field">
+					<p>
+      				<label>
+						<input  name="grupoTipoTarjetaR" id="creditoRb" type="radio" />
+						<span>Crédito</span>
+      				</label>
+					</p>
+					<p>
+					<label>
+						<input  name="grupoTipoTarjetaR" id="debitoRb" type="radio" />
+						<span>Débito</span>
+					</label>
+					</p>
+		        </div>
+		    </div>
         <input id="id_cliente" value="<?php echo htmlentities($id_cte);?>" type="hidden">
       </form>
       <a onclick="insert_abono();" class="waves-effect waves-light btn grey darken-4 right"><i class="material-icons right">send</i>Registrar Abono</a>

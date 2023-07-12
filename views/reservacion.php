@@ -10,15 +10,28 @@
     $User = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `users` WHERE user_id = $id_user"));
     ?>
     <script>
+		function showTarjeta(){
+			grupoTipoTarjeta = document.getElementById("grupoTipoTarjeta");
+			grupoTipoTarjeta.style.display='block';
+		};
+
+		function hideTarjeta(){
+			grupoTipoTarjeta = document.getElementById("grupoTipoTarjeta");
+			grupoTipoTarjeta.style.display='none';
+		};
+
     	function showContent() {
 	        element1 = document.getElementById("content1");
 	        element2 = document.getElementById("content2");
+			element3 = document.getElementById("grupoTipoBanco");
 	        if (document.getElementById('bancoR').checked==true) {
 	            element1.style.display='none';
 	            element2.style.display='block';
+				element3.style.display='block';
 	        } else {
 	            element1.style.display='block';
 	            element2.style.display='none';
+				element3.style.display='none';
 	        }    
 	    };
     	//FUNCION QUE BUCARA EN LA BASE DE DATOS CLIENTES CON EL MISMO NOMBRE MOSTRARA Y DARA A ELEGIR
@@ -112,6 +125,29 @@
     		var Anticipo = $("input#anticipoR").val();
     		var referenciaB = $("input#referenciaB").val();
 
+			if(document.getElementById('tarjetaRb').checked && document.getElementById('debitoRb').checked){
+				transferencia = '0';
+				tarjeta = '1';
+				debito = '1';
+				credito = '0';
+			}else if (document.getElementById('tarjetaRb').checked && document.getElementById('creditoRb').checked){
+				transferencia = '0';
+				tarjeta = '1';
+				debito = '0';
+				credito = '1';
+			}else if(document.getElementById('transferenciaRb').checked){
+				transferencia = '1';
+				tarjeta = '0';
+				debito = '0';
+				credito = '0';
+			}else{
+				transferencia = '0';
+				tarjeta = '0';
+				debito = '0';
+				credito = '0';
+			}
+
+
     		if(document.getElementById('bancoR').checked==true){
 	            tipo_cambio = 'Banco';
 	        }else if (document.getElementById('creditoR').checked==true) {
@@ -158,7 +194,11 @@
               M.toast({html: 'Los pagos en banco deben de llevar una referencia.', classes: 'rounded'});
           	}else if(Total <= 0){
 		        M.toast({html:"El total no es valido o aceptado.", classes: "rounded"});
-	        }else{
+	        }else if ((document.getElementById('bancoR').checked==true) && (document.getElementById('transferenciaRb').checked == false && document.getElementById('tarjetaRb').checked == false)) {
+        		M.toast({html: 'Seleccione el tipo de pago en Banco.', classes: 'rounded'});
+      		}else if ((document.getElementById('tarjetaRb').checked==true) && (document.getElementById('debitoRb').checked == false && document.getElementById('creditoRb').checked == false)) {
+        		M.toast({html: 'Seleccione el tipo de tarjeta.', classes: 'rounded'});
+      		}else{
 	        	//SI LOS IF NO SE CUMPLEN QUIERE DECIR QUE LA INFORMACION CUENTA CON TODO LO REQUERIDO
 		        //MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO NE LA DIRECCION "../php/control_reservaciones.php"
 		        $.post("../php/control_reservaciones.php", {
@@ -178,6 +218,10 @@
 		            valorTotal: Total,
 		            valorAnticipo: Anticipo,
 		            valortipo_cambio: tipo_cambio,
+					valorTransferencia: transferencia,
+					valorTarjeta: tarjeta,
+					valorDebito: debito,
+					valorCredito: credito,
 		          }, function(mensaje) {
 		              //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "control_reservaciones.php"
 		              $("#resultado_insert").html(mensaje);
@@ -334,14 +378,14 @@
 		            <label for="observacionR">Observaciones:</label>
 		        </div>
 		    </div>
-		    <div class="col s12 m3">
+		    <div class="col s12 m6 l6">
 		    	<div class="input-field">
 		            <i class="material-icons prefix">monetization_on</i>
 		            <input id="anticipoR" type="number" class="validate" required>
 		            <label for="anticipoR">Anticipo:</label>
 		        </div>
 		    </div>
-		    <div class="col s6 m2 l2">
+		    <div class="col s6 m3 l3">
               <p>
                 <br>
                 <label>
@@ -359,10 +403,42 @@
                 </label>
               </p>
             </div>
-            <div class="col s6 m2 l2" id="content2" style="display: none;">
+            <div class="col s6 m4 l4" id="content2" style="display: none;">
 		    	<div class="input-field">
 		            <input id="referenciaB" type="text" class="validate" required>
 		            <label for="referenciaB">Referencia:</label>
+		        </div>
+		    </div>
+			<div class="col s6 m2 l2" id="grupoTipoBanco" style="display: none;">
+		    	<div class="input-field">
+					<p>
+      				<label>
+						<input name="grupoTipoBancoR" id="transferenciaRb" type="radio" onchange="javascript:hideTarjeta()" />
+						<span>Transferencia</span>
+      				</label>
+					</p>
+					<p>
+					<label>
+						<input name="grupoTipoBancoR" id="tarjetaRb" type="radio" onchange="javascript:showTarjeta()" />
+						<span>Tarjeta</span>
+					</label>
+					</p>
+		        </div>
+		    </div>
+			<div class="col s6 m2 l2" id="grupoTipoTarjeta" style="display: none;">
+		    	<div class="input-field">
+					<p>
+      				<label>
+						<input  name="grupoTipoTarjetaR" id="creditoRb" type="radio" />
+						<span>Crédito</span>
+      				</label>
+					</p>
+					<p>
+					<label>
+						<input  name="grupoTipoTarjetaR" id="debitoRb" type="radio" />
+						<span>Débito</span>
+					</label>
+					</p>
 		        </div>
 		    </div>
 		</div>

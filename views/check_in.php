@@ -7,15 +7,29 @@
     ?>
     <title>San Roman | Check-in</title>
     <script>
+     
+      function showTarjeta(){
+        grupoTipoTarjeta = document.getElementById("grupoTipoTarjeta");
+        grupoTipoTarjeta.style.display='block';
+      };
+
+      function hideTarjeta(){
+        grupoTipoTarjeta = document.getElementById("grupoTipoTarjeta");
+        grupoTipoTarjeta.style.display='none';
+      };
+      
       function showContent() {
           element1 = document.getElementById("content1");
           element2 = document.getElementById("content2");
+          element3 = document.getElementById("grupoTipoBanco");
           if (document.getElementById('bancoR').checked==true) {
               element1.style.display='none';
               element2.style.display='block';
+              element3.style.display='block';
           } else {
               element1.style.display='block';
               element2.style.display='none';
+              element3.style.display='none';
           }    
       };
       //FUNCION QUE HACE LA BUSQUEDA DE CLIENTES (SE ACTIVA AL INICIAR EL ARCHIVO O AL ECRIBIR ALGO EN EL BUSCADOR)
@@ -62,11 +76,33 @@
       }//FIN function
 
       function check_in(id) {
-        var answer = confirm("Deseas realizar Check-in a la reservacion N°"+id+"?");
+        var answer = confirm("¿Deseas realizar Check-in a la reservacion N°"+id+"?");
         if (answer) {
           var textoAbono = $("input#abonoR").val();
           var referenciaB = $("input#referenciaB").val();
 
+          if(document.getElementById('tarjetaRb').checked && document.getElementById('debitoRb').checked){
+            transferencia = '0';
+            tarjeta = '1';
+            debito = '1';
+            credito = '0';
+          }else if (document.getElementById('tarjetaRb').checked && document.getElementById('creditoRb').checked){
+            transferencia = '0';
+            tarjeta = '1';
+            debito = '0';
+            credito = '1';
+          }else if(document.getElementById('transferenciaRb').checked){
+            transferencia = '1';
+            tarjeta = '0';
+            debito = '0';
+            credito = '0';
+          }else{
+            transferencia = '0';
+            tarjeta = '0';
+            debito = '0';
+            credito = '0';
+          }
+          
           if(document.getElementById('bancoR').checked==true){
               tipo_cambio = 'Banco';
           }else if (document.getElementById('creditoR').checked==true) {
@@ -76,7 +112,11 @@
           }
           if ((document.getElementById('bancoR').checked==true) && referenciaB == "") {
               M.toast({html: 'Los pagos en banco deben de llevar una referencia.', classes: 'rounded'});
-          }else {
+          }else if ((document.getElementById('bancoR').checked==true) && (document.getElementById('transferenciaRb').checked == false && document.getElementById('tarjetaRb').checked == false)) {
+        		M.toast({html: 'Seleccione el tipo de pago en Banco.', classes: 'rounded'});
+      		}else if ((document.getElementById('tarjetaRb').checked==true) && (document.getElementById('debitoRb').checked == false && document.getElementById('creditoRb').checked == false)) {
+        		M.toast({html: 'Seleccione el tipo de tarjeta.', classes: 'rounded'});
+      		}else {
             //MEDIANTE EL METODO POST ENVIAMOS UN ARRAY CON LA INFORMACION AL ARCHIVO EN LA DIRECCION "../php/control_reservaciones.php"
             $.post("../php/control_reservaciones.php", { 
               //Cada valor se separa por una ,
@@ -84,6 +124,10 @@
                 referenciaB: referenciaB,
                 abonoR: textoAbono,
                 tipo_cambio: tipo_cambio,
+                valorTransferencia: transferencia,
+					      valorTarjeta: tarjeta,
+					      valorDebito: debito,
+					      valorCredito: credito,
                 accion: 11,
             }, function(mensaje) {
               //SE CREA UNA VARIABLE LA CUAL TRAERA EN TEXTO HTML LOS RESULTADOS QUE ARROJE EL ARCHIVO AL CUAL SE LE ENVIO LA INFORMACION "control_reservaciones.php"

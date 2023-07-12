@@ -39,11 +39,11 @@ $estatus = ($reservacion['estatus'] == 0)? '<span class="new badge green" data-b
             </li>
           </ul>
 	      <form class="row">
-	      	<div class="col s12 m6">
+	      	<div class="col s12 m12 l12">
 	      		Indicaciones:<br>
 	      		
 	      	</div>
-	        <div class="input-field col s6 m3">
+	        <div class="input-field col s6 m12 l12">
 	            <i class="material-icons prefix">monetization_on</i>
 	            <input type="number" class="validate" required  id="abonoR">
 	            <label for="abonoR">Abono(Opcional):</label>
@@ -57,7 +57,7 @@ $estatus = ($reservacion['estatus'] == 0)? '<span class="new badge green" data-b
                 </label>
               </p>
             </div>
-            <div class="col s6 m2 l2" id="content1" style="display: block;">
+            <div class="col s6 m3 l3" id="content1" style="display: block;">
               <p>
                 <br>
                 <label>
@@ -66,13 +66,45 @@ $estatus = ($reservacion['estatus'] == 0)? '<span class="new badge green" data-b
                 </label>
               </p>
             </div>
-            <div class="col s6 m2 l2" id="content2" style="display: none;">
+            <div class="col s6 m3 l3" id="content2" style="display: none;">
               <div class="input-field">
                   <input id="referenciaB" type="text" class="validate" required>
                   <label for="referenciaB">Referencia:</label>
               </div>
             </div>
-	        <div>
+            <div class="col s6 m3 l3" id="grupoTipoBanco" style="display: none;">
+		    	<div class="input-field">
+					<p>
+      				<label>
+						<input name="grupoTipoBancoR" id="transferenciaRb" type="radio" onchange="javascript:hideTarjeta()" />
+						<span>Transferencia</span>
+      				</label>
+					</p>
+					<p>
+					<label>
+						<input name="grupoTipoBancoR" id="tarjetaRb" type="radio" onchange="javascript:showTarjeta()" />
+						<span>Tarjeta</span>
+					</label>
+					</p>
+		        </div>
+		    </div>
+			<div class="col s6 m2 l2" id="grupoTipoTarjeta" style="display: none;">
+		    	<div class="input-field">
+					<p>
+      				<label>
+						<input  name="grupoTipoTarjetaR" id="creditoRb" type="radio" />
+						<span>Crédito</span>
+      				</label>
+					</p>
+					<p>
+					<label>
+						<input  name="grupoTipoTarjetaR" id="debitoRb" type="radio" />
+						<span>Débito</span>
+					</label>
+					</p>
+		        </div>
+		    </div>
+	        <div class="col s6 m12 l12" >
 		        <a onclick="check_in(<?php echo $reservacion['id'] ?>);" class="btn waves-effect waves-light grey darken-4 right">Check-in<i class="material-icons left">exit_to_app</i></a>
 		        <a class="right white-text">- - -</a>
 		        <a href="#" class="modal-action modal-close waves-effect waves-green btn green right">Regresar<i class="material-icons left">close</i></a><br>

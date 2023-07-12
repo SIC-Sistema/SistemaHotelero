@@ -10,6 +10,15 @@
   $Efectivo = mysqli_num_rows($sql_efectivo);
   $sql_banco = mysqli_query($conn,"SELECT * FROM `pagos` WHERE corte = 0 AND tipo_cambio = 'Banco'  AND id_user = $id_user");
   $Banco = mysqli_num_rows($sql_banco);
+  $joinTransferencia = mysqli_query($conn, "SELECT * FROM pagos INNER JOIN referencias ON pagos.id_pago = referencias.id_pago WHERE pagos.corte = 0 AND pagos.tipo_cambio = 'Banco'
+  AND referencias.transferencia = 1 AND pagos.id_user = $id_user;");
+  $pagosTransferencia = mysqli_num_rows($joinTransferencia);
+  $joinTarjetaDebito = mysqli_query($conn, "SELECT * FROM pagos INNER JOIN referencias ON pagos.id_pago = referencias.id_pago WHERE pagos.corte = 0 AND pagos.tipo_cambio = 'Banco'
+  AND referencias.tarjeta = 1 AND referencias.debito = 1 AND pagos.id_user = $id_user;");
+  $pagosTarjetaDebito = mysqli_num_rows($joinTarjetaDebito);
+  $joinTarjetaCredito = mysqli_query($conn, "SELECT * FROM pagos INNER JOIN referencias ON pagos.id_pago = referencias.id_pago WHERE pagos.corte = 0 AND pagos.tipo_cambio = 'Banco'
+  AND referencias.tarjeta = 1 AND referencias.credito = 1 AND pagos.id_user = $id_user;");
+  $pagosTarjetaCredito = mysqli_num_rows($joinTarjetaCredito);
   $sql_credito = mysqli_query($conn,"SELECT * FROM `pagos` WHERE corte = 0 AND tipo_cambio = 'Credito'  AND id_user = $id_user");
   $Credito = mysqli_num_rows($sql_credito);
   $sql_salidas = mysqli_query($conn,"SELECT * FROM `salidas` WHERE corte = 0 AND usuario = $id_user");
@@ -89,12 +98,12 @@
           <li>
             <div class="collapsible-header">
               <i class="material-icons">credit_card</i>
-              A BANCO
-              <span class="new badge pink" data-badge-caption="pago(s)"><?php echo $Banco; ?></span>
+              TRANSFERENCIA BANCARIA
+              <span class="new badge pink" data-badge-caption="pago(s)"><?php echo $pagosTransferencia; ?></span>
             </div>
             <div class="collapsible-body">
               <?php 
-              if ($Banco > 0) {
+              if ($pagosTransferencia > 0) {
               ?>
                 <table>
                   <thead>
@@ -112,27 +121,132 @@
                     <?php 
                     $aux = 0;
                     $Total = 0;
-                    while ($pago = mysqli_fetch_array($sql_banco)) {
+                    while ($pagosTransferenciaT = mysqli_fetch_array($joinTransferencia)) {
                       $aux ++;
-                      $id_cliente = $pago['id_cliente'];
+                      $id_cliente = $pagosTransferenciaT['id_cliente'];
                       $cliente = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `clientes` WHERE id = $id_cliente"));
                       ?>
                       <tr>
                         <td><?php echo $aux; ?></td>
-                        <td><?php echo $pago['id_pago']; ?></td>
+                        <td><?php echo $pagosTransferenciaT['id_pago']; ?></td>
                         <td><?php echo $cliente['nombre']; ?></td>
-                        <td><?php echo $pago['tipo']; ?></td>
-                        <td><?php echo $pago['descripcion']; ?></td>
-                        <td><?php echo $pago['fecha'].' '.$pago['hora']; ?></td>
-                        <td>$<?php echo sprintf('%.2f', $pago['cantidad']); ?></td>
+                        <td><?php echo $pagosTransferenciaT['tipo']; ?></td>
+                        <td><?php echo $pagosTransferenciaT['descripcion']; ?></td>
+                        <td><?php echo $pagosTransferenciaT['fecha'].' '.$pagosTransferenciaT['hora']; ?></td>
+                        <td>$<?php echo sprintf('%.2f', $pagosTransferenciaT['cantidad']); ?></td>
                       </tr>
                       <?php 
-                      $Total += $pago['cantidad'];
+                      $Total += $pagosTransferenciaT['cantidad'];
                     }
                     ?>
                   </tbody>
                 </table>
-                <h6 class="right"><b>TOTAL A BANCO . $<?php echo sprintf('%.2f', $Total); ?> </b></h6><br>
+                <h6 class="right"><b>TOTAL TRANSFERENCIA BANCARIA . $<?php echo sprintf('%.2f', $Total); ?> </b></h6><br>
+              <?php 
+              }
+              ?>
+            </div>
+          </li> 
+          <li>
+            <div class="collapsible-header">
+              <i class="material-icons">credit_card</i>
+              TARJETA DE DÉBITO
+              <span class="new badge pink" data-badge-caption="pago(s)"><?php echo $pagosTarjetaDebito; ?></span>
+            </div>
+            <div class="collapsible-body">
+              <?php 
+              if ($pagosTarjetaDebito > 0) {
+              ?>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>N°</th>
+                      <th>Cliente</th>
+                      <th>Tipo</th>
+                      <th>Descripción</th>
+                      <th>Fecha y Hora</th>
+                      <th>Cantidad</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <?php 
+                    $aux = 0;
+                    $Total = 0;
+                    while ($pagosTarjetaDebitoT = mysqli_fetch_array($joinTarjetaDebito)) {
+                      $aux ++;
+                      $id_cliente = $pagosTarjetaDebitoT['id_cliente'];
+                      $cliente = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `clientes` WHERE id = $id_cliente"));
+                      ?>
+                      <tr>
+                        <td><?php echo $aux; ?></td>
+                        <td><?php echo $pagosTarjetaDebitoT['id_pago']; ?></td>
+                        <td><?php echo $cliente['nombre']; ?></td>
+                        <td><?php echo $pagosTarjetaDebitoT['tipo']; ?></td>
+                        <td><?php echo $pagosTarjetaDebitoT['descripcion']; ?></td>
+                        <td><?php echo $pagosTarjetaDebitoT['fecha'].' '.$pagosTarjetaDebitoT['hora']; ?></td>
+                        <td>$<?php echo sprintf('%.2f', $pagosTarjetaDebitoT['cantidad']); ?></td>
+                      </tr>
+                      <?php 
+                      $Total += $pagosTarjetaDebitoT['cantidad'];
+                    }
+                    ?>
+                  </tbody>
+                </table>
+                <h6 class="right"><b>TOTAL TARJETA DE DÉBITO . $<?php echo sprintf('%.2f', $Total); ?> </b></h6><br>
+              <?php 
+              }
+              ?>
+            </div>
+          </li> 
+          <li>
+          <li>
+            <div class="collapsible-header">
+              <i class="material-icons">credit_card</i>
+              TARJETA DE CRÉDITO
+              <span class="new badge pink" data-badge-caption="pago(s)"><?php echo $pagosTarjetaCredito; ?></span>
+            </div>
+            <div class="collapsible-body">
+              <?php 
+              if ($pagosTarjetaCredito > 0) {
+              ?>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>N°</th>
+                      <th>Cliente</th>
+                      <th>Tipo</th>
+                      <th>Descripción</th>
+                      <th>Fecha y Hora</th>
+                      <th>Cantidad</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <?php 
+                    $aux = 0;
+                    $Total = 0;
+                    while ($pagosTarjetaCreditoT = mysqli_fetch_array($joinTarjetaCredito)) {
+                      $aux ++;
+                      $id_cliente = $pagosTarjetaCreditoT['id_cliente'];
+                      $cliente = mysqli_fetch_array(mysqli_query($conn, "SELECT * FROM `clientes` WHERE id = $id_cliente"));
+                      ?>
+                      <tr>
+                        <td><?php echo $aux; ?></td>
+                        <td><?php echo $pagosTarjetaCreditoT['id_pago']; ?></td>
+                        <td><?php echo $cliente['nombre']; ?></td>
+                        <td><?php echo $pagosTarjetaCreditoT['tipo']; ?></td>
+                        <td><?php echo $pagosTarjetaCreditoT['descripcion']; ?></td>
+                        <td><?php echo $pagosTarjetaCreditoT['fecha'].' '.$pagosTarjetaCreditoT['hora']; ?></td>
+                        <td>$<?php echo sprintf('%.2f', $pagosTarjetaCreditoT['cantidad']); ?></td>
+                      </tr>
+                      <?php 
+                      $Total += $pagosTarjetaCreditoT['cantidad'];
+                    }
+                    ?>
+                  </tbody>
+                </table>
+                <h6 class="right"><b>TOTAL TARJETA DE CRÉDITO . $<?php echo sprintf('%.2f', $Total); ?> </b></h6><br>
               <?php 
               }
               ?>

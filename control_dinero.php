@@ -78,7 +78,6 @@ switch ($Accion) {
 	            $ultimo = mysqli_fetch_array($sql_check);
 	            $corte = $ultimo['id_corte'];//TOMAMOS EL ID DEL CORTE
 	        }else{
-				
 	            #SI NO EXISTE CREAMOS EL CORTE.....  /////////////       IMPORTANTE               /////////////
 	            if (mysqli_query($conn,"INSERT INTO cortes (usuario, fecha, hora, entradas, salidas, banco, credito, realizo, transferencia, tarjeta_debito, tarjeta_credito)
 				 VALUES ($usuario, '$Fecha_hoy', '$Hora', '$entradas', '$salidas', '$banco', '$credito', $id_user, $transferencia, $tarjetaDebito, $tarjetaCredito)")) {

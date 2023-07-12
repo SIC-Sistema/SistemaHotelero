@@ -267,6 +267,16 @@ switch ($Accion) {
         						$id_deuda = 0;
         					}
 
+							$transferencia = intval($conn->real_escape_string($_POST['valorTransferencia']));
+							$tarjeta = intval($conn->real_escape_string($_POST['valorTarjeta']));
+							if ($tarjeta == 0){
+								$debito = 0;
+								$credito = 0;
+							}else{
+								$debito = intval($conn->real_escape_string($_POST['valorDebito']));
+								$credito = intval($conn->real_escape_string($_POST['valorCredito']));
+							}
+
         					#--- CREAMOS EL SQL PARA LA INSERCION ---
       						$sql = "INSERT INTO pagos (id_cliente, descripcion, cantidad, fecha, hora, tipo, id_user, corte, tipo_cambio, id_deuda) VALUES ($cliente, '$descripcion', '$anticipo', '$Fecha_hoy', '$Hora', 'Anticipo', $id_user, 0, '$tipo_cambio', $id_deuda)";
       						#--- SE INSERTA EL PAGO -----------
@@ -275,7 +285,8 @@ switch ($Accion) {
         						$id_pago = $ultimo['id'];
         						if ($tipo_cambio == 'Banco') {
         							$ReferenciaB = $conn->real_escape_string($_POST['referenciaB']);
-        							mysqli_query($conn,  "INSERT INTO referencias (id_pago, descripcion) VALUES ('$id_pago', '$ReferenciaB')");
+        							mysqli_query($conn,  "INSERT INTO referencias (id_pago, descripcion, transferencia, tarjeta, credito, debito)
+									VALUES ('$id_pago', '$ReferenciaB', $transferencia, $tarjeta, $credito, $debito)");
         						}
 					        	echo '<script>M.toast({html:"El pago se dió de alta satisfcatoriamente.", classes: "rounded"})</script>';
 					        	?>
@@ -573,6 +584,15 @@ switch ($Accion) {
         				$id_deuda = 0;
         			}
 
+					$transferencia = intval($conn->real_escape_string($_POST['valorTransferencia']));
+					$tarjeta = intval($conn->real_escape_string($_POST['valorTarjeta']));
+					if ($tarjeta == 0){
+						$debito = 0;
+						$credito = 0;
+					}else{
+						$debito = intval($conn->real_escape_string($_POST['valorDebito']));
+						$credito = intval($conn->real_escape_string($_POST['valorCredito']));
+					}
         			#--- CREAMOS EL SQL PARA LA INSERCION ---
       				$sql = "INSERT INTO pagos (id_cliente, descripcion, cantidad, fecha, hora, tipo, id_user, corte, tipo_cambio, id_deuda) VALUES ($cliente, '$descripcion', '$Abono', '$Fecha_hoy', '$Hora', 'Abono', $id_user, 0, '$tipo_cambio', $id_deuda)";
       				#--- SE INSERTA EL PAGO -----------
@@ -582,7 +602,8 @@ switch ($Accion) {
         				$id_pago = $ultimo['id'];
         				if ($tipo_cambio == 'Banco') {
         					$ReferenciaB = $conn->real_escape_string($_POST['referenciaB']);
-        					mysqli_query($conn,  "INSERT INTO referencias (id_pago, descripcion) VALUES ('$id_pago', '$ReferenciaB')");
+        					mysqli_query($conn,  "INSERT INTO referencias (id_pago, descripcion, transferencia, tarjeta, debito, credito)
+							VALUES ('$id_pago', '$ReferenciaB', $transferencia, $tarjeta, $debito, $credito)");
         				}
 					    echo '<script>M.toast({html:"El pago se dió de alta satisfcatoriamente.", classes: "rounded"})</script>';
 					    ?>
@@ -637,6 +658,15 @@ switch ($Accion) {
         			$id_deuda = 0;
         		}
 
+				$transferencia = intval($conn->real_escape_string($_POST['valorTransferencia']));
+				$tarjeta = intval($conn->real_escape_string($_POST['valorTarjeta']));
+				if ($tarjeta == 0){
+					$debito = 0;
+					$credito = 0;
+				}else{
+					$debito = intval($conn->real_escape_string($_POST['valorDebito']));
+					$credito = intval($conn->real_escape_string($_POST['valorCredito']));
+				}
         		#--- CREAMOS EL SQL PARA LA INSERCION ---
       			$sql = "INSERT INTO pagos (id_cliente, descripcion, cantidad, fecha, hora, tipo, id_user, corte, tipo_cambio, id_deuda) VALUES ($cliente, '$descripcion', '$Liquidacion', '$Fecha_hoy', '$Hora', 'Liquidacion', $id_user, 0, '$tipo_cambio', $id_deuda)";
       			#--- SE INSERTA EL PAGO -----------
@@ -645,7 +675,8 @@ switch ($Accion) {
         			$id_pago = $ultimo['id'];
         			if ($tipo_cambio == 'Banco') {
         				$ReferenciaB = $conn->real_escape_string($_POST['referenciaB']);
-        				mysqli_query($conn,  "INSERT INTO referencias (id_pago, descripcion) VALUES ('$id_pago', '$ReferenciaB')");
+        				mysqli_query($conn,  "INSERT INTO referencias (id_pago, descripcion, transferencia, tarjeta, debito, credito)
+						VALUES ('$id_pago', '$ReferenciaB', $transferencia, $tarjeta, $debito, $credito)");
         			}
 					echo '<script>M.toast({html:"El pago se dió de alta satisfcatoriamente.", classes: "rounded"})</script>';
 					?>
