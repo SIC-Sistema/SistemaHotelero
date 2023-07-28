@@ -160,7 +160,7 @@
 		          var textoNombre = $("input#nombreCliente").val();//ej:LA VARIABLE "textoNombre" GUARDAREMOS LA INFORMACION QUE ESTE EN EL INPUT QUE TENGA EL id = "nombreCliente"
 				  var textoTelefono = $("input#telefono").val();// ej: TRAE LE INFORMACION DEL INPUT FILA 
 			      var textoEmail = $("input#email").val();
-			      var textoLimpieza = $("input#limpieza").val();
+			      var textoLimpieza = "";
 
 			      // CREAMOS CONDICIONES QUE SI SE CUMPLEN MANDARA MENSAJES DE ALERTA EN FORMA DE TOAST
 			      //SI SE CUMPLEN LOS IF QUIERE DECIR QUE NO PASA LOS REQUISITOS MINIMOS DE LLENADO...
@@ -277,12 +277,7 @@
 							            <input id="email" type="text" class="validate" data-length="100">	
 							        </div>
 					            </div>
-					            <div class="col s12 m6">
-					              	<b class="indigo-text col s12 m4"><br>LIMPIEZA: </b>
-					              	<div class="col s12 m8">
-							            <input id="limpieza" type="text" class="validate" data-length="100">	
-							        </div>
-					            </div>		            		
+					            	            		
 					        </b>
 				        </div>
 		            </li>
