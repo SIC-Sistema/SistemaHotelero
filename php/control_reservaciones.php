@@ -91,12 +91,7 @@ switch ($Accion) {
 							            <input id="email" type="text" class="validate" value="<?php echo $cliente['email'];?>" data-length="100">	
 							        </div>
 					            </div>
-					            <div class="col s12 m6">
-					              	<b class="indigo-text col s12 m4"><br>LIMPIEZA: </b>
-					              	<div class="col s12 m8">
-							            <input id="limpieza" type="text" class="validate" value="<?php echo $cliente['limpieza'];?>" data-length="100">	
-							        </div>
-					            </div>		            		
+					            	            		
 					        </b>
 				        </div>
        	<?php
