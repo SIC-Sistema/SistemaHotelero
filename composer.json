@@ -1,0 +1,5 @@
+{
+    "require": {
+        "facturama/facturama-php-sdk": "2.0@dev"
+    }
+}

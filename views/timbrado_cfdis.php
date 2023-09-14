@@ -11,103 +11,107 @@
     $porcentajeReduccion = 0.8403361344537815;
     ?>
     <script>
-			function buscarReceptores(){
-        var texto = $("input#busquedaReceptores").val();
-        $.post("../php/control_receptores.php", {
-					accion: 4,
-					texto: texto,
-				}, function(mensaje){
-					$("#tablaReceptores").html(mensaje);
+		function buscarReceptores(){
+			var texto = $("input#busquedaReceptores").val();
+			$.post("../php/control_receptores.php", {
+						accion: 4,
+						texto: texto,
+					}, function(mensaje){
+						$("#tablaReceptores").html(mensaje);
+					});
+		};
+      
+		function actualizaReceptor(id_receptor){
+			idReceptor = id_receptor; 
+			var textoRfc = $("input#rfc").val();
+			var textoRazonSocial = $("input#razonSocial").val();
+			var textoRegimen = $("select#regimen").val();
+			var textoCodigoPostal = $("input#codigoPostal").val();
+			  
+			if (textoRfc == "") {
+			  M.toast({html:"El RFC no puede ir vacío", classes: "rounded"});
+			}else if (textoRfc.length > 13 || textoRfc.length <= 11) {
+			  M.toast({html:"RFC mayor a 13 o menor a 12 dígitos", classes: "rounded"});
+			}else if (textoRazonSocial == "") {
+			  M.toast({html:"El campo razón social está vacío", classes: "rounded"});
+			}else if (textoRegimen == "0") {
+			  M.toast({html:"Seleccione un regimen fiscal", classes: "rounded"});
+			}else if (textoCodigoPostal == "") {
+			  M.toast({html:"Escriba un código postal", classes: "rounded"});
+			}else if (textoCodigoPostal.length > 5 || textoCodigoPostal.length <= 4) {
+			  M.toast({html:"El CP no puede ser menor o mayor a 5 dígitos", classes: "rounded"});
+			}else {
+			  $.post("../php/control_receptores.php", { 
+				accion: 6,
+				valorId: idReceptor,
+				valorRfc: textoRfc,
+				valorRazonSocial: textoRazonSocial,
+				valorRegimen: textoRegimen,
+				valorCodigoPostal: textoCodigoPostal,
+			  }, function(mensaje) {
+					$("#resultado_info").html(mensaje);   
 				});
-			};
-      
-      function actualizaReceptor(id_receptor){
-        idReceptor = id_receptor; 
-        var textoRfc = $("input#rfc").val();
-        var textoRazonSocial = $("input#razonSocial").val();
-        var textoRegimen = $("select#regimen").val();
-        var textoCodigoPostal = $("input#codigoPostal").val();
-          
-        if (textoRfc == "") {
-          M.toast({html:"El RFC no puede ir vacío", classes: "rounded"});
-        }else if (textoRfc.length > 13 || textoRfc.length <= 11) {
-          M.toast({html:"RFC mayor a 13 o menor a 12 dígitos", classes: "rounded"});
-        }else if (textoRazonSocial == "") {
-          M.toast({html:"El campo razón social está vacío", classes: "rounded"});
-        }else if (textoRegimen == "0") {
-          M.toast({html:"Seleccione un regimen fiscal", classes: "rounded"});
-        }else if (textoCodigoPostal == "") {
-          M.toast({html:"Escriba un código postal", classes: "rounded"});
-        }else if (textoCodigoPostal.length > 5 || textoCodigoPostal.length <= 4) {
-          M.toast({html:"El CP no puede ser menor o mayor a 5 dígitos", classes: "rounded"});
-        }else {
-          $.post("../php/control_receptores.php", { 
-            accion: 6,
-            valorId: idReceptor,
-            valorRfc: textoRfc,
-            valorRazonSocial: textoRazonSocial,
-            valorRegimen: textoRegimen,
-            valorCodigoPostal: textoCodigoPostal,
-          }, function(mensaje) {
-                $("#resultado_info").html(mensaje);   
-            });
-          }
+			  }
       };
 
-      function timbrarCfdi(id_servicio){
-        var idReceptorT = $("input#idReceptor").val();
-        var textoFormaPago = $("select#formaPago").val();
-        var textoMetodoPago = $("select#metodoPago").val();
-        idServicio = id_servicio;
-        if (typeof idReceptorT === "undefined") {
-            M.toast({html:"Por favor, selecciona un receptor fiscal", classes: "rounded"});
-          }else {
-          $.post("../php/timbrado_cfdi.php", {
-            valorReceptor: idReceptorT,
-            valorReservacion: idServicio,
-            valorFormaPago: textoFormaPago,
-            valorMetodoPago: textoMetodoPago
-          }, function(mensaje) {
-          $("#resultado_info").html(mensaje);
-          
-          })
-        }   
-      };
-
-      function errorTimbrado(){
-        M.toast({html:"Ocurrió un error al timbrar el CDFI", classes: "rounded"});
-      }
-      
-      function imprimirCfdi(jsonEncoded){
-        var pdf_newTab = window.open("");
-        pdf_newTab.document.write(
-          "<html><head><title>CFDI</title></head><body><iframe title='CFDI'  width='100%' height='100%' src='data:application/pdf;base64, " +    encodeURI(jsonEncoded) + "'></iframe></body></html>"
-        );
-        M.toast({html:"Factura generada correctamente", classes: "rounded"});
-        window.location.href = "../views/clientes.php";
-      };  
-
-      function recargarReceptor(id_receptor){
-        idReceptor = id_receptor;
-        $.post("../php/control_receptores.php", {
-				  accion: 7,
-				  receptor: idReceptor,
-				}, function(mensaje) {
-				  $("#resultado_info").html(mensaje);
-		
+		function timbrarCfdi(id_servicio){
+			var idReceptorT = $("input#idReceptor").val();
+			var textoFormaPago = $("select#formaPago").val();
+			var textoMetodoPago = $("select#metodoPago").val();
+			idServicio = id_servicio;
+			if (typeof idReceptorT === "undefined") {
+				M.toast({html:"Por favor, selecciona un receptor fiscal", classes: "rounded"});
+			}else if(textoFormaPago == 0){
+				M.toast({html:"Por favor, selecciona una forma de pago", classes: "rounded"});
+			}else if(textoMetodoPago == 0){
+				M.toast({html:"Por favor, selecciona un método de pago", classes: "rounded"});
+			}else {
+			  $.post("../php/PostCfdiRequest.php", {
+				valorReceptor: idReceptorT,
+				valorReservacion: idServicio,
+				valorFormaPago: textoFormaPago,
+				valorMetodoPago: textoMetodoPago
+			  }, function(mensaje) {
+			  $("#resultado_info").html(mensaje);
+			  
 			  })
+			}   
       };
+
+		function errorTimbrado(){
+			M.toast({html:"Ocurrió un error al timbrar el CDFI", classes: "rounded"});
+		}
+      
+		function imprimirCfdi(jsonEncoded){
+			var pdf_newTab = window.open("");
+			pdf_newTab.document.write(
+			  "<html><head><title>CFDI</title></head><body><iframe title='CFDI'  width='100%' height='100%' src='data:application/pdf;base64, " +    encodeURI(jsonEncoded) + "'></iframe></body></html>"
+			);
+			M.toast({html:"Factura generada correctamente", classes: "rounded"});
+			window.location.href = "../views/clientes.php";
+		};  
+
+		function recargarReceptor(id_receptor){
+			idReceptor = id_receptor;
+			$.post("../php/control_receptores.php", {
+					  accion: 7,
+					  receptor: idReceptor,
+					}, function(mensaje) {
+					  $("#resultado_info").html(mensaje);
+			
+				  })
+		};
         
-		  function muestraReceptor(id_receptor) {
-        idReceptor = id_receptor;
-			  $.post("../php/control_receptores.php", {
-				  accion: 5,
-				  receptor: idReceptor,
-				}, function(mensaje) {
-				  $("#resultado_info").html(mensaje);
-				  $('#modalBuscarReceptores').modal('close');
-			  })
-		  };
+		function muestraReceptor(id_receptor) {
+			idReceptor = id_receptor;
+				  $.post("../php/control_receptores.php", {
+					  accion: 5,
+					  receptor: idReceptor,
+					}, function(mensaje) {
+					  $("#resultado_info").html(mensaje);
+					  $('#modalBuscarReceptores').modal('close');
+				  })
+		 };
 
     </script>
     <style>
